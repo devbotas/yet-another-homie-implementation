@@ -1,0 +1,45 @@
+# C# 
+*.cs eol=crlf
+*.xaml.cs eol=crlf
+*.xaml eol=crlf
+
+# C/C++
+*.h eol=crlf
+*.hpp eol=crlf
+*.c eol=crlf
+*.cpp eol=crlf
+*.cc eol=crlf
+
+# Powershell
+*.ps1 eol=crlf
+*.psm1 eol=crlf
+
+# Python
+*.py eol=crlf
+
+# Web/REST
+*.xml eol=crlf
+*.json eol=crlf
+*.html eol=crlf
+*.htm eol=crlf
+*.js eol=crlf
+*.ts eol=crlf
+*.css eol=crlf
+*.vue eol=crlf
+
+# Visual Studio
+*.csproj eol=crlf
+*.sln eol=crlf
+*.config eol=crlf
+*.vcxproj eol=crlf
+*.vgdbsettings eol=crlf
+*.props eol=crlf
+*.filters eol=crlf
+
+# Documentation
+*.csv eol=crlf
+*.md eol=crlf
+*.txt eol=crlf
+
+# Deployment
+*.nuspec eol=crlf
