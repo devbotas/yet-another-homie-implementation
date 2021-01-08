@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>DevBot.Homie</RootNamespace>
+    <AssemblyName>DevBot.Homie</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="lib\Newtonsoft.Json.pdb" />
+    <None Remove="lib\Newtonsoft.Json.xml" />
+    <None Remove="lib\Newtonsoft.Json.dll" />
+  </ItemGroup>
+</Project>
