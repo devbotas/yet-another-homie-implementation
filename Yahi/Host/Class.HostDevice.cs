@@ -23,7 +23,7 @@ namespace DevBot.Homie {
         }
 
         public HostStateProperty CreateHostStateProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostStateProperty($"{_baseTopic}/{_deviceId}", propertyId, friendlyName, dataType, unit);
+            var createdProperty = new HostStateProperty($"{_baseTopic}/{_deviceId}", propertyId, friendlyName, dataType, "", unit);
 
             _stateProperties.Add(createdProperty);
 
@@ -31,7 +31,7 @@ namespace DevBot.Homie {
         }
 
         public HostCommandProperty CreateHostCommandProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostCommandProperty($"{_baseTopic}/{_deviceId}", propertyId, friendlyName, dataType, unit);
+            var createdProperty = new HostCommandProperty($"{_baseTopic}/{_deviceId}", propertyId, friendlyName, dataType, "", unit);
 
             _commandProperties.Add(createdProperty);
 
@@ -39,7 +39,7 @@ namespace DevBot.Homie {
         }
 
         public HostParameterProperty CreateHostParameterProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostParameterProperty($"{_baseTopic}/{_deviceId}", propertyId, friendlyName, dataType, unit);
+            var createdProperty = new HostParameterProperty($"{_baseTopic}/{_deviceId}", propertyId, friendlyName, dataType, "", unit);
 
             _parameterProperties.Add(createdProperty);
 

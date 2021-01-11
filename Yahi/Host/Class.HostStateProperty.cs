@@ -1,56 +1,19 @@
 ﻿namespace DevBot.Homie {
-    public class HostStateProperty {
-        readonly string _nameAttribute = "";
-        readonly DataType _dataTypeAttribute = DataType.String;
-        readonly string _formatAttribute = "";
-        readonly bool _isSettableAttribute = false;
-        readonly bool _isRetainedAttribute = true;
-        readonly string _unitAttribute;
-        readonly string _nameAttributeTopic;
-        readonly string _dataTypeAttributeTopic;
-        readonly string _formatAttributeAttributeTopic;
-        readonly string _isSettableAttributeTopic;
-        readonly string _isRetainedAttributeTopic;
-        readonly string _unitAttributeTopic;
-        readonly string _valueTopic;
-
-        string _value = "";
-        readonly string _id;
-        readonly string _topicPrefix;
-
-        IBroker _broker;
-
-        internal HostStateProperty(string topicPrefix, string propertyId, string friendlyName, DataType dataType, string unit) {
-            _topicPrefix = topicPrefix;
-            _id = propertyId;
-            _nameAttribute = friendlyName;
-            _dataTypeAttribute = dataType;
-            _unitAttribute = unit;
-
-            _nameAttributeTopic = $"{_topicPrefix}/{_id}/$name";
-            _dataTypeAttributeTopic = $"{_topicPrefix}/{_id}/$datatype";
-            _formatAttributeAttributeTopic = $"{_topicPrefix}/{_id}/$format";
-            _isSettableAttributeTopic = $"{_topicPrefix}/{_id}/$settable";
-            _isRetainedAttributeTopic = $"{_topicPrefix}/{_id}/$retained";
-            _unitAttributeTopic = $"{_topicPrefix}/{_id}/$unit";
-
-            _valueTopic = $"{_topicPrefix}/{_id}";
+    public class HostStateProperty : HostPropertyBase {
+        internal HostStateProperty(string topicPrefix, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(topicPrefix, propertyId, friendlyName, dataType, format, false, true, unit) {
         }
 
-        internal void Initialize(IBroker broker) {
-            _broker = broker;
-
-            _broker.Publish(_nameAttributeTopic, _nameAttribute);
-            _broker.Publish(_dataTypeAttributeTopic, _dataTypeAttribute.ToString());
-            _broker.Publish(_formatAttributeAttributeTopic, _formatAttribute);
-            _broker.Publish(_isSettableAttributeTopic, _isSettableAttribute.ToString());
-            _broker.Publish(_isRetainedAttributeTopic, _isRetainedAttribute.ToString());
-            _broker.Publish(_unitAttributeTopic, _unitAttribute);
+        internal new void Initialize(IBroker broker) {
+            base.Initialize(broker);
         }
 
         public void SetValue(string valueToSet) {
+            // Deliberately setting a protected field. I do not want to raise PropertyUpdated event,
+            // because I'm modifying it from inside. Event is when external client modifies the Value,
+            // that is, sends an external command.
             _value = valueToSet;
-            _broker.Publish(_valueTopic, _value);
+
+            _broker.Publish($"{_topicPrefix}/{_propertyId}", Value);
         }
     }
 }
