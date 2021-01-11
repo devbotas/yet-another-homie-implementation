@@ -115,7 +115,7 @@ namespace TestApp {
         private static string _mqttBrokerIp = "172.16.0.3";
         private static string _mqttClientGuid = "814600E9-2EA7-4A29-9B62-D3F9B32F5F9C";
 
-        private Dictionary<string, Action<string, string>> _topicHandlerMap = new Dictionary<string, Action<string, string>>();
+        private Dictionary<string, List<Action<string, string>>> _topicHandlerMap = new Dictionary<string, List<Action<string, string>>>();
 
         public MySimpleBroker() {
             _mqttClient = new MqttClient(_mqttBrokerIp);
@@ -124,9 +124,10 @@ namespace TestApp {
         }
 
         private void HandlePublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e) {
-
             if (_topicHandlerMap.ContainsKey(e.Topic)) {
-                _topicHandlerMap[e.Topic](e.Topic, Encoding.UTF8.GetString(e.Message));
+                foreach (var handler in _topicHandlerMap[e.Topic]) {
+                    handler(e.Topic, Encoding.UTF8.GetString(e.Message));
+                }
             }
         }
 
@@ -135,7 +136,11 @@ namespace TestApp {
         }
 
         public void Subscribe(string topic, Action<string, string> handler) {
-            _topicHandlerMap.Add(topic, handler);
+            if (_topicHandlerMap.ContainsKey(topic) == false) {
+                _topicHandlerMap.Add(topic, new List<Action<string, string>>());
+            }
+
+            _topicHandlerMap[topic].Add(handler);
 
             _mqttClient.Subscribe(new[] { topic }, new byte[] { 0 });
         }
