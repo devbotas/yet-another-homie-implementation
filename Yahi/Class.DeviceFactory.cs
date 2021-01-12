@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DevBot.Homie {
+namespace DevBot9.Protocols.Homie {
     public static class DeviceFactory {
         public static string BaseTopic { get; private set; }
         public static Dictionary<string, Device> Devices { get; set; }

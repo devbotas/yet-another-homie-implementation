@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace DevBot.Homie {
+namespace DevBot9.Protocols.Homie {
     public class HostPropertyBase : INotifyPropertyChanged {
         protected IBroker _broker;
 

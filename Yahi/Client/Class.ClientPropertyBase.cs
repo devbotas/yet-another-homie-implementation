@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace DevBot.Homie {
+namespace DevBot9.Protocols.Homie {
     public class ClientPropertyBase {
         protected IBroker _broker;
         protected string _topicPrefix;

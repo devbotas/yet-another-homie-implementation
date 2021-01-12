@@ -1,4 +1,4 @@
-﻿namespace DevBot.Homie {
+﻿namespace DevBot9.Protocols.Homie {
     public class HostParameterProperty : HostPropertyBase {
         internal HostParameterProperty(string topicPrefix, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(topicPrefix, propertyId, friendlyName, dataType, format, true, true, unit) {
         }
@@ -7,7 +7,7 @@
             base.Initialize(broker);
 
             _broker.Subscribe($"{ _topicPrefix}/{ _propertyId}/set", (topic, value) => {
-                SetValue(value);
+                Value = value;
             });
         }
         public void SetValue(string valueToSet) {

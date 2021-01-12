@@ -1,4 +1,4 @@
-﻿namespace DevBot.Homie {
+﻿namespace DevBot9.Protocols.Homie {
     public class HostCommandProperty : HostPropertyBase {
         internal HostCommandProperty(string topicPrefix, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(topicPrefix, propertyId, friendlyName, dataType, format, true, false, unit) {
         }

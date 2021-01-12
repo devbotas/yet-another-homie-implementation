@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
-using DevBot.Homie;
+using DevBot9.Protocols.Homie;
 using uPLibrary.Networking.M2Mqtt;
 
 namespace TestApp {

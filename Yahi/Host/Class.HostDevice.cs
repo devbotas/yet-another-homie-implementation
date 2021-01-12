@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-
-namespace DevBot.Homie {
+namespace DevBot9.Protocols.Homie {
     public class HostDevice {
         string _baseTopic = "temp";
         string _deviceId = "some-device";

@@ -1,4 +1,4 @@
-﻿namespace DevBot.Homie {
+﻿namespace DevBot9.Protocols.Homie {
     public class States {
         public static string Init => "init";
         public static string Ready => "ready";

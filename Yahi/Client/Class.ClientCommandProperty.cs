@@ -1,4 +1,4 @@
-﻿namespace DevBot.Homie {
+﻿namespace DevBot9.Protocols.Homie {
     public class ClientCommandProperty : ClientPropertyBase {
         public ClientCommandProperty(string topicPrefix, string propertyId) : base(topicPrefix, propertyId) {
             _topicPrefix = topicPrefix;

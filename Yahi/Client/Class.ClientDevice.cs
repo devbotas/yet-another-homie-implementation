@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace DevBot.Homie {
+namespace DevBot9.Protocols.Homie {
     public class ClientDevice {
         string _baseTopic = "temp";
         string _deviceId = "some-device";

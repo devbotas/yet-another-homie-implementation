@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace DevBot.Homie {
+namespace DevBot9.Protocols.Homie {
     public class Device {
         private IBroker _broker;
 
