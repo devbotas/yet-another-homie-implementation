@@ -28,7 +28,6 @@ namespace TestApp {
     }
 
     internal class RecuperatorConsumer {
-        private IBroker _broker;
         private ClientStateProperty _inletTemperature;
         private ClientCommandProperty _selfDestructCommandProperty;
         private ClientDevice _clientDevice;
@@ -52,9 +51,11 @@ namespace TestApp {
         }
 
         public void Initialize(IBroker broker) {
-            _broker = broker;
-
-            _clientDevice.Initialize(_broker);
+            _clientDevice.Initialize((topic, value) => { }, topic => {
+                broker.Subscribe(topic, (a, b) => {
+                    _clientDevice.HandlePublishReceived(a, b);
+                });
+            });
 
             Task.Run(async () => {
                 await Task.Delay(3000);

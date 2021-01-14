@@ -1,27 +1,44 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DevBot9.Protocols.Homie {
-    public class ClientDevice {
-        string _baseTopic = "temp";
-        string _deviceId = "some-device";
-        IBroker _broker;
-
-        List<ClientStateProperty> _stateProperties = new List<ClientStateProperty>();
-        List<ClientCommandProperty> _commandProperties = new List<ClientCommandProperty>();
-        List<ClientParameterProperty> _parameterProperties = new List<ClientParameterProperty>();
-
-        public string HomieVersion { get; private set; } = "4.0.0";
-        public string Name { get; private set; }
-        public string State { get; private set; }
-
+    public class ClientDevice : Device {
         internal ClientDevice(string baseTopic, string id) {
             _baseTopic = baseTopic;
             _deviceId = id;
         }
 
+        public new void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
+            base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
+
+            var homieTopic = $"{_baseTopic}/{_deviceId}/$homie";
+            _topicHandlerMap.Add(homieTopic, new List<Action<string>>());
+            _topicHandlerMap[homieTopic].Add((value) => {
+                // Debug.WriteLine($"{_baseTopic}/{_deviceId}/$homie: {value}");
+                HomieVersion = value;
+            });
+            _subscribeToTopicDelegate(homieTopic);
+
+            var nameTopic = $"{_baseTopic}/{_deviceId}/$name";
+            _topicHandlerMap.Add(nameTopic, new List<Action<string>>());
+            _topicHandlerMap[nameTopic].Add((value) => {
+                //Debug.WriteLine($"{_baseTopic}/{_deviceId}/$name: {value}");
+                Name = value;
+            });
+            _subscribeToTopicDelegate(nameTopic);
+
+            var stateTopic = $"{_baseTopic}/{_deviceId}/$state";
+            _topicHandlerMap.Add(stateTopic, new List<Action<string>>());
+            _topicHandlerMap[stateTopic].Add((value) => {
+                //Debug.WriteLine($"{_baseTopic}/{_deviceId}/$state: {value}");
+                State = value;
+            });
+            _subscribeToTopicDelegate(stateTopic);
+        }
+
+
         public ClientStateProperty CreateClientStateProperty(string propertyId) {
-            var createdProperty = new ClientStateProperty($"{_baseTopic}/{_deviceId}", propertyId);
+            var createdProperty = new ClientStateProperty(propertyId);
 
             _stateProperties.Add(createdProperty);
 
@@ -29,7 +46,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         public ClientCommandProperty CreateClientCommandProperty(string propertyId) {
-            var createdProperty = new ClientCommandProperty($"{_baseTopic}/{_deviceId}", propertyId);
+            var createdProperty = new ClientCommandProperty(propertyId);
 
             _commandProperties.Add(createdProperty);
 
@@ -37,44 +54,14 @@ namespace DevBot9.Protocols.Homie {
         }
 
         public ClientParameterProperty CreateClientParameterProperty(string propertyId) {
-            var createdProperty = new ClientParameterProperty($"{_baseTopic}/{_deviceId}", propertyId);
+            var createdProperty = new ClientParameterProperty(propertyId);
 
             _parameterProperties.Add(createdProperty);
 
             return createdProperty;
         }
 
-        public void Initialize(IBroker broker) {
-            _broker = broker;
 
-            foreach (var property in _stateProperties) {
-                property.Initialize(_broker);
-            }
 
-            foreach (var property in _commandProperties) {
-                property.Initialize(_broker);
-            }
-            foreach (var property in _parameterProperties) {
-                property.Initialize(_broker);
-            }
-
-            _broker.Subscribe($"{_baseTopic}/{_deviceId}/$homie", (a, b) => {
-                Debug.WriteLine($"{a}: {b}");
-                HomieVersion = b;
-            });
-            _broker.Subscribe($"{_baseTopic}/{_deviceId}/$name", (a, b) => {
-                Debug.WriteLine($"{a}: {b}");
-                Name = b;
-            });
-            _broker.Subscribe($"{_baseTopic}/{_deviceId}/$state", (a, b) => {
-                Debug.WriteLine($"{a}: {b}");
-                State = b;
-            });
-
-            //_broker.Publish($"{_baseTopic}/{_deviceId}/$homie", HomieVersion);
-            //_broker.Publish($"{_baseTopic}/{_deviceId}/$name", Name);
-            //_client.Publish($"homie/{_deviceId}/$nodes", GetNodesString());
-            //_client.Publish($"homie/{_deviceId}/$extensions", GetExtensionsString());
-        }
     }
 }

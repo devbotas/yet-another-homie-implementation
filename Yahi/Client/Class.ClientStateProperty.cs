@@ -1,12 +1,11 @@
 ﻿namespace DevBot9.Protocols.Homie {
     public class ClientStateProperty : ClientPropertyBase {
-        internal ClientStateProperty(string topicPrefix, string propertyId) : base(topicPrefix, propertyId) {
-            _topicPrefix = topicPrefix;
+        internal ClientStateProperty(string propertyId) : base(propertyId) {
             _propertyId = propertyId;
         }
 
-        internal new void Initialize(IBroker broker) {
-            base.Initialize(broker);
+        internal new void Initialize(Device parentDevice) {
+            base.Initialize(parentDevice);
         }
     }
 }

@@ -2,9 +2,8 @@
 
 namespace DevBot9.Protocols.Homie {
     public class ClientPropertyBase {
-        protected IBroker _broker;
-        protected string _topicPrefix;
         protected string _propertyId;
+        protected Device _parentDevice;
 
         private string _name = "";
         public string Name {
@@ -53,31 +52,30 @@ namespace DevBot9.Protocols.Homie {
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        protected ClientPropertyBase(string topicPrefix, string propertyId) {
-            _topicPrefix = topicPrefix;
+        protected ClientPropertyBase(string propertyId) {
             _propertyId = propertyId;
         }
 
-        protected void Initialize(IBroker broker) {
-            _broker = broker;
+        protected void Initialize(Device parentDevice) {
+            _parentDevice = parentDevice;
 
-            _broker.Subscribe($"{_topicPrefix}/{_propertyId}/$name", (topic, value) => {
+            _parentDevice.InternalPropertySubsribe($"{_propertyId}/$name", (value) => {
                 Name = value;
             });
 
-            _broker.Subscribe($"{_topicPrefix}/{_propertyId}/$datatype", (topic, value) => {
+            _parentDevice.InternalPropertySubsribe($"{_propertyId}/$datatype", (value) => {
                 DataType = DataType.String;
             });
 
-            _broker.Subscribe($"{_topicPrefix}/{_propertyId}/$format", (topic, value) => {
+            _parentDevice.InternalPropertySubsribe($"{_propertyId}/$format", (value) => {
                 Format = value;
             });
 
-            _broker.Subscribe($"{_topicPrefix}/{_propertyId}/$unit", (topic, value) => {
+            _parentDevice.InternalPropertySubsribe($"{_propertyId}/$unit", (value) => {
                 Unit = value;
             });
 
-            _broker.Subscribe($"{_topicPrefix}/{_propertyId}", (topic, value) => {
+            _parentDevice.InternalPropertySubsribe($"{_propertyId}", (value) => {
                 Value = value;
             });
         }

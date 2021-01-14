@@ -1,18 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 namespace DevBot9.Protocols.Homie {
-    public class HostDevice {
-        string _baseTopic = "temp";
-        string _deviceId = "some-device";
+    public class HostDevice : Device {
         IBroker _broker;
-
-        List<HostStateProperty> _stateProperties = new List<HostStateProperty>();
-        List<HostCommandProperty> _commandProperties = new List<HostCommandProperty>();
-        List<HostParameterProperty> _parameterProperties = new List<HostParameterProperty>();
-
-        public string HomieVersion { get; } = "4.0.0";
-        public string Name { get; private set; }
-        public string State { get; private set; }
 
         internal HostDevice(string baseTopic, string id, string friendlyName = "") {
             _baseTopic = baseTopic;
@@ -56,13 +45,13 @@ namespace DevBot9.Protocols.Homie {
             //_client.Publish($"homie/{_deviceId}/$extensions", GetExtensionsString());
 
             foreach (var property in _stateProperties) {
-                property.Initialize(_broker);
+                property.Initialize(this);
             }
             foreach (var property in _commandProperties) {
-                property.Initialize(_broker);
+                property.Initialize(this);
             }
             foreach (var property in _parameterProperties) {
-                property.Initialize(_broker);
+                property.Initialize(this);
             }
 
             // imitating some initialization work.
@@ -76,5 +65,6 @@ namespace DevBot9.Protocols.Homie {
             State = stateToSet;
             _broker.Publish($"{_baseTopic}/{_deviceId}/$state", State);
         }
+
     }
 }
