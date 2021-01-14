@@ -60,8 +60,5 @@ namespace DevBot9.Protocols.Homie {
 
             return createdProperty;
         }
-
-
-
     }
 }

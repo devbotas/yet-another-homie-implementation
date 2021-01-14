@@ -4,7 +4,7 @@
             _propertyId = propertyId;
         }
 
-        internal new void Initialize(Device parentDevice) {
+        internal override void Initialize(Device parentDevice) {
             base.Initialize(parentDevice);
         }
 

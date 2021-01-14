@@ -1,10 +1,10 @@
 ﻿namespace DevBot9.Protocols.Homie {
     public class HostStateProperty : HostPropertyBase {
-        internal HostStateProperty(string topicPrefix, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(topicPrefix, propertyId, friendlyName, dataType, format, false, true, unit) {
+        internal HostStateProperty(string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(propertyId, friendlyName, dataType, format, false, true, unit) {
         }
 
-        internal new void Initialize(IBroker broker) {
-            base.Initialize(broker);
+        internal override void Initialize(Device parentDevice) {
+            base.Initialize(parentDevice);
         }
 
         public void SetValue(string valueToSet) {
@@ -13,7 +13,7 @@
             // that is, sends an external command.
             _value = valueToSet;
 
-            _broker.Publish($"{_topicPrefix}/{_propertyId}", Value);
+            _parentDevice.InternalPropertyPublish($"{_propertyId}", Value);
         }
     }
 }

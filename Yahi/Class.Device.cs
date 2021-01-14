@@ -6,9 +6,9 @@ namespace DevBot9.Protocols.Homie {
         protected string _baseTopic = "temp";
         protected string _deviceId = "some-device";
 
-        protected List<ClientStateProperty> _stateProperties = new List<ClientStateProperty>();
-        protected List<ClientCommandProperty> _commandProperties = new List<ClientCommandProperty>();
-        protected List<ClientParameterProperty> _parameterProperties = new List<ClientParameterProperty>();
+        protected List<PropertyBase> _stateProperties = new List<PropertyBase>();
+        protected List<PropertyBase> _commandProperties = new List<PropertyBase>();
+        protected List<PropertyBase> _parameterProperties = new List<PropertyBase>();
 
         protected PublishToTopicDelegate _publishToTopicDelegate;
         protected SubscribeToTopicDelegate _subscribeToTopicDelegate;
@@ -49,11 +49,11 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal void InternalPropertyPublish(string topic, string value) {
-            _publishToTopicDelegate(topic, value);
+        internal void InternalPropertyPublish(string propertyTopic, string value) {
+            _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/{propertyTopic}", value);
         }
 
-        internal void InternalPropertySubsribe(string propertyTopic, Action<string> actionToTakeOnReceivedMessage) {
+        internal void InternalPropertySubscribe(string propertyTopic, Action<string> actionToTakeOnReceivedMessage) {
             var fullTopic = $"{_baseTopic}/{_deviceId}/{propertyTopic}";
 
             if (_topicHandlerMap.ContainsKey(fullTopic) == false) {

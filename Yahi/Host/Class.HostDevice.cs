@@ -1,8 +1,6 @@
 ﻿using System.Threading;
 namespace DevBot9.Protocols.Homie {
     public class HostDevice : Device {
-        IBroker _broker;
-
         internal HostDevice(string baseTopic, string id, string friendlyName = "") {
             _baseTopic = baseTopic;
             _deviceId = id;
@@ -11,7 +9,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         public HostStateProperty CreateHostStateProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostStateProperty($"{_baseTopic}/{_deviceId}", propertyId, friendlyName, dataType, "", unit);
+            var createdProperty = new HostStateProperty(propertyId, friendlyName, dataType, "", unit);
 
             _stateProperties.Add(createdProperty);
 
@@ -19,7 +17,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         public HostCommandProperty CreateHostCommandProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostCommandProperty($"{_baseTopic}/{_deviceId}", propertyId, friendlyName, dataType, "", unit);
+            var createdProperty = new HostCommandProperty(propertyId, friendlyName, dataType, "", unit);
 
             _commandProperties.Add(createdProperty);
 
@@ -27,20 +25,20 @@ namespace DevBot9.Protocols.Homie {
         }
 
         public HostParameterProperty CreateHostParameterProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostParameterProperty($"{_baseTopic}/{_deviceId}", propertyId, friendlyName, dataType, "", unit);
+            var createdProperty = new HostParameterProperty(propertyId, friendlyName, dataType, "", unit);
 
             _parameterProperties.Add(createdProperty);
 
             return createdProperty;
         }
 
-        public void Initialize(IBroker broker) {
-            _broker = broker;
+        public new void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
+            base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
 
             SetState(States.Init);
 
-            _broker.Publish($"{_baseTopic}/{_deviceId}/$homie", HomieVersion);
-            _broker.Publish($"{_baseTopic}/{_deviceId}/$name", Name);
+            _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/$homie", HomieVersion);
+            _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/$name", Name);
             //_client.Publish($"homie/{_deviceId}/$nodes", GetNodesString());
             //_client.Publish($"homie/{_deviceId}/$extensions", GetExtensionsString());
 
@@ -60,10 +58,9 @@ namespace DevBot9.Protocols.Homie {
             SetState(States.Ready);
         }
 
-
         public void SetState(string stateToSet) {
             State = stateToSet;
-            _broker.Publish($"{_baseTopic}/{_deviceId}/$state", State);
+            _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/$state", State);
         }
 
     }

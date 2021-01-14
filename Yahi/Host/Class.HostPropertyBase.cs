@@ -1,11 +1,7 @@
 ﻿using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
-    public class HostPropertyBase : INotifyPropertyChanged {
-        protected IBroker _broker;
-
-        protected readonly string _propertyId;
-        protected readonly string _topicPrefix;
+    public class HostPropertyBase : PropertyBase {
         protected readonly string _nameAttribute;
         protected readonly DataType _dataTypeAttribute;
         protected readonly string _formatAttribute;
@@ -20,14 +16,11 @@ namespace DevBot9.Protocols.Homie {
             get { return _value; }
             protected set {
                 _value = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        protected HostPropertyBase(string topicPrefix, string propertyId, string friendlyName, DataType dataType, string format, bool isSettable, bool isRetained, string unit) {
-            _topicPrefix = topicPrefix;
+        protected HostPropertyBase(string propertyId, string friendlyName, DataType dataType, string format, bool isSettable, bool isRetained, string unit) {
             _propertyId = propertyId;
             _nameAttribute = friendlyName;
             _dataTypeAttribute = dataType;
@@ -37,15 +30,15 @@ namespace DevBot9.Protocols.Homie {
             _unitAttribute = unit;
         }
 
-        protected void Initialize(IBroker broker) {
-            _broker = broker;
+        internal override void Initialize(Device parentDevice) {
+            _parentDevice = parentDevice;
 
-            _broker.Publish($"{_topicPrefix}/{_propertyId}/$name", _nameAttribute);
-            _broker.Publish($"{_topicPrefix}/{_propertyId}/$datatype", _dataTypeAttribute.ToString());
-            _broker.Publish($"{_topicPrefix}/{_propertyId}/$format", _formatAttribute);
-            _broker.Publish($"{_topicPrefix}/{_propertyId}/$settable", _isSettableAttribute.ToString());
-            _broker.Publish($"{_topicPrefix}/{_propertyId}/$retained", _isRetainedAttribute.ToString());
-            _broker.Publish($"{_topicPrefix}/{_propertyId}/$unit", _unitAttribute);
+            _parentDevice.InternalPropertyPublish($"{_propertyId}/$name", _nameAttribute);
+            _parentDevice.InternalPropertyPublish($"{_propertyId}/$datatype", _dataTypeAttribute.ToString());
+            _parentDevice.InternalPropertyPublish($"{_propertyId}/$format", _formatAttribute);
+            _parentDevice.InternalPropertyPublish($"{_propertyId}/$settable", _isSettableAttribute.ToString());
+            _parentDevice.InternalPropertyPublish($"{_propertyId}/$retained", _isRetainedAttribute.ToString());
+            _parentDevice.InternalPropertyPublish($"{_propertyId}/$unit", _unitAttribute);
         }
     }
 }

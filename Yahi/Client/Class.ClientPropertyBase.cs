@@ -1,16 +1,13 @@
 ﻿using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
-    public class ClientPropertyBase {
-        protected string _propertyId;
-        protected Device _parentDevice;
-
+    public class ClientPropertyBase : PropertyBase {
         private string _name = "";
         public string Name {
             get { return _name; }
             protected set {
                 _name = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
             }
         }
 
@@ -19,7 +16,7 @@ namespace DevBot9.Protocols.Homie {
             get { return _dataType; }
             protected set {
                 _dataType = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Format)));
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Format)));
             }
         }
 
@@ -28,7 +25,7 @@ namespace DevBot9.Protocols.Homie {
             get { return _format; }
             protected set {
                 _format = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Format)));
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Format)));
             }
         }
 
@@ -37,7 +34,7 @@ namespace DevBot9.Protocols.Homie {
             get { return _unit; }
             protected set {
                 _unit = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Unit)));
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Unit)));
             }
         }
 
@@ -46,36 +43,34 @@ namespace DevBot9.Protocols.Homie {
             get { return _value; }
             protected set {
                 _value = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         protected ClientPropertyBase(string propertyId) {
             _propertyId = propertyId;
         }
 
-        protected void Initialize(Device parentDevice) {
+        internal override void Initialize(Device parentDevice) {
             _parentDevice = parentDevice;
 
-            _parentDevice.InternalPropertySubsribe($"{_propertyId}/$name", (value) => {
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}/$name", (value) => {
                 Name = value;
             });
 
-            _parentDevice.InternalPropertySubsribe($"{_propertyId}/$datatype", (value) => {
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}/$datatype", (value) => {
                 DataType = DataType.String;
             });
 
-            _parentDevice.InternalPropertySubsribe($"{_propertyId}/$format", (value) => {
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}/$format", (value) => {
                 Format = value;
             });
 
-            _parentDevice.InternalPropertySubsribe($"{_propertyId}/$unit", (value) => {
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}/$unit", (value) => {
                 Unit = value;
             });
 
-            _parentDevice.InternalPropertySubsribe($"{_propertyId}", (value) => {
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}", (value) => {
                 Value = value;
             });
         }

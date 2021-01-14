@@ -1,13 +1,14 @@
 ﻿namespace DevBot9.Protocols.Homie {
     public class HostParameterProperty : HostPropertyBase {
-        internal HostParameterProperty(string topicPrefix, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(topicPrefix, propertyId, friendlyName, dataType, format, true, true, unit) {
+        internal HostParameterProperty(string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(propertyId, friendlyName, dataType, format, true, true, unit) {
         }
 
-        internal new void Initialize(IBroker broker) {
-            base.Initialize(broker);
+        internal override void Initialize(Device parentDevice) {
+            base.Initialize(parentDevice);
 
-            _broker.Subscribe($"{ _topicPrefix}/{ _propertyId}/set", (topic, value) => {
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (value) => {
                 Value = value;
+                _parentDevice.InternalPropertyPublish($"{_propertyId}", Value);
             });
         }
         public void SetValue(string valueToSet) {
@@ -15,7 +16,7 @@
             // because I'm modifying it from inside. Event is when external client modifies the Value,
             // that is, sends a new parameter value.
             _value = valueToSet;
-            _broker.Publish($"{_topicPrefix}/{_propertyId}", Value);
+            _parentDevice.InternalPropertyPublish($"{_propertyId}", Value);
         }
     }
 }
