@@ -38,8 +38,8 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        private HomieValue _value = new HomieValue();
-        public HomieValue Value {
+        private string _value = "";
+        public string Value {
             get { return _value; }
             protected set {
                 _value = value;
@@ -70,8 +70,8 @@ namespace DevBot9.Protocols.Homie {
                 Unit = value;
             });
 
-            _parentDevice.InternalPropertySubscribe($"{_propertyId}", (value) => {
-                Value.SetValue(value);
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}", payload => {
+                Value = payload;
             });
         }
     }

@@ -8,34 +8,18 @@ namespace DevBot9.Protocols.Homie {
             State = States.Init;
         }
 
-        public HostNumericProperty CreateHostNumericProperty(PropertyType protertyType, string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostNumericProperty(protertyType, propertyId, friendlyName, dataType, "", unit);
+        public HostIntegerProperty CreateHostIntegerProperty(PropertyType protertyType, string propertyId, string friendlyName, string unit) {
+            var createdProperty = new HostIntegerProperty(protertyType, propertyId, friendlyName, DataType.Integer, "", unit);
 
             _stateProperties.Add(createdProperty);
 
             return createdProperty;
         }
 
-        public HostStateProperty CreateHostStateProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostStateProperty(propertyId, friendlyName, dataType, "", unit);
+        public HostFloatProperty CreateHostFloatProperty(PropertyType protertyType, string propertyId, string friendlyName, string unit) {
+            var createdProperty = new HostFloatProperty(protertyType, propertyId, friendlyName, DataType.Float, "", unit);
 
             _stateProperties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        public HostCommandProperty CreateHostCommandProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostCommandProperty(propertyId, friendlyName, dataType, "", unit);
-
-            _commandProperties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        public HostParameterProperty CreateHostParameterProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostParameterProperty(propertyId, friendlyName, dataType, "", unit);
-
-            _parameterProperties.Add(createdProperty);
 
             return createdProperty;
         }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace DevBot9.Protocols.Homie {
+﻿namespace DevBot9.Protocols.Homie {
     public class HostPropertyBase : PropertyBase {
         protected string _rawValue = "";
         protected readonly string _nameAttribute;
@@ -9,35 +7,6 @@ namespace DevBot9.Protocols.Homie {
         protected readonly bool _isSettableAttribute;
         protected readonly bool _isRetainedAttribute;
         protected readonly string _unitAttribute;
-
-        // Value, as a public property, doesn't make much sense for HostStateProperty, 
-        // but putting it here kinda makes all the code more compact...
-        protected HomieValue _value = new HomieValue();
-        public HomieValue Value {
-            get { return _value; }
-            protected set {
-                _value = value;
-                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
-            }
-        }
-
-        protected HomieNumber _homieNumber = new HomieNumber();
-        public HomieNumber HomieNumber {
-            get { return _homieNumber; }
-            protected set {
-                _homieNumber = value;
-                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieNumber)));
-            }
-        }
-
-        protected HomieString _homieStringValue;
-        public HomieString HomieStringValue {
-            get { return _homieStringValue; }
-            protected set {
-                _homieStringValue = value;
-                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieStringValue)));
-            }
-        }
 
         protected HostPropertyBase(string propertyId, string friendlyName, DataType dataType, string format, bool isSettable, bool isRetained, string unit) {
             _propertyId = propertyId;

@@ -13,10 +13,10 @@ namespace TestApp {
 
 
         private HostDevice _hostDevice;
-        private HostNumericProperty _inletTemperature;
-        private HostCommandProperty _turnOnOff;
-        private HostNumericProperty _power;
-        private HostNumericProperty _actualPower;
+        private HostFloatProperty _inletTemperature;
+        // private HostCommandProperty _turnOnOff;
+        private HostFloatProperty _power;
+        private HostIntegerProperty _actualPower;
 
 
         public RecuperatorProducer() {
@@ -29,13 +29,13 @@ namespace TestApp {
 
 
             _hostDevice = DeviceFactory.CreateHostDevice("temp", "recuperator", "Recuperator");
-            _inletTemperature = _hostDevice.CreateHostNumericProperty(PropertyType.State, "inlet-temperature", "Inlet sensor", DataType.Float, "°C");
-            _actualPower = _hostDevice.CreateHostNumericProperty(PropertyType.State, "actual-power", "Actual power", DataType.String, "%");
-            _turnOnOff = _hostDevice.CreateHostCommandProperty("self-destruct", "On/off switch", DataType.String, "");
-            _turnOnOff.PropertyChanged += (sender, e) => {
-                Debug.WriteLine($"Beginning self-destruct in {_turnOnOff.Value}");
-            };
-            _power = _hostDevice.CreateHostNumericProperty(PropertyType.Parameter, "ventilation-power", "Ventilation power", DataType.String, "%");
+            _inletTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "inlet-temperature", "Inlet sensor", "°C");
+            _actualPower = _hostDevice.CreateHostIntegerProperty(PropertyType.State, "actual-power", "Actual power", "%");
+            //_turnOnOff = _hostDevice.CreateHostStringProperty("self-destruct", "On/off switch", DataType.String, "");
+            //_turnOnOff.PropertyChanged += (sender, e) => {
+            //    Debug.WriteLine($"Beginning self-destruct in {_turnOnOff.Value}");
+            //};
+            _power = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "ventilation-power", "Ventilation power", "%");
             _power.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Ventilation power set to {_power.Value}");
                 Task.Run(async () => {
@@ -59,7 +59,7 @@ namespace TestApp {
             Task.Run(async () => {
                 while (true) {
                     // _inletTemperature.SetValue(new Random().Next(10, 30) - 0.1);
-                    _inletTemperature.Value = new Random().Next(10, 30) - 0.1;
+                    _inletTemperature.Value = (float)(new Random().Next(1000, 3000) / 100.0);
 
                     await Task.Delay(1000);
                 }
