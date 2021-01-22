@@ -24,6 +24,14 @@ namespace DevBot9.Protocols.Homie {
             return createdProperty;
         }
 
+        public HostStringProperty CreateHostStringProperty(PropertyType protertyType, string propertyId, string friendlyName, string unit) {
+            var createdProperty = new HostStringProperty(protertyType, propertyId, friendlyName, DataType.String, "", unit);
+
+            _stateProperties.Add(createdProperty);
+
+            return createdProperty;
+        }
+
         public new void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
             base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
 
