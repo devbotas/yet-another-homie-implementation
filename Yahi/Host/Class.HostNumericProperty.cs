@@ -8,8 +8,10 @@
             }
             set {
                 if (Type != PropertyType.Command) {
-
-                    HomieNumber = value;
+                    // Deliberately setting a protected field. I do not want to raise PropertyUpdated event,
+                    // because I'm modifying it from inside. Event is when external client modifies the Value,
+                    // that is, sends an external command.
+                    _homieNumber = value;
 
                     _parentDevice.InternalPropertyPublish($"{_propertyId}", Value.ToString());
                 }
@@ -26,7 +28,7 @@
             if (Type == PropertyType.Parameter) {
                 _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (value) => {
                     double.TryParse(value, out var newDouble);
-                    Value = newDouble;
+                    HomieNumber = newDouble;
                     _parentDevice.InternalPropertyPublish($"{_propertyId}", Value.ToString());
                 });
             }
@@ -34,26 +36,9 @@
             if (Type == PropertyType.Command) {
                 _parentDevice.InternalPropertySubscribe($"{_propertyId}", (value) => {
                     double.TryParse(value, out var newDouble);
-                    Value = newDouble;
+                    HomieNumber = newDouble;
                 });
             }
-        }
-
-        public void SetValue(int valueToSet) {
-            // Deliberately setting a protected field. I do not want to raise PropertyUpdated event,
-            // because I'm modifying it from inside. Event is when external client modifies the Value,
-            // that is, sends an external command.
-            _homieNumber = valueToSet;
-
-            //_parentDevice.InternalPropertyPublish($"{_propertyId}", Value.ToString());
-        }
-        public void SetValue(double valueToSet) {
-            // Deliberately setting a protected field. I do not want to raise PropertyUpdated event,
-            // because I'm modifying it from inside. Event is when external client modifies the Value,
-            // that is, sends an external command.
-            _homieNumber = valueToSet;
-
-            // _parentDevice.InternalPropertyPublish($"{_propertyId}", Value.ToString());
         }
     }
 }
