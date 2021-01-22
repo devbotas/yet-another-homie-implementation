@@ -8,6 +8,14 @@ namespace DevBot9.Protocols.Homie {
             State = States.Init;
         }
 
+        public HostNumericProperty CreateHostNumericProperty(PropertyType protertyType, string propertyId, string friendlyName, DataType dataType, string unit) {
+            var createdProperty = new HostNumericProperty(protertyType, propertyId, friendlyName, dataType, "", unit);
+
+            _stateProperties.Add(createdProperty);
+
+            return createdProperty;
+        }
+
         public HostStateProperty CreateHostStateProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
             var createdProperty = new HostStateProperty(propertyId, friendlyName, dataType, "", unit);
 

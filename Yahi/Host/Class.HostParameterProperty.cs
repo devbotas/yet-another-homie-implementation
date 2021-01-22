@@ -7,16 +7,16 @@
             base.Initialize(parentDevice);
 
             _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (value) => {
-                Value = value;
-                _parentDevice.InternalPropertyPublish($"{_propertyId}", Value);
+                Value.SetValue(value);
+                _parentDevice.InternalPropertyPublish($"{_propertyId}", Value.GetStringValue());
             });
         }
         public void SetValue(string valueToSet) {
             // Deliberately setting a protected field. I do not want to raise PropertyUpdated event,
             // because I'm modifying it from inside. Event is when external client modifies the Value,
             // that is, sends a new parameter value.
-            _value = valueToSet;
-            _parentDevice.InternalPropertyPublish($"{_propertyId}", Value);
+            _value.SetValue(valueToSet);
+            _parentDevice.InternalPropertyPublish($"{_propertyId}", Value.GetStringValue());
         }
     }
 }

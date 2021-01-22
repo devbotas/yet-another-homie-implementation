@@ -29,7 +29,6 @@ namespace TestApp {
                 Debug.WriteLine($"Actual power changed to: {_actualPower.Value}");
             };
             _selfDestructCommandProperty = _clientDevice.CreateClientCommandProperty("self-destruct");
-
         }
 
         private void HandleInletTemperaturePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

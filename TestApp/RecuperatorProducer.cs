@@ -13,10 +13,11 @@ namespace TestApp {
 
 
         private HostDevice _hostDevice;
-        private HostStateProperty _inletTemperature;
+        private HostNumericProperty _inletTemperature;
         private HostCommandProperty _turnOnOff;
-        private HostParameterProperty _power;
-        private HostStateProperty _actualPower;
+        private HostNumericProperty _power;
+        private HostNumericProperty _actualPower;
+
 
         public RecuperatorProducer() {
             _mqttClient = new MqttClient(_mqttBrokerIp);
@@ -28,21 +29,21 @@ namespace TestApp {
 
 
             _hostDevice = DeviceFactory.CreateHostDevice("temp", "recuperator", "Recuperator");
-            _inletTemperature = _hostDevice.CreateHostStateProperty("inlet-temperature", "Inlet sensor", DataType.Float, "°C");
-            _actualPower = _hostDevice.CreateHostStateProperty("actual-power", "Actual power", DataType.String, "%");
+            _inletTemperature = _hostDevice.CreateHostNumericProperty(PropertyType.State, "inlet-temperature", "Inlet sensor", DataType.Float, "°C");
+            _actualPower = _hostDevice.CreateHostNumericProperty(PropertyType.State, "actual-power", "Actual power", DataType.String, "%");
             _turnOnOff = _hostDevice.CreateHostCommandProperty("self-destruct", "On/off switch", DataType.String, "");
             _turnOnOff.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Beginning self-destruct in {_turnOnOff.Value}");
             };
-            _power = _hostDevice.CreateHostParameterProperty("ventilation-power", "Ventilation power", DataType.String, "%");
+            _power = _hostDevice.CreateHostNumericProperty(PropertyType.Parameter, "ventilation-power", "Ventilation power", DataType.String, "%");
             _power.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Ventilation power set to {_power.Value}");
                 Task.Run(async () => {
-                    _actualPower.SetValue("10");
+                    _actualPower.Value = 10;
                     await Task.Delay(1000);
-                    _actualPower.SetValue("20");
+                    _actualPower.Value = 20;
                     await Task.Delay(1000);
-                    _actualPower.SetValue("30");
+                    _actualPower.Value = 30;
 
                 });
             };
@@ -57,7 +58,9 @@ namespace TestApp {
 
             Task.Run(async () => {
                 while (true) {
-                    _inletTemperature.SetValue(new Random().Next(10, 30).ToString("F2"));
+                    // _inletTemperature.SetValue(new Random().Next(10, 30) - 0.1);
+                    _inletTemperature.Value = new Random().Next(10, 30) - 0.1;
+
                     await Task.Delay(1000);
                 }
             });

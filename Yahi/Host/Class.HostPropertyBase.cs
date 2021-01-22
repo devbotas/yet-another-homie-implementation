@@ -11,14 +11,33 @@ namespace DevBot9.Protocols.Homie {
 
         // Value, as a public property, doesn't make much sense for HostStateProperty, 
         // but putting it here kinda makes all the code more compact...
-        protected string _value;
-        public string Value {
+        protected HomieValue _value = new HomieValue();
+        public HomieValue Value {
             get { return _value; }
             protected set {
                 _value = value;
                 RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
             }
         }
+
+        protected HomieNumber _homieNumber = new HomieNumber();
+        public HomieNumber HomieNumber {
+            get { return _homieNumber; }
+            protected set {
+                _homieNumber = value;
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieNumber)));
+            }
+        }
+
+        protected string _homieString = "";
+        public string HomieString {
+            get { return _homieString; }
+            protected set {
+                _homieString = value;
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieString)));
+            }
+        }
+
 
         protected HostPropertyBase(string propertyId, string friendlyName, DataType dataType, string format, bool isSettable, bool isRetained, string unit) {
             _propertyId = propertyId;

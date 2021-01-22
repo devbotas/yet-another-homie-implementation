@@ -7,7 +7,7 @@
             base.Initialize(parentDevice);
 
             _parentDevice.InternalPropertySubscribe($"{_propertyId}", (value) => {
-                Value = value;
+                Value.SetValue(value);
             });
         }
     }
