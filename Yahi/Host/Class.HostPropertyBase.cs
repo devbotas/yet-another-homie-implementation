@@ -2,6 +2,7 @@
 
 namespace DevBot9.Protocols.Homie {
     public class HostPropertyBase : PropertyBase {
+        protected string _rawValue = "";
         protected readonly string _nameAttribute;
         protected readonly DataType _dataTypeAttribute;
         protected readonly string _formatAttribute;
@@ -29,15 +30,14 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        protected string _homieString = "";
-        public string HomieString {
-            get { return _homieString; }
+        protected HomieString _homieStringValue;
+        public HomieString HomieStringValue {
+            get { return _homieStringValue; }
             protected set {
-                _homieString = value;
-                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieString)));
+                _homieStringValue = value;
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieStringValue)));
             }
         }
-
 
         protected HostPropertyBase(string propertyId, string friendlyName, DataType dataType, string format, bool isSettable, bool isRetained, string unit) {
             _propertyId = propertyId;
