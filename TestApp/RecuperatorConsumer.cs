@@ -12,9 +12,9 @@ namespace TestApp {
         private string _mqttClientGuid = Guid.NewGuid().ToString();
 
         private ClientDevice _clientDevice;
-        private ClientStringProperty _inletTemperature;
+        private ClientFloatProperty _inletTemperature;
         private ClientStringProperty _selfDestructCommandProperty;
-        private ClientStringProperty _actualPower;
+        private ClientIntegerProperty _actualPower;
         private ClientStringProperty _actualState;
 
         public RecuperatorConsumer() {
@@ -23,9 +23,9 @@ namespace TestApp {
 
             _clientDevice = DeviceFactory.CreateClientDevice("temp", "recuperator");
 
-            _inletTemperature = _clientDevice.CreateClientStringProperty(PropertyType.State, "inlet-temperature");
+            _inletTemperature = _clientDevice.CreateClientFloatProperty(PropertyType.State, "inlet-temperature");
             _inletTemperature.PropertyChanged += HandleInletTemperaturePropertyChanged;
-            _actualPower = _clientDevice.CreateClientStringProperty(PropertyType.State, "actual-power");
+            _actualPower = _clientDevice.CreateClientIntegerProperty(PropertyType.State, "actual-power");
             _actualPower.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Actual power changed to: {_actualPower.Value}");
             };
@@ -38,7 +38,9 @@ namespace TestApp {
         }
 
         private void HandleInletTemperaturePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            Debug.WriteLine($"{e.PropertyName}: {_inletTemperature.Value}");
+            if (e.PropertyName == nameof(_inletTemperature.Value)) {
+                Debug.WriteLine($"{e.PropertyName}: {_inletTemperature.Value}");
+            }
         }
 
         public void Initialize() {

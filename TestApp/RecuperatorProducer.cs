@@ -45,7 +45,6 @@ namespace TestApp {
                     _actualPower.Value = 20;
                     await Task.Delay(1000);
                     _actualPower.Value = 30;
-
                 });
             };
 

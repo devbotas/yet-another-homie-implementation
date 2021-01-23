@@ -44,5 +44,27 @@ namespace DevBot9.Protocols.Homie {
 
             return createdProperty;
         }
+        public ClientIntegerProperty CreateClientIntegerProperty(PropertyType propertyType, string propertyId) {
+            var createdProperty = new ClientIntegerProperty(propertyType, propertyId);
+
+            _stateProperties.Add(createdProperty);
+
+            return createdProperty;
+        }
+        public ClientFloatProperty CreateClientFloatProperty(PropertyType propertyType, string propertyId) {
+            var createdProperty = new ClientFloatProperty(propertyType, propertyId);
+
+            _stateProperties.Add(createdProperty);
+
+            return createdProperty;
+        }
+        public ClientBooleanProperty CreateClientBooleanProperty(PropertyType propertyType, string propertyId) {
+            var createdProperty = new ClientBooleanProperty(propertyType, propertyId);
+
+            _stateProperties.Add(createdProperty);
+
+            return createdProperty;
+        }
+
     }
 }
