@@ -36,35 +36,33 @@ namespace DevBot9.Protocols.Homie {
             _subscribeToTopicDelegate(stateTopic);
         }
 
-
         public ClientStringProperty CreateClientStringProperty(PropertyType propertyType, string propertyId) {
             var createdProperty = new ClientStringProperty(propertyType, propertyId);
 
-            _stateProperties.Add(createdProperty);
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
         public ClientIntegerProperty CreateClientIntegerProperty(PropertyType propertyType, string propertyId) {
             var createdProperty = new ClientIntegerProperty(propertyType, propertyId);
 
-            _stateProperties.Add(createdProperty);
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
         public ClientFloatProperty CreateClientFloatProperty(PropertyType propertyType, string propertyId) {
             var createdProperty = new ClientFloatProperty(propertyType, propertyId);
 
-            _stateProperties.Add(createdProperty);
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
         public ClientBooleanProperty CreateClientBooleanProperty(PropertyType propertyType, string propertyId) {
             var createdProperty = new ClientBooleanProperty(propertyType, propertyId);
 
-            _stateProperties.Add(createdProperty);
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
-
     }
 }

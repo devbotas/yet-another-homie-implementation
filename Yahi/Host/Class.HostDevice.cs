@@ -11,7 +11,7 @@ namespace DevBot9.Protocols.Homie {
         public HostIntegerProperty CreateHostIntegerProperty(PropertyType protertyType, string propertyId, string friendlyName, string unit) {
             var createdProperty = new HostIntegerProperty(protertyType, propertyId, friendlyName, DataType.Integer, "", unit);
 
-            _stateProperties.Add(createdProperty);
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
@@ -19,7 +19,7 @@ namespace DevBot9.Protocols.Homie {
         public HostFloatProperty CreateHostFloatProperty(PropertyType protertyType, string propertyId, string friendlyName, string unit) {
             var createdProperty = new HostFloatProperty(protertyType, propertyId, friendlyName, DataType.Float, "", unit);
 
-            _stateProperties.Add(createdProperty);
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
@@ -27,7 +27,7 @@ namespace DevBot9.Protocols.Homie {
         public HostStringProperty CreateHostStringProperty(PropertyType protertyType, string propertyId, string friendlyName, string unit) {
             var createdProperty = new HostStringProperty(protertyType, propertyId, friendlyName, DataType.String, "", unit);
 
-            _stateProperties.Add(createdProperty);
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
@@ -42,16 +42,6 @@ namespace DevBot9.Protocols.Homie {
             //_client.Publish($"homie/{_deviceId}/$nodes", GetNodesString());
             //_client.Publish($"homie/{_deviceId}/$extensions", GetExtensionsString());
 
-            foreach (var property in _stateProperties) {
-                property.Initialize(this);
-            }
-            foreach (var property in _commandProperties) {
-                property.Initialize(this);
-            }
-            foreach (var property in _parameterProperties) {
-                property.Initialize(this);
-            }
-
             // imitating some initialization work.
             Thread.Sleep(1000);
 
@@ -62,6 +52,5 @@ namespace DevBot9.Protocols.Homie {
             State = stateToSet;
             _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/$state", State);
         }
-
     }
 }

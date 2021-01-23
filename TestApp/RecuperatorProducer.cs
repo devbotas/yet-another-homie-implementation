@@ -62,7 +62,6 @@ namespace TestApp {
                 var states = new[] { "Good", "Average", "Bad" };
 
                 while (true) {
-                    // _inletTemperature.SetValue(new Random().Next(10, 30) - 0.1);
                     _inletTemperature.Value = (float)(new Random().Next(1000, 3000) / 100.0);
 
                     _actualState.Value = states[new Random().Next(0, 3)];
