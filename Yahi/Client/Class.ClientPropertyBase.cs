@@ -38,14 +38,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        private string _value = "";
-        public string Value {
-            get { return _value; }
-            protected set {
-                _value = value;
-                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
-            }
-        }
+        protected string _rawValue = "";
 
         protected ClientPropertyBase(string propertyId) {
             _propertyId = propertyId;
@@ -70,9 +63,9 @@ namespace DevBot9.Protocols.Homie {
                 Unit = value;
             });
 
-            _parentDevice.InternalPropertySubscribe($"{_propertyId}", payload => {
-                Value = payload;
-            });
+            //_parentDevice.InternalPropertySubscribe($"{_propertyId}", payload => {
+            //    RawValue = payload;
+            //});
         }
     }
 }

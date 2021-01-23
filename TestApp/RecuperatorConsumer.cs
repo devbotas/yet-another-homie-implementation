@@ -11,10 +11,11 @@ namespace TestApp {
         private string _mqttBrokerIp = "172.16.0.3";
         private string _mqttClientGuid = Guid.NewGuid().ToString();
 
-        private ClientStateProperty _inletTemperature;
-        private ClientCommandProperty _selfDestructCommandProperty;
         private ClientDevice _clientDevice;
-        private ClientStateProperty _actualPower;
+        private ClientStringProperty _inletTemperature;
+        private ClientStringProperty _selfDestructCommandProperty;
+        private ClientStringProperty _actualPower;
+        private ClientStringProperty _actualState;
 
         public RecuperatorConsumer() {
             _mqttClient = new MqttClient(_mqttBrokerIp);
@@ -22,13 +23,18 @@ namespace TestApp {
 
             _clientDevice = DeviceFactory.CreateClientDevice("temp", "recuperator");
 
-            _inletTemperature = _clientDevice.CreateClientStateProperty("inlet-temperature");
+            _inletTemperature = _clientDevice.CreateClientStringProperty(PropertyType.State, "inlet-temperature");
             _inletTemperature.PropertyChanged += HandleInletTemperaturePropertyChanged;
-            _actualPower = _clientDevice.CreateClientStateProperty("actual-power");
+            _actualPower = _clientDevice.CreateClientStringProperty(PropertyType.State, "actual-power");
             _actualPower.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Actual power changed to: {_actualPower.Value}");
             };
-            _selfDestructCommandProperty = _clientDevice.CreateClientCommandProperty("self-destruct");
+            _selfDestructCommandProperty = _clientDevice.CreateClientStringProperty(PropertyType.Command, "self-destruct");
+
+            _actualState = _clientDevice.CreateClientStringProperty(PropertyType.State, "actual-state");
+            _actualState.PropertyChanged += (sender, e) => {
+                Debug.WriteLine($"Actual state: {_actualState.Value}");
+            };
         }
 
         private void HandleInletTemperaturePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -47,7 +53,7 @@ namespace TestApp {
 
             Task.Run(async () => {
                 await Task.Delay(3000);
-                _selfDestructCommandProperty.SetValue("5");
+                _selfDestructCommandProperty.Value = "5";
             });
         }
 

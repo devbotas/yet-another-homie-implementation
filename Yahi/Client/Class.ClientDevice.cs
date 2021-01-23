@@ -37,26 +37,10 @@ namespace DevBot9.Protocols.Homie {
         }
 
 
-        public ClientStateProperty CreateClientStateProperty(string propertyId) {
-            var createdProperty = new ClientStateProperty(propertyId);
+        public ClientStringProperty CreateClientStringProperty(PropertyType propertyType, string propertyId) {
+            var createdProperty = new ClientStringProperty(propertyType, propertyId);
 
             _stateProperties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        public ClientCommandProperty CreateClientCommandProperty(string propertyId) {
-            var createdProperty = new ClientCommandProperty(propertyId);
-
-            _commandProperties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        public ClientParameterProperty CreateClientParameterProperty(string propertyId) {
-            var createdProperty = new ClientParameterProperty(propertyId);
-
-            _parameterProperties.Add(createdProperty);
 
             return createdProperty;
         }

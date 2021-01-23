@@ -17,6 +17,7 @@ namespace TestApp {
         private HostStringProperty _turnOnOff;
         private HostFloatProperty _power;
         private HostIntegerProperty _actualPower;
+        private HostStringProperty _actualState;
 
 
         public RecuperatorProducer() {
@@ -48,6 +49,8 @@ namespace TestApp {
                 });
             };
 
+            _actualState = _hostDevice.CreateHostStringProperty(PropertyType.State, "actual-state", "Actual State", "");
+
             _hostDevice.Initialize((topic, value) => {
                 _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value));
 
@@ -57,9 +60,13 @@ namespace TestApp {
 
 
             Task.Run(async () => {
+                var states = new[] { "Good", "Average", "Bad" };
+
                 while (true) {
                     // _inletTemperature.SetValue(new Random().Next(10, 30) - 0.1);
                     _inletTemperature.Value = (float)(new Random().Next(1000, 3000) / 100.0);
+
+                    _actualState.Value = states[new Random().Next(0, 3)];
 
                     await Task.Delay(1000);
                 }
