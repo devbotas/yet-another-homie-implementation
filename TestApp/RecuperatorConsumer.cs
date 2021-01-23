@@ -21,7 +21,7 @@ namespace TestApp {
             _mqttClient = new MqttClient(_mqttBrokerIp);
             _mqttClient.MqttMsgPublishReceived += HandlePublishReceived;
 
-            _clientDevice = DeviceFactory.CreateClientDevice("temp", "recuperator");
+            _clientDevice = DeviceFactory.CreateClientDevice("recuperator");
 
             _inletTemperature = _clientDevice.CreateClientFloatProperty(PropertyType.State, "inlet-temperature");
             _inletTemperature.PropertyChanged += HandleInletTemperaturePropertyChanged;

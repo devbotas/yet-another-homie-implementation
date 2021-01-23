@@ -29,7 +29,7 @@ namespace TestApp {
             _mqttClient.Connect(_mqttClientGuid);
 
 
-            _hostDevice = DeviceFactory.CreateHostDevice("temp", "recuperator", "Recuperator");
+            _hostDevice = DeviceFactory.CreateHostDevice("recuperator", "Recuperator");
             _inletTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "inlet-temperature", "Inlet sensor", "°C");
             _actualPower = _hostDevice.CreateHostIntegerProperty(PropertyType.State, "actual-power", "Actual power", "%");
             _turnOnOff = _hostDevice.CreateHostStringProperty(PropertyType.Command, "self-destruct", "On/off switch", "");
