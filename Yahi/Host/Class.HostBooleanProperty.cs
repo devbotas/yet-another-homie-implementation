@@ -5,7 +5,7 @@ namespace DevBot9.Protocols.Homie {
     public class HostBooleanProperty : HostPropertyBase {
         public PropertyType Type = PropertyType.State;
 
-        public new bool Value {
+        public bool Value {
             get {
                 bool returnValue;
 

@@ -5,7 +5,7 @@ namespace DevBot9.Protocols.Homie {
     public class HostFloatProperty : HostPropertyBase {
         public PropertyType Type = PropertyType.State;
 
-        public new float Value {
+        public float Value {
             get {
                 float returnValue;
 
@@ -49,9 +49,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         private bool ValidatePayload(string payloadToValidate) {
-            var returnValue = false;
-
-            returnValue = float.TryParse(payloadToValidate, out var _);
+            var returnValue = float.TryParse(payloadToValidate, out _);
 
             return returnValue;
         }

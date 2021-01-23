@@ -5,7 +5,7 @@ namespace DevBot9.Protocols.Homie {
     public class HostIntegerProperty : HostPropertyBase {
         public PropertyType Type = PropertyType.State;
 
-        public new int Value {
+        public int Value {
             get {
                 int returnValue;
 
@@ -49,9 +49,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         private bool ValidatePayload(string payloadToValidate) {
-            var returnValue = false;
-
-            returnValue = int.TryParse(payloadToValidate, out var _);
+            var returnValue = int.TryParse(payloadToValidate, out _);
 
             return returnValue;
         }

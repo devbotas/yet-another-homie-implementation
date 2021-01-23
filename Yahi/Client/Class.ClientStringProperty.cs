@@ -39,7 +39,6 @@ namespace DevBot9.Protocols.Homie {
                     }
                 });
             }
-
         }
 
         private bool ValidatePayload(string payloadToValidate) {

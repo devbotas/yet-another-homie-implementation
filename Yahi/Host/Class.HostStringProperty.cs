@@ -5,7 +5,7 @@ namespace DevBot9.Protocols.Homie {
     public class HostStringProperty : HostPropertyBase {
         public PropertyType Type = PropertyType.State;
 
-        public new string Value {
+        public string Value {
             get {
                 return _rawValue;
             }
