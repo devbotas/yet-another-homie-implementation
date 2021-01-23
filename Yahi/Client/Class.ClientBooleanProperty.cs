@@ -3,8 +3,6 @@ using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     public class ClientBooleanProperty : ClientPropertyBase {
-        public PropertyType Type = PropertyType.State;
-
         public bool Value {
             get {
                 bool returnValue;
@@ -44,7 +42,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        private bool ValidatePayload(string payloadToValidate) {
+        protected override bool ValidatePayload(string payloadToValidate) {
             var returnValue = false;
 
             if ((payloadToValidate == "true") || (payloadToValidate == "false")) {

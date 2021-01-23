@@ -1,10 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     public class HostFloatProperty : HostPropertyBase {
-        public PropertyType Type = PropertyType.State;
-
         public float Value {
             get {
                 float returnValue;
@@ -24,31 +21,9 @@ namespace DevBot9.Protocols.Homie {
 
         internal override void Initialize(Device parentDevice) {
             base.Initialize(parentDevice);
-
-            if (Type == PropertyType.Parameter) {
-                _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {
-                    if (ValidatePayload(payload) == true) {
-                        _rawValue = payload;
-
-                        RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
-
-                        _parentDevice.InternalPropertyPublish($"{_propertyId}", Value.ToString());
-                    }
-                });
-            }
-
-            if (Type == PropertyType.Command) {
-                _parentDevice.InternalPropertySubscribe($"{_propertyId}", (payload) => {
-                    if (ValidatePayload(payload) == true) {
-                        _rawValue = payload;
-
-                        RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
-                    }
-                });
-            }
         }
 
-        private bool ValidatePayload(string payloadToValidate) {
+        protected override bool ValidatePayload(string payloadToValidate) {
             var returnValue = float.TryParse(payloadToValidate, out _);
 
             return returnValue;
