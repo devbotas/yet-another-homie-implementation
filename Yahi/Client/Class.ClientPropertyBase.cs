@@ -1,17 +1,15 @@
 ﻿using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
-    public class ClientPropertyBase {
-        protected IBroker _broker;
-        protected string _topicPrefix;
-        protected string _propertyId;
+    public class ClientPropertyBase : PropertyBase {
+        public PropertyType Type { get; protected set; } = PropertyType.State;
 
         private string _name = "";
         public string Name {
             get { return _name; }
             protected set {
                 _name = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
             }
         }
 
@@ -20,7 +18,7 @@ namespace DevBot9.Protocols.Homie {
             get { return _dataType; }
             protected set {
                 _dataType = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Format)));
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Format)));
             }
         }
 
@@ -29,7 +27,7 @@ namespace DevBot9.Protocols.Homie {
             get { return _format; }
             protected set {
                 _format = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Format)));
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Format)));
             }
         }
 
@@ -38,48 +36,57 @@ namespace DevBot9.Protocols.Homie {
             get { return _unit; }
             protected set {
                 _unit = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Unit)));
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Unit)));
             }
         }
 
-        private string _value = "";
-        public string Value {
-            get { return _value; }
-            protected set {
-                _value = value;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
-            }
-        }
+        protected string _rawValue = "";
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        protected ClientPropertyBase(string topicPrefix, string propertyId) {
-            _topicPrefix = topicPrefix;
+        protected ClientPropertyBase(string propertyId) {
             _propertyId = propertyId;
         }
 
-        protected void Initialize(IBroker broker) {
-            _broker = broker;
+        internal override void Initialize(Device parentDevice) {
+            _parentDevice = parentDevice;
 
-            _broker.Subscribe($"{_topicPrefix}/{_propertyId}/$name", (topic, value) => {
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}/$name", (value) => {
                 Name = value;
             });
 
-            _broker.Subscribe($"{_topicPrefix}/{_propertyId}/$datatype", (topic, value) => {
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}/$datatype", (value) => {
                 DataType = DataType.String;
             });
 
-            _broker.Subscribe($"{_topicPrefix}/{_propertyId}/$format", (topic, value) => {
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}/$format", (value) => {
                 Format = value;
             });
 
-            _broker.Subscribe($"{_topicPrefix}/{_propertyId}/$unit", (topic, value) => {
+            _parentDevice.InternalPropertySubscribe($"{_propertyId}/$unit", (value) => {
                 Unit = value;
             });
 
-            _broker.Subscribe($"{_topicPrefix}/{_propertyId}", (topic, value) => {
-                Value = value;
-            });
+            if (Type == PropertyType.State) {
+                _parentDevice.InternalPropertySubscribe($"{_propertyId}", (payload) => {
+                    if (ValidatePayload(payload) == true) {
+                        _rawValue = payload;
+
+                        RaisePropertyChanged(this, new PropertyChangedEventArgs("Value"));
+                    }
+                });
+            }
+
+            if (Type == PropertyType.Parameter) {
+                _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {
+                    if (ValidatePayload(payload) == true) {
+                        _rawValue = payload;
+
+                        RaisePropertyChanged(this, new PropertyChangedEventArgs("Value"));
+                    }
+                });
+            }
+        }
+        protected virtual bool ValidatePayload(string payloadToValidate) {
+            return false;
         }
     }
 }

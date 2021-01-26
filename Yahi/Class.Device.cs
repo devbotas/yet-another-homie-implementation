@@ -1,36 +1,61 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DevBot9.Protocols.Homie {
     public class Device {
-        private IBroker _broker;
+        protected string _baseTopic = "temp";
+        protected string _deviceId = "some-device";
 
-        public string Id { get; set; }
+        protected List<PropertyBase> _properties = new List<PropertyBase>();
 
-        public string HomieVersion { get; } = "4.0.0";
-        public string Name { get; set; }
-        public string State { get; set; }
-        public Device() { }
+        protected PublishToTopicDelegate _publishToTopicDelegate;
+        protected SubscribeToTopicDelegate _subscribeToTopicDelegate;
+        protected Dictionary<string, List<Action<string>>> _topicHandlerMap = new Dictionary<string, List<Action<string>>>();
 
+        public delegate void PublishToTopicDelegate(string topic, string payload);
+        public delegate void SubscribeToTopicDelegate(string topic);
 
-        public void Initialize(IBroker clientModel) {
-            _broker = clientModel;
+        public string HomieVersion { get; protected set; } = "4.0.0";
+        public string Name { get; protected set; }
+        public string State { get; protected set; }
 
-            SetState(States.Init);
+        protected void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
+            _publishToTopicDelegate = publishToTopicDelegate;
+            _subscribeToTopicDelegate = subscribeToTopicDelegate;
 
-            _broker.Publish($"homie/{Id}/$homie", HomieVersion);
-            _broker.Publish($"homie/{Id}/$name", Name);
-            //_broker.Publish($"homie/{Id}/$nodes", GetNodesString());
-            //_broker.Publish($"homie/{Id}/$extensions", GetExtensionsString());
+            foreach (var property in _properties) {
+                property.Initialize(this);
+            }
 
-            // imitating some initialization work.
-            Thread.Sleep(5000);
-
-            SetState(States.Ready);
+            //_broker.Publish($"{_baseTopic}/{_deviceId}/$homie", HomieVersion);
+            //_broker.Publish($"{_baseTopic}/{_deviceId}/$name", Name);
+            //_client.Publish($"homie/{_deviceId}/$nodes", GetNodesString());
+            //_client.Publish($"homie/{_deviceId}/$extensions", GetExtensionsString());
         }
 
-        public void SetState(string stateToSet) {
-            State = stateToSet;
-            _broker.Publish($"homie/{Id}/$state", State);
+
+        public void HandlePublishReceived(string fullTopic, string payload) {
+            if (_topicHandlerMap.ContainsKey(fullTopic)) {
+                foreach (var handler in _topicHandlerMap[fullTopic]) {
+                    handler(payload);
+                }
+            }
+        }
+
+        internal void InternalPropertyPublish(string propertyTopic, string value) {
+            _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/{propertyTopic}", value);
+        }
+
+        internal void InternalPropertySubscribe(string propertyTopic, Action<string> actionToTakeOnReceivedMessage) {
+            var fullTopic = $"{_baseTopic}/{_deviceId}/{propertyTopic}";
+
+            if (_topicHandlerMap.ContainsKey(fullTopic) == false) {
+                _topicHandlerMap.Add(fullTopic, new List<Action<string>>());
+            }
+
+            _topicHandlerMap[fullTopic].Add(actionToTakeOnReceivedMessage);
+
+            _subscribeToTopicDelegate(fullTopic);
         }
     }
 }
