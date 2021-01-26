@@ -8,26 +8,26 @@ namespace DevBot9.Protocols.Homie {
             State = States.Init;
         }
 
-        public HostStateProperty CreateHostStateProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostStateProperty(propertyId, friendlyName, dataType, "", unit);
+        public HostIntegerProperty CreateHostIntegerProperty(PropertyType protertyType, string propertyId, string friendlyName, string unit) {
+            var createdProperty = new HostIntegerProperty(protertyType, propertyId, friendlyName, DataType.Integer, "", unit);
 
-            _stateProperties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        public HostCommandProperty CreateHostCommandProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostCommandProperty(propertyId, friendlyName, dataType, "", unit);
-
-            _commandProperties.Add(createdProperty);
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
 
-        public HostParameterProperty CreateHostParameterProperty(string propertyId, string friendlyName, DataType dataType, string unit) {
-            var createdProperty = new HostParameterProperty(propertyId, friendlyName, dataType, "", unit);
+        public HostFloatProperty CreateHostFloatProperty(PropertyType protertyType, string propertyId, string friendlyName, string unit) {
+            var createdProperty = new HostFloatProperty(protertyType, propertyId, friendlyName, DataType.Float, "", unit);
 
-            _parameterProperties.Add(createdProperty);
+            _properties.Add(createdProperty);
+
+            return createdProperty;
+        }
+
+        public HostStringProperty CreateHostStringProperty(PropertyType protertyType, string propertyId, string friendlyName, string unit) {
+            var createdProperty = new HostStringProperty(protertyType, propertyId, friendlyName, DataType.String, "", unit);
+
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
@@ -42,16 +42,6 @@ namespace DevBot9.Protocols.Homie {
             //_client.Publish($"homie/{_deviceId}/$nodes", GetNodesString());
             //_client.Publish($"homie/{_deviceId}/$extensions", GetExtensionsString());
 
-            foreach (var property in _stateProperties) {
-                property.Initialize(this);
-            }
-            foreach (var property in _commandProperties) {
-                property.Initialize(this);
-            }
-            foreach (var property in _parameterProperties) {
-                property.Initialize(this);
-            }
-
             // imitating some initialization work.
             Thread.Sleep(1000);
 
@@ -62,6 +52,5 @@ namespace DevBot9.Protocols.Homie {
             State = stateToSet;
             _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/$state", State);
         }
-
     }
 }

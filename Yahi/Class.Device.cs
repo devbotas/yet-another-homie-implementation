@@ -6,9 +6,7 @@ namespace DevBot9.Protocols.Homie {
         protected string _baseTopic = "temp";
         protected string _deviceId = "some-device";
 
-        protected List<PropertyBase> _stateProperties = new List<PropertyBase>();
-        protected List<PropertyBase> _commandProperties = new List<PropertyBase>();
-        protected List<PropertyBase> _parameterProperties = new List<PropertyBase>();
+        protected List<PropertyBase> _properties = new List<PropertyBase>();
 
         protected PublishToTopicDelegate _publishToTopicDelegate;
         protected SubscribeToTopicDelegate _subscribeToTopicDelegate;
@@ -25,15 +23,10 @@ namespace DevBot9.Protocols.Homie {
             _publishToTopicDelegate = publishToTopicDelegate;
             _subscribeToTopicDelegate = subscribeToTopicDelegate;
 
-            foreach (var property in _stateProperties) {
+            foreach (var property in _properties) {
                 property.Initialize(this);
             }
-            foreach (var property in _commandProperties) {
-                property.Initialize(this);
-            }
-            foreach (var property in _parameterProperties) {
-                property.Initialize(this);
-            }
+
             //_broker.Publish($"{_baseTopic}/{_deviceId}/$homie", HomieVersion);
             //_broker.Publish($"{_baseTopic}/{_deviceId}/$name", Name);
             //_client.Publish($"homie/{_deviceId}/$nodes", GetNodesString());
@@ -64,6 +57,5 @@ namespace DevBot9.Protocols.Homie {
 
             _subscribeToTopicDelegate(fullTopic);
         }
-
     }
 }

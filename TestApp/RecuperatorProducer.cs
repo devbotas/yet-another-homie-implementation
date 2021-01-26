@@ -13,10 +13,12 @@ namespace TestApp {
 
 
         private HostDevice _hostDevice;
-        private HostStateProperty _inletTemperature;
-        private HostCommandProperty _turnOnOff;
-        private HostParameterProperty _power;
-        private HostStateProperty _actualPower;
+        private HostFloatProperty _inletTemperature;
+        private HostStringProperty _turnOnOff;
+        private HostFloatProperty _power;
+        private HostIntegerProperty _actualPower;
+        private HostStringProperty _actualState;
+
 
         public RecuperatorProducer() {
             _mqttClient = new MqttClient(_mqttBrokerIp);
@@ -27,25 +29,26 @@ namespace TestApp {
             _mqttClient.Connect(_mqttClientGuid);
 
 
-            _hostDevice = DeviceFactory.CreateHostDevice("temp", "recuperator", "Recuperator");
-            _inletTemperature = _hostDevice.CreateHostStateProperty("inlet-temperature", "Inlet sensor", DataType.Float, "°C");
-            _actualPower = _hostDevice.CreateHostStateProperty("actual-power", "Actual power", DataType.String, "%");
-            _turnOnOff = _hostDevice.CreateHostCommandProperty("self-destruct", "On/off switch", DataType.String, "");
+            _hostDevice = DeviceFactory.CreateHostDevice("recuperator", "Recuperator");
+            _inletTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "inlet-temperature", "Inlet sensor", "°C");
+            _actualPower = _hostDevice.CreateHostIntegerProperty(PropertyType.State, "actual-power", "Actual power", "%");
+            _turnOnOff = _hostDevice.CreateHostStringProperty(PropertyType.Command, "self-destruct", "On/off switch", "");
             _turnOnOff.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Beginning self-destruct in {_turnOnOff.Value}");
             };
-            _power = _hostDevice.CreateHostParameterProperty("ventilation-power", "Ventilation power", DataType.String, "%");
+            _power = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "ventilation-power", "Ventilation power", "%");
             _power.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Ventilation power set to {_power.Value}");
                 Task.Run(async () => {
-                    _actualPower.SetValue("10");
+                    _actualPower.Value = 10;
                     await Task.Delay(1000);
-                    _actualPower.SetValue("20");
+                    _actualPower.Value = 20;
                     await Task.Delay(1000);
-                    _actualPower.SetValue("30");
-
+                    _actualPower.Value = 30;
                 });
             };
+
+            _actualState = _hostDevice.CreateHostStringProperty(PropertyType.State, "actual-state", "Actual State", "");
 
             _hostDevice.Initialize((topic, value) => {
                 _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value));
@@ -56,8 +59,13 @@ namespace TestApp {
 
 
             Task.Run(async () => {
+                var states = new[] { "Good", "Average", "Bad" };
+
                 while (true) {
-                    _inletTemperature.SetValue(new Random().Next(10, 30).ToString("F2"));
+                    _inletTemperature.Value = (float)(new Random().Next(1000, 3000) / 100.0);
+
+                    _actualState.Value = states[new Random().Next(0, 3)];
+
                     await Task.Delay(1000);
                 }
             });

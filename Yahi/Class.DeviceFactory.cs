@@ -6,14 +6,14 @@
             BaseTopic = baseTopic;
         }
 
-        public static ClientDevice CreateClientDevice(string baseTopic, string deviceId) {
-            var returnDevice = new ClientDevice(baseTopic, deviceId);
+        public static ClientDevice CreateClientDevice(string deviceId) {
+            var returnDevice = new ClientDevice(BaseTopic, deviceId);
 
             return returnDevice;
         }
 
-        public static HostDevice CreateHostDevice(string baseTopic, string deviceId, string friendlyName) {
-            var returnDevice = new HostDevice(baseTopic, deviceId, friendlyName);
+        public static HostDevice CreateHostDevice(string deviceId, string friendlyName) {
+            var returnDevice = new HostDevice(BaseTopic, deviceId, friendlyName);
 
             return returnDevice;
         }

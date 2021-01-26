@@ -2,6 +2,8 @@
 
 namespace DevBot9.Protocols.Homie {
     public class ClientPropertyBase : PropertyBase {
+        public PropertyType Type { get; protected set; } = PropertyType.State;
+
         private string _name = "";
         public string Name {
             get { return _name; }
@@ -38,14 +40,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        private string _value = "";
-        public string Value {
-            get { return _value; }
-            protected set {
-                _value = value;
-                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
-            }
-        }
+        protected string _rawValue = "";
 
         protected ClientPropertyBase(string propertyId) {
             _propertyId = propertyId;
@@ -70,9 +65,28 @@ namespace DevBot9.Protocols.Homie {
                 Unit = value;
             });
 
-            _parentDevice.InternalPropertySubscribe($"{_propertyId}", (value) => {
-                Value = value;
-            });
+            if (Type == PropertyType.State) {
+                _parentDevice.InternalPropertySubscribe($"{_propertyId}", (payload) => {
+                    if (ValidatePayload(payload) == true) {
+                        _rawValue = payload;
+
+                        RaisePropertyChanged(this, new PropertyChangedEventArgs("Value"));
+                    }
+                });
+            }
+
+            if (Type == PropertyType.Parameter) {
+                _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {
+                    if (ValidatePayload(payload) == true) {
+                        _rawValue = payload;
+
+                        RaisePropertyChanged(this, new PropertyChangedEventArgs("Value"));
+                    }
+                });
+            }
+        }
+        protected virtual bool ValidatePayload(string payloadToValidate) {
+            return false;
         }
     }
 }

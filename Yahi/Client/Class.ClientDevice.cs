@@ -36,27 +36,31 @@ namespace DevBot9.Protocols.Homie {
             _subscribeToTopicDelegate(stateTopic);
         }
 
+        public ClientStringProperty CreateClientStringProperty(PropertyType propertyType, string propertyId) {
+            var createdProperty = new ClientStringProperty(propertyType, propertyId);
 
-        public ClientStateProperty CreateClientStateProperty(string propertyId) {
-            var createdProperty = new ClientStateProperty(propertyId);
-
-            _stateProperties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        public ClientCommandProperty CreateClientCommandProperty(string propertyId) {
-            var createdProperty = new ClientCommandProperty(propertyId);
-
-            _commandProperties.Add(createdProperty);
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
+        public ClientIntegerProperty CreateClientIntegerProperty(PropertyType propertyType, string propertyId) {
+            var createdProperty = new ClientIntegerProperty(propertyType, propertyId);
 
-        public ClientParameterProperty CreateClientParameterProperty(string propertyId) {
-            var createdProperty = new ClientParameterProperty(propertyId);
+            _properties.Add(createdProperty);
 
-            _parameterProperties.Add(createdProperty);
+            return createdProperty;
+        }
+        public ClientFloatProperty CreateClientFloatProperty(PropertyType propertyType, string propertyId) {
+            var createdProperty = new ClientFloatProperty(propertyType, propertyId);
+
+            _properties.Add(createdProperty);
+
+            return createdProperty;
+        }
+        public ClientBooleanProperty CreateClientBooleanProperty(PropertyType propertyType, string propertyId) {
+            var createdProperty = new ClientBooleanProperty(propertyType, propertyId);
+
+            _properties.Add(createdProperty);
 
             return createdProperty;
         }
