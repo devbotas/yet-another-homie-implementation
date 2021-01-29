@@ -15,8 +15,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostFloatProperty(PropertyType protertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(propertyId, friendlyName, dataType, format, false, true, unit) {
-            Type = protertyType;
+        internal HostFloatProperty(PropertyType protertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(protertyType, propertyId, friendlyName, dataType, format, unit) {
         }
 
         internal override void Initialize(Device parentDevice) {
