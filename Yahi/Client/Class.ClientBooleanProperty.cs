@@ -15,8 +15,8 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal ClientBooleanProperty(PropertyType protertyType, string propertyId) : base(propertyId) {
-            Type = protertyType;
+        internal ClientBooleanProperty(PropertyType propertyType, string propertyId) : base(propertyId) {
+            Type = propertyType;
         }
 
         internal override void Initialize(Device parentDevice) {

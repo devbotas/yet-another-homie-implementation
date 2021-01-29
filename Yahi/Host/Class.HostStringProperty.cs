@@ -11,8 +11,8 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostStringProperty(PropertyType protertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(propertyId, friendlyName, dataType, format, false, true, unit) {
-            Type = protertyType;
+        internal HostStringProperty(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(propertyType, propertyId, friendlyName, dataType, format, unit) {
+
         }
 
         internal override void Initialize(Device parentDevice) {

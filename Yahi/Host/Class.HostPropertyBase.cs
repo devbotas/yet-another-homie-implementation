@@ -11,14 +11,32 @@ namespace DevBot9.Protocols.Homie {
         protected readonly string _unitAttribute;
         public PropertyType Type { get; protected set; } = PropertyType.State;
 
-        protected HostPropertyBase(string propertyId, string friendlyName, DataType dataType, string format, bool isSettable, bool isRetained, string unit) {
+        protected HostPropertyBase(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) {
+            Type = propertyType;
+
             _propertyId = propertyId;
             _nameAttribute = friendlyName;
             _dataTypeAttribute = dataType;
             _formatAttribute = format;
-            _isSettableAttribute = isSettable;
-            _isRetainedAttribute = isRetained;
             _unitAttribute = unit;
+
+            switch (Type) {
+
+                case PropertyType.State:
+                    _isRetainedAttribute = true;
+                    _isSettableAttribute = false;
+                    break;
+
+                case PropertyType.Parameter:
+                    _isRetainedAttribute = true;
+                    _isSettableAttribute = true;
+                    break;
+
+                case PropertyType.Command:
+                    _isRetainedAttribute = false;
+                    _isSettableAttribute = true;
+                    break;
+            }
         }
 
         internal override void Initialize(Device parentDevice) {
@@ -44,7 +62,7 @@ namespace DevBot9.Protocols.Homie {
             }
 
             if (Type == PropertyType.Command) {
-                _parentDevice.InternalPropertySubscribe($"{_propertyId}", (payload) => {
+                _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {
                     if (ValidatePayload(payload) == true) {
                         _rawValue = payload;
 
