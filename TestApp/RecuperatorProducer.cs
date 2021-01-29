@@ -14,7 +14,7 @@ namespace TestApp {
 
         private HostDevice _hostDevice;
         private HostFloatProperty _inletTemperature;
-        private HostStringProperty _turnOnOff;
+        private HostBooleanProperty _turnOnOff;
         private HostFloatProperty _power;
         private HostIntegerProperty _actualPower;
         private HostStringProperty _actualState;
@@ -32,7 +32,7 @@ namespace TestApp {
             _hostDevice = DeviceFactory.CreateHostDevice("recuperator", "Recuperator");
             _inletTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "inlet-temperature", "Inlet sensor", "°C");
             _actualPower = _hostDevice.CreateHostIntegerProperty(PropertyType.State, "actual-power", "Actual power", "%");
-            _turnOnOff = _hostDevice.CreateHostStringProperty(PropertyType.Command, "self-destruct", "On/off switch", "");
+            _turnOnOff = _hostDevice.CreateHostBooleanProperty(PropertyType.Command, "self-destruct", "On/off switch");
             _turnOnOff.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Beginning self-destruct in {_turnOnOff.Value}");
             };

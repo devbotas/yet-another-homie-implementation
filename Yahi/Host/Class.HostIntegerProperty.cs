@@ -15,7 +15,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostIntegerProperty(PropertyType protertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(protertyType, propertyId, friendlyName, dataType, format, unit) {
+        internal HostIntegerProperty(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(propertyType, propertyId, friendlyName, dataType, format, unit) {
 
         }
 

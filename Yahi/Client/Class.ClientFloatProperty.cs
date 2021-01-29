@@ -14,9 +14,9 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal ClientFloatProperty(PropertyType protertyType, string propertyId) : base(propertyId) {
+        internal ClientFloatProperty(PropertyType propertyType, string propertyId) : base(propertyId) {
             _rawValue = "0.0";
-            Type = protertyType;
+            Type = propertyType;
         }
 
         internal override void Initialize(Device parentDevice) {
