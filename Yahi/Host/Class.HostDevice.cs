@@ -32,6 +32,14 @@ namespace DevBot9.Protocols.Homie {
             return createdProperty;
         }
 
+        public HostBooleanProperty CreateHostBooleanProperty(PropertyType protertyType, string propertyId, string friendlyName) {
+            var createdProperty = new HostBooleanProperty(protertyType, propertyId, friendlyName, DataType.Boolean, "", "");
+
+            _properties.Add(createdProperty);
+
+            return createdProperty;
+        }
+
         public new void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
             base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
 
