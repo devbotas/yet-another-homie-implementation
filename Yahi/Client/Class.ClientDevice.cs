@@ -30,35 +30,35 @@ namespace DevBot9.Protocols.Homie {
             var stateTopic = $"{_baseTopic}/{_deviceId}/$state";
             _topicHandlerMap.Add(stateTopic, new List<Action<string>>());
             _topicHandlerMap[stateTopic].Add((value) => {
-                //Debug.WriteLine($"{_baseTopic}/{_deviceId}/$state: {value}");
+                // Debug.WriteLine($"{_baseTopic}/{_deviceId}/$state: {value}");
                 State = value;
             });
             _subscribeToTopicDelegate(stateTopic);
         }
 
-        public ClientStringProperty CreateClientStringProperty(PropertyType propertyType, string propertyId) {
-            var createdProperty = new ClientStringProperty(propertyType, propertyId);
+        public ClientStringProperty CreateClientStringProperty(PropertyType propertyType, string nodeId, string propertyId) {
+            var createdProperty = new ClientStringProperty(propertyType, $"{nodeId}/{propertyId}");
 
             _properties.Add(createdProperty);
 
             return createdProperty;
         }
-        public ClientIntegerProperty CreateClientIntegerProperty(PropertyType propertyType, string propertyId) {
-            var createdProperty = new ClientIntegerProperty(propertyType, propertyId);
+        public ClientIntegerProperty CreateClientIntegerProperty(PropertyType propertyType, string nodeId, string propertyId) {
+            var createdProperty = new ClientIntegerProperty(propertyType, $"{nodeId}/{propertyId}");
 
             _properties.Add(createdProperty);
 
             return createdProperty;
         }
-        public ClientFloatProperty CreateClientFloatProperty(PropertyType propertyType, string propertyId) {
-            var createdProperty = new ClientFloatProperty(propertyType, propertyId);
+        public ClientFloatProperty CreateClientFloatProperty(PropertyType propertyType, string nodeId, string propertyId) {
+            var createdProperty = new ClientFloatProperty(propertyType, $"{nodeId}/{propertyId}");
 
             _properties.Add(createdProperty);
 
             return createdProperty;
         }
-        public ClientBooleanProperty CreateClientBooleanProperty(PropertyType propertyType, string propertyId) {
-            var createdProperty = new ClientBooleanProperty(propertyType, propertyId);
+        public ClientBooleanProperty CreateClientBooleanProperty(PropertyType propertyType, string nodeId, string propertyId) {
+            var createdProperty = new ClientBooleanProperty(propertyType, $"{nodeId}/{propertyId}");
 
             _properties.Add(createdProperty);
 

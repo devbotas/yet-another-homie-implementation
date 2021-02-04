@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 namespace DevBot9.Protocols.Homie {
     public class HostDevice : Device {
-        //        private Dictionary<string, List<string>> _nodeProperties = new Dictionary<string, List<string>>();
         private List<NodeInfo> _nodes = new List<NodeInfo>();
 
         internal HostDevice(string baseTopic, string id, string friendlyName = "") {
@@ -58,9 +57,7 @@ namespace DevBot9.Protocols.Homie {
 
             SetState(States.Init);
 
-
             var nodesList = "";
-
             foreach (var node in _nodes) {
                 InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{node.Id}/$name", node.Name);
                 InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{node.Id}/$type", node.Type);
@@ -68,14 +65,12 @@ namespace DevBot9.Protocols.Homie {
 
                 nodesList += "," + node.Id;
             }
-
             nodesList = nodesList.Substring(1, nodesList.Length - 1);
 
 
             InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$homie", HomieVersion);
             InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$name", Name);
             InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$nodes", nodesList);
-            //_client.Publish($"homie/{_deviceId}/$extensions", GetExtensionsString());
 
             // imitating some initialization work.
             Thread.Sleep(1000);
@@ -102,14 +97,9 @@ namespace DevBot9.Protocols.Homie {
             if (_nodes.Any(n => n.Id == nodeId) == false) {
                 _nodes.Add(new NodeInfo() { Id = nodeId });
             }
-            //if (_nodeProperties.ContainsKey(nodeId) == false) {
-            //    _nodeProperties.Add(nodeId, new List<string>());
-            //}
 
             var nodeToUpdate = _nodes.First(n => n.Id == nodeId);
             nodeToUpdate.AddProperty(propertyId);
-
-            // _nodeProperties[nodeId].Add(propertyId);
         }
 
         private class NodeInfo {
