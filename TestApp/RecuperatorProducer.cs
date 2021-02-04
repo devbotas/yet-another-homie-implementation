@@ -69,6 +69,11 @@ namespace TestApp {
                     await Task.Delay(1000);
                 }
             });
+
+            Console.WriteLine("Full list of producer's published topics:");
+            foreach (var topic in _hostDevice.GetAllPublishedTopics()) {
+                Console.WriteLine(topic);
+            }
         }
 
         private void HandlePublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e) {

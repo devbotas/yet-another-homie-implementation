@@ -12,6 +12,8 @@ namespace DevBot9.Protocols.Homie {
         protected SubscribeToTopicDelegate _subscribeToTopicDelegate;
         protected Dictionary<string, List<Action<string>>> _topicHandlerMap = new Dictionary<string, List<Action<string>>>();
 
+        protected List<string> _publishedTopics = new List<string>();
+
         public delegate void PublishToTopicDelegate(string topic, string payload);
         public delegate void SubscribeToTopicDelegate(string topic);
 
@@ -42,8 +44,14 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
+        public string[] GetAllPublishedTopics() {
+            var returnArray = _publishedTopics.ToArray();
+
+            return returnArray;
+        }
+
         internal void InternalPropertyPublish(string propertyTopic, string value) {
-            _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/{propertyTopic}", value);
+            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{propertyTopic}", value);
         }
 
         internal void InternalPropertySubscribe(string propertyTopic, Action<string> actionToTakeOnReceivedMessage) {
@@ -56,6 +64,13 @@ namespace DevBot9.Protocols.Homie {
             _topicHandlerMap[fullTopic].Add(actionToTakeOnReceivedMessage);
 
             _subscribeToTopicDelegate(fullTopic);
+        }
+
+        internal void InternalGeneralPublish(string topicId, string value) {
+            if (_publishedTopics.Contains(topicId) == false) {
+                _publishedTopics.Add(topicId);
+            }
+            _publishToTopicDelegate(topicId, value);
         }
     }
 }

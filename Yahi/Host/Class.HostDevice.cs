@@ -45,8 +45,8 @@ namespace DevBot9.Protocols.Homie {
 
             SetState(States.Init);
 
-            _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/$homie", HomieVersion);
-            _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/$name", Name);
+            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$homie", HomieVersion);
+            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$name", Name);
             //_client.Publish($"homie/{_deviceId}/$nodes", GetNodesString());
             //_client.Publish($"homie/{_deviceId}/$extensions", GetExtensionsString());
 
@@ -58,7 +58,7 @@ namespace DevBot9.Protocols.Homie {
 
         public void SetState(string stateToSet) {
             State = stateToSet;
-            _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/$state", State);
+            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$state", State);
         }
     }
 }
