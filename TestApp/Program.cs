@@ -37,7 +37,7 @@ namespace TestApp {
     internal class Program {
 
         private static void Main(string[] args) {
-            DeviceFactory.Initialize("homie-test");
+            DeviceFactory.Initialize("homie");
 
             var recuperatorConsumer = new RecuperatorConsumer();
             recuperatorConsumer.Initialize();

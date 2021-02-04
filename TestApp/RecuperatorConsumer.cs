@@ -55,7 +55,7 @@ namespace TestApp {
 
             Task.Run(async () => {
                 await Task.Delay(3000);
-                _selfDestructCommandProperty.Value = "5";
+                // _selfDestructCommandProperty.Value = "5";
             });
         }
 

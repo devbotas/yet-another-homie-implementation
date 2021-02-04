@@ -30,13 +30,18 @@ namespace TestApp {
 
 
             _hostDevice = DeviceFactory.CreateHostDevice("recuperator", "Recuperator");
-            _inletTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "inlet-temperature", "Inlet sensor", "°C");
-            _actualPower = _hostDevice.CreateHostIntegerProperty(PropertyType.State, "actual-power", "Actual power", "%");
-            _turnOnOff = _hostDevice.CreateHostBooleanProperty(PropertyType.Command, "self-destruct", "On/off switch");
+
+            _hostDevice.UpdateNodeInfo("general", "General information", "no-type");
+            _hostDevice.UpdateNodeInfo("ventilation", "Ventilation related properties", "no-type");
+
+
+            _inletTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "ventilation", "inlet-temperature", "Inlet sensor", "°C");
+            _actualPower = _hostDevice.CreateHostIntegerProperty(PropertyType.State, "general", "actual-power", "Actual power", "%");
+            _turnOnOff = _hostDevice.CreateHostBooleanProperty(PropertyType.Command, "general", "self-destruct", "On/off switch");
             _turnOnOff.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Beginning self-destruct in {_turnOnOff.Value}");
             };
-            _power = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "ventilation-power", "Ventilation power", "%");
+            _power = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "ventilation", "ventilation-power", "Ventilation power", "%");
             _power.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Ventilation power set to {_power.Value}");
                 Task.Run(async () => {
@@ -48,7 +53,7 @@ namespace TestApp {
                 });
             };
 
-            _actualState = _hostDevice.CreateHostStringProperty(PropertyType.State, "actual-state", "Actual State", "");
+            _actualState = _hostDevice.CreateHostStringProperty(PropertyType.State, "general", "actual-state", "Actual State", "");
 
             _hostDevice.Initialize((topic, value) => {
                 _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value));

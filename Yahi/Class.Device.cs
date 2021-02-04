@@ -17,7 +17,7 @@ namespace DevBot9.Protocols.Homie {
         public delegate void PublishToTopicDelegate(string topic, string payload);
         public delegate void SubscribeToTopicDelegate(string topic);
 
-        public string HomieVersion { get; protected set; } = "4.0.0";
+        public string HomieVersion { get; protected set; } = "3.0.0";
         public string Name { get; protected set; }
         public string State { get; protected set; }
 
@@ -34,7 +34,6 @@ namespace DevBot9.Protocols.Homie {
             //_client.Publish($"homie/{_deviceId}/$nodes", GetNodesString());
             //_client.Publish($"homie/{_deviceId}/$extensions", GetExtensionsString());
         }
-
 
         public void HandlePublishReceived(string fullTopic, string payload) {
             if (_topicHandlerMap.ContainsKey(fullTopic)) {
