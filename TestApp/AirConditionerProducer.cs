@@ -13,6 +13,7 @@ namespace TestApp {
         private HostDevice _hostDevice;
         private HostFloatProperty _targetAirTemperature;
         private HostFloatProperty _actualAirTemperature;
+        private HostBooleanProperty _onOffSwitch;
         private HostIntegerProperty _ventilationLevel;
 
         private double _simulatedAirTemperature = 20;
@@ -33,6 +34,7 @@ namespace TestApp {
 
             _actualAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "general", "actual-air-temperature", "Actual measured air temperature", "°C");
             _targetAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "general", "target-air-temperature", "Target air temperature", "°C");
+            _onOffSwitch = _hostDevice.CreateHostBooleanProperty(PropertyType.Command, "general", "turn-on-off", "Turn device on or off");
             _ventilationLevel = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "ventilation", "level", "Level of ventilation", "%");
 
             _hostDevice.Initialize((topic, value, qosLevel, isRetained) => {
@@ -46,13 +48,22 @@ namespace TestApp {
             _ventilationLevel.Value = 50;
 
             Task.Run(async () => {
+                var localTargetTemperature = 0.0f;
+
                 while (true) {
                     _simulatedAirTemperature = _simulatedTransientTargetTemperature + 0.3 * Math.Sin(DateTime.Now.Second);
 
-                    if (_targetAirTemperature.Value - _simulatedTransientTargetTemperature > 0.1) {
+                    if (_onOffSwitch.Value == true) {
+                        localTargetTemperature = _targetAirTemperature.Value;
+                    }
+                    else {
+                        localTargetTemperature = 25;
+                    }
+
+                    if (localTargetTemperature - _simulatedTransientTargetTemperature > 0.1) {
                         _simulatedTransientTargetTemperature += 0.1 * _ventilationLevel.Value / 100;
                     }
-                    if (_targetAirTemperature.Value - _simulatedTransientTargetTemperature < -0.1) {
+                    if (localTargetTemperature - _simulatedTransientTargetTemperature < -0.1) {
                         _simulatedTransientTargetTemperature -= 0.1 * _ventilationLevel.Value / 100;
                     }
 
