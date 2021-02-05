@@ -45,6 +45,9 @@ namespace TestApp {
             var recuperatorProducer = new RecuperatorProducer();
             recuperatorProducer.Initialize();
 
+            var airConditionerProducer = new AirConditionerProducer();
+            airConditionerProducer.Initialize();
+
             Console.WriteLine("Hello World!");
             Console.ReadLine();
         }
