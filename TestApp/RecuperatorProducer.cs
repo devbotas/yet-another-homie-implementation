@@ -55,11 +55,11 @@ namespace TestApp {
 
             _actualState = _hostDevice.CreateHostStringProperty(PropertyType.State, "general", "actual-state", "Actual State", "");
 
-            _hostDevice.Initialize((topic, value) => {
-                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value));
+            _hostDevice.Initialize((topic, value, qosLevel, isRetained) => {
+                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), qosLevel, isRetained);
 
             }, topic => {
-                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 2 });
+                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 1 });
             });
 
 

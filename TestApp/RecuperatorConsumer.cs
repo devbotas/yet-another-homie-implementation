@@ -46,11 +46,10 @@ namespace TestApp {
         public void Initialize() {
             _mqttClient.Connect(_mqttClientGuid);
 
-            _clientDevice.Initialize((topic, value) => {
-                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value));
-
+            _clientDevice.Initialize((topic, value, qosLevel, isRetained) => {
+                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), qosLevel, isRetained);
             }, topic => {
-                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 2 });
+                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 1 });
             });
 
             Task.Run(async () => {
