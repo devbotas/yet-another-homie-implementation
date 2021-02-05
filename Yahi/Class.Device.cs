@@ -14,10 +14,10 @@ namespace DevBot9.Protocols.Homie {
 
         protected List<string> _publishedTopics = new List<string>();
 
-        public delegate void PublishToTopicDelegate(string topic, string payload);
+        public delegate void PublishToTopicDelegate(string topic, string payload, byte qosLevel, bool isRetained);
         public delegate void SubscribeToTopicDelegate(string topic);
 
-        public string HomieVersion { get; protected set; } = "3.0.0";
+        public string HomieVersion { get; protected set; } = "4.0.0";
         public string Name { get; protected set; }
         public string State { get; protected set; }
 
@@ -69,7 +69,7 @@ namespace DevBot9.Protocols.Homie {
             if (_publishedTopics.Contains(topicId) == false) {
                 _publishedTopics.Add(topicId);
             }
-            _publishToTopicDelegate(topicId, value);
+            _publishToTopicDelegate(topicId, value, 1, true);
         }
     }
 }
