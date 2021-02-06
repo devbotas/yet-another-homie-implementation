@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 namespace DevBot9.Protocols.Homie {
@@ -46,6 +46,16 @@ namespace DevBot9.Protocols.Homie {
             UpdateNodePropertyMap(nodeId, propertyId);
 
             var createdProperty = new HostBooleanProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Boolean, "", "");
+
+            _properties.Add(createdProperty);
+
+            return createdProperty;
+        }
+
+        public HostColorProperty CreateHostColorProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, ColorFormat colorFormat = ColorFormat.Rgb) {
+            UpdateNodePropertyMap(nodeId, propertyId);
+
+            var createdProperty = new HostColorProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Color, colorFormat, "");
 
             _properties.Add(createdProperty);
 

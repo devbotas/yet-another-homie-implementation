@@ -48,6 +48,9 @@ namespace TestApp {
             var airConditionerProducer = new AirConditionerProducer();
             airConditionerProducer.Initialize();
 
+            var lightbulbProducer = new LightbulbProducer();
+            lightbulbProducer.Initialize();
+
             Console.WriteLine("Hello World!");
             Console.ReadLine();
         }
