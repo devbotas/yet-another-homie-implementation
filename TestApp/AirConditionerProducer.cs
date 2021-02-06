@@ -15,6 +15,8 @@ namespace TestApp {
         private HostFloatProperty _actualAirTemperature;
         private HostBooleanProperty _onOffSwitch;
         private HostIntegerProperty _ventilationLevel;
+        private HostDateTimeProperty _nextServiceDate;
+
 
         private double _simulatedAirTemperature = 20;
         private double _simulatedTransientTargetTemperature = 21;
@@ -31,11 +33,13 @@ namespace TestApp {
 
             _hostDevice.UpdateNodeInfo("general", "General information and properties", "no-type");
             _hostDevice.UpdateNodeInfo("ventilation", "Ventilation information and properties", "no-type");
+            _hostDevice.UpdateNodeInfo("service", "Service ralated properties", "no-type");
 
             _actualAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "general", "actual-air-temperature", "Actual measured air temperature", "°C");
             _targetAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "general", "target-air-temperature", "Target air temperature", "°C");
             _onOffSwitch = _hostDevice.CreateHostBooleanProperty(PropertyType.Command, "general", "turn-on-off", "Turn device on or off");
             _ventilationLevel = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "ventilation", "level", "Level of ventilation", "%");
+            _nextServiceDate = _hostDevice.CreateHostDateTimeProperty(PropertyType.State, "service", "next-service-date", "Date for the next service");
 
             _hostDevice.Initialize((topic, value, qosLevel, isRetained) => {
                 _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), 1, true);
@@ -46,6 +50,7 @@ namespace TestApp {
 
             _targetAirTemperature.Value = 23;
             _ventilationLevel.Value = 50;
+            _nextServiceDate.Value = DateTime.Now.AddMonths(3);
 
             Task.Run(async () => {
                 var localTargetTemperature = 0.0f;
