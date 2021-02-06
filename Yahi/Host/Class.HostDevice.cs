@@ -62,6 +62,16 @@ namespace DevBot9.Protocols.Homie {
             return createdProperty;
         }
 
+        public HostEnumProperty CreateHostEnumProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, in string[] possibleValues) {
+            UpdateNodePropertyMap(nodeId, propertyId);
+
+            var createdProperty = new HostEnumProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, possibleValues);
+
+            _properties.Add(createdProperty);
+
+            return createdProperty;
+        }
+
         public new void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
             base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
 
