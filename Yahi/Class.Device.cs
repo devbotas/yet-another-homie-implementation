@@ -12,7 +12,9 @@ namespace DevBot9.Protocols.Homie {
         protected SubscribeToTopicDelegate _subscribeToTopicDelegate;
         protected Dictionary<string, List<Action<string>>> _topicHandlerMap = new Dictionary<string, List<Action<string>>>();
 
-        public delegate void PublishToTopicDelegate(string topic, string payload);
+        protected List<string> _publishedTopics = new List<string>();
+
+        public delegate void PublishToTopicDelegate(string topic, string payload, byte qosLevel, bool isRetained);
         public delegate void SubscribeToTopicDelegate(string topic);
 
         public string HomieVersion { get; protected set; } = "4.0.0";
@@ -33,7 +35,6 @@ namespace DevBot9.Protocols.Homie {
             //_client.Publish($"homie/{_deviceId}/$extensions", GetExtensionsString());
         }
 
-
         public void HandlePublishReceived(string fullTopic, string payload) {
             if (_topicHandlerMap.ContainsKey(fullTopic)) {
                 foreach (var handler in _topicHandlerMap[fullTopic]) {
@@ -42,8 +43,14 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
+        public string[] GetAllPublishedTopics() {
+            var returnArray = _publishedTopics.ToArray();
+
+            return returnArray;
+        }
+
         internal void InternalPropertyPublish(string propertyTopic, string value) {
-            _publishToTopicDelegate($"{_baseTopic}/{_deviceId}/{propertyTopic}", value);
+            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{propertyTopic}", value);
         }
 
         internal void InternalPropertySubscribe(string propertyTopic, Action<string> actionToTakeOnReceivedMessage) {
@@ -56,6 +63,13 @@ namespace DevBot9.Protocols.Homie {
             _topicHandlerMap[fullTopic].Add(actionToTakeOnReceivedMessage);
 
             _subscribeToTopicDelegate(fullTopic);
+        }
+
+        internal void InternalGeneralPublish(string topicId, string value) {
+            if (_publishedTopics.Contains(topicId) == false) {
+                _publishedTopics.Add(topicId);
+            }
+            _publishToTopicDelegate(topicId, value, 1, true);
         }
     }
 }

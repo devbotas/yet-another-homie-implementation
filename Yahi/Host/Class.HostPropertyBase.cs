@@ -43,10 +43,10 @@ namespace DevBot9.Protocols.Homie {
             _parentDevice = parentDevice;
 
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$name", _nameAttribute);
-            _parentDevice.InternalPropertyPublish($"{_propertyId}/$datatype", _dataTypeAttribute.ToString());
+            _parentDevice.InternalPropertyPublish($"{_propertyId}/$datatype", _dataTypeAttribute.ToString().ToLower());
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$format", _formatAttribute);
-            _parentDevice.InternalPropertyPublish($"{_propertyId}/$settable", _isSettableAttribute.ToString());
-            _parentDevice.InternalPropertyPublish($"{_propertyId}/$retained", _isRetainedAttribute.ToString());
+            _parentDevice.InternalPropertyPublish($"{_propertyId}/$settable", _isSettableAttribute.ToString().ToLower());
+            _parentDevice.InternalPropertyPublish($"{_propertyId}/$retained", _isRetainedAttribute.ToString().ToLower());
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$unit", _unitAttribute);
 
             if (Type == PropertyType.Parameter) {

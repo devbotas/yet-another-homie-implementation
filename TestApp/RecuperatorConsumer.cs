@@ -23,15 +23,15 @@ namespace TestApp {
 
             _clientDevice = DeviceFactory.CreateClientDevice("recuperator");
 
-            _inletTemperature = _clientDevice.CreateClientFloatProperty(PropertyType.State, "inlet-temperature");
+            _inletTemperature = _clientDevice.CreateClientFloatProperty(PropertyType.State, "ventilation", "inlet-temperature");
             _inletTemperature.PropertyChanged += HandleInletTemperaturePropertyChanged;
-            _actualPower = _clientDevice.CreateClientIntegerProperty(PropertyType.State, "actual-power");
+            _actualPower = _clientDevice.CreateClientIntegerProperty(PropertyType.State, "general", "actual-power");
             _actualPower.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Actual power changed to: {_actualPower.Value}");
             };
-            _selfDestructCommandProperty = _clientDevice.CreateClientStringProperty(PropertyType.Command, "self-destruct");
+            _selfDestructCommandProperty = _clientDevice.CreateClientStringProperty(PropertyType.Command, "general", "self -destruct");
 
-            _actualState = _clientDevice.CreateClientStringProperty(PropertyType.State, "actual-state");
+            _actualState = _clientDevice.CreateClientStringProperty(PropertyType.State, "general", "actual-state");
             _actualState.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Actual state: {_actualState.Value}");
             };
@@ -46,11 +46,10 @@ namespace TestApp {
         public void Initialize() {
             _mqttClient.Connect(_mqttClientGuid);
 
-            _clientDevice.Initialize((topic, value) => {
-                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value));
-
+            _clientDevice.Initialize((topic, value, qosLevel, isRetained) => {
+                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), qosLevel, isRetained);
             }, topic => {
-                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 2 });
+                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 1 });
             });
 
             Task.Run(async () => {
