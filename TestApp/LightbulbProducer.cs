@@ -31,7 +31,7 @@ namespace TestApp {
             _color.PropertyChanged += (sender, e) => {
                 Debug.Print($"Color changed to {_color.Value.ToRgbString()}");
             };
-            _onOffSwitch = _hostDevice.CreateHostBooleanProperty(PropertyType.Command, "general", "turn-on-off", "Turn device on or off");
+            _onOffSwitch = _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, "general", "turn-on-off", "Turn device on or off");
             _intensity = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "general", "intensity", "Intensity", "%");
 
             _hostDevice.Initialize((topic, value, qosLevel, isRetained) => {
