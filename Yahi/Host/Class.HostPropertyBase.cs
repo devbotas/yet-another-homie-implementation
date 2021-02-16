@@ -5,7 +5,7 @@ namespace DevBot9.Protocols.Homie {
         protected string _rawValue = "";
         protected readonly string _nameAttribute;
         protected readonly DataType _dataTypeAttribute;
-        protected readonly string _formatAttribute;
+        protected string _formatAttribute;
         protected readonly bool _isSettableAttribute;
         protected readonly bool _isRetainedAttribute;
         protected readonly string _unitAttribute;

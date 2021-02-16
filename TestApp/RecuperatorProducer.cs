@@ -17,7 +17,7 @@ namespace TestApp {
         private HostBooleanProperty _turnOnOff;
         private HostFloatProperty _power;
         private HostIntegerProperty _actualPower;
-        private HostStringProperty _actualState;
+        private HostEnumProperty _actualState;
 
 
         public RecuperatorProducer() {
@@ -53,7 +53,7 @@ namespace TestApp {
                 });
             };
 
-            _actualState = _hostDevice.CreateHostStringProperty(PropertyType.State, "general", "actual-state", "Actual State", "");
+            _actualState = _hostDevice.CreateHostEnumProperty(PropertyType.State, "general", "actual-state", "Actual State", new string[] { "Good", "Average", "Bad" });
 
             _hostDevice.Initialize((topic, value, qosLevel, isRetained) => {
                 _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), qosLevel, isRetained);
