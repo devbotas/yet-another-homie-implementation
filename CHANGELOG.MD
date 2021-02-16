@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.0] - 2021-02-16
+### Added
+- Adding HostEnum property.
+- Adding HostDateTime property.
+
+
 ## [0.4.0] - 2021-02-06
 ### Added
 - Adding HostColor property.
