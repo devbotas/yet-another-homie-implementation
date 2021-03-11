@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace DevBot9.Protocols.Homie {
     public class HostFloatProperty : HostPropertyBase {
@@ -34,7 +35,7 @@ namespace DevBot9.Protocols.Homie {
                 case PropertyType.State:
                 case PropertyType.Parameter:
 
-                    _rawValue = valueToSet.ToString("0.0#");
+                    _rawValue = valueToSet.ToString("0.0#", CultureInfo.InvariantCulture);
 
                     _parentDevice.InternalPropertyPublish($"{_propertyId}", _rawValue);
                     break;
