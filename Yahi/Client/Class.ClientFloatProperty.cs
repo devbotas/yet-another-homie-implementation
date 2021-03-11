@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace DevBot9.Protocols.Homie {
     public class ClientFloatProperty : ClientPropertyBase {
@@ -33,7 +34,7 @@ namespace DevBot9.Protocols.Homie {
             switch (Type) {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
-                    _rawValue = valueToSet.ToString();
+                    _rawValue = valueToSet.ToString(CultureInfo.InvariantCulture);
                     _parentDevice.InternalPropertyPublish($"{_propertyId}", _rawValue);
                     break;
 

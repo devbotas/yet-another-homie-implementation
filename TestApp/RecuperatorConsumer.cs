@@ -8,7 +8,7 @@ using uPLibrary.Networking.M2Mqtt;
 namespace TestApp {
     internal class RecuperatorConsumer {
         private MqttClient _mqttClient;
-        private string _mqttBrokerIp = "172.16.0.3";
+        private string _mqttBrokerIp = "172.16.0.2";
         private string _mqttClientGuid = Guid.NewGuid().ToString();
 
         private ClientDevice _clientDevice;
