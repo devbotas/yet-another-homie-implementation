@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.1] - 2021-03-11
+### Fixed
+- Adding InvarianCulture when converting floats to/from string, so we always have "." as decimal delimiter.
+
+
 ## [0.5.0] - 2021-02-16
 ### Added
 - Adding HostEnum property.
