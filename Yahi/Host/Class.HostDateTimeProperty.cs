@@ -15,8 +15,13 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostDateTimeProperty(PropertyType propertyType, string propertyId, string friendlyName) : base(propertyType, propertyId, friendlyName, DataType.DateTime, "", "") {
-            _rawValue = new DateTime(2000, 01, 01).ToString(_isoFormatString);
+        internal HostDateTimeProperty(PropertyType propertyType, string propertyId, string friendlyName, DateTime initialValue) : base(propertyType, propertyId, friendlyName, DataType.DateTime, "", "") {
+            if (initialValue != null) {
+                _rawValue = initialValue.ToString(_isoFormatString);
+            }
+            else {
+                _rawValue = new DateTime(2000, 01, 01).ToString(_isoFormatString);
+            }
         }
 
         internal override void Initialize(Device parentDevice) {

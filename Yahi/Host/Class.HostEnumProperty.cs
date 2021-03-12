@@ -14,8 +14,16 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostEnumProperty(PropertyType propertyType, string propertyId, string friendlyName, in string[] possibleValues) : base(propertyType, propertyId, friendlyName, DataType.Enum, "option1,option2", "") {
+        internal HostEnumProperty(PropertyType propertyType, string propertyId, string friendlyName, in string[] possibleValues, string initialValue) : base(propertyType, propertyId, friendlyName, DataType.Enum, "option1,option2", "") {
             if (possibleValues.Length == 0) { throw new ArgumentException("Please provide at least one correct value for this property", nameof(possibleValues)); }
+            if (string.IsNullOrEmpty(initialValue) == false) {
+                var isMatchFound = false;
+                foreach (var value in possibleValues) {
+                    if (value == initialValue) { isMatchFound = true; }
+                }
+
+                if (isMatchFound == false) { throw new ArgumentException("Initial value is not one of the possible values", nameof(initialValue)); }
+            }
 
             var localFormat = possibleValues[0];
             for (var i = 1; i < possibleValues.Length; i++) {

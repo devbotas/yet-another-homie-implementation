@@ -32,7 +32,7 @@ namespace TestApp {
                 Debug.Print($"Color changed to {_color.Value.ToRgbString()}");
             };
             _onOffSwitch = _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, "general", "turn-on-off", "Turn device on or off");
-            _intensity = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "general", "intensity", "Intensity", "%");
+            _intensity = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "general", "intensity", "Intensity", 50, "%");
 
             _hostDevice.Initialize((topic, value, qosLevel, isRetained) => {
                 _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), 1, true);
