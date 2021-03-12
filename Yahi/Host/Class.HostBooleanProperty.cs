@@ -15,8 +15,8 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostBooleanProperty(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(propertyType, propertyId, friendlyName, dataType, format, unit) {
-            _rawValue = "false";
+        internal HostBooleanProperty(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, bool initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, dataType, format, unit) {
+            _rawValue = initialValue.ToString().ToLower();
         }
 
         internal override void Initialize(Device parentDevice) {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 namespace DevBot9.Protocols.Homie {
@@ -12,40 +13,40 @@ namespace DevBot9.Protocols.Homie {
             State = States.Init;
         }
 
-        public HostIntegerProperty CreateHostIntegerProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, string unit = "") {
+        public HostIntegerProperty CreateHostIntegerProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, int initialValue = 0, string unit = "") {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostIntegerProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Integer, "", unit);
+            var createdProperty = new HostIntegerProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Integer, initialValue, "", unit);
 
             _properties.Add(createdProperty);
 
             return createdProperty;
         }
 
-        public HostFloatProperty CreateHostFloatProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, string unit = "") {
+        public HostFloatProperty CreateHostFloatProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, float initialValue = 0.0f, string unit = "") {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostFloatProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Float, "", unit);
+            var createdProperty = new HostFloatProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Float, initialValue, "", unit);
 
             _properties.Add(createdProperty);
 
             return createdProperty;
         }
 
-        public HostStringProperty CreateHostStringProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, string unit = "") {
+        public HostStringProperty CreateHostStringProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, string initialValue = "", string unit = "") {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostStringProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.String, "", unit);
+            var createdProperty = new HostStringProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.String, initialValue, "", unit);
 
             _properties.Add(createdProperty);
 
             return createdProperty;
         }
 
-        public HostBooleanProperty CreateHostBooleanProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName) {
+        public HostBooleanProperty CreateHostBooleanProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, bool initialValue = false) {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostBooleanProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Boolean, "", "");
+            var createdProperty = new HostBooleanProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Boolean, initialValue, "", "");
 
             _properties.Add(createdProperty);
 
@@ -62,20 +63,20 @@ namespace DevBot9.Protocols.Homie {
             return createdProperty;
         }
 
-        public HostEnumProperty CreateHostEnumProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, in string[] possibleValues) {
+        public HostEnumProperty CreateHostEnumProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, in string[] possibleValues, string initialValue = "") {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostEnumProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, possibleValues);
+            var createdProperty = new HostEnumProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, possibleValues, initialValue);
 
             _properties.Add(createdProperty);
 
             return createdProperty;
         }
 
-        public HostDateTimeProperty CreateHostDateTimeProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName) {
+        public HostDateTimeProperty CreateHostDateTimeProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, DateTime initialValue) {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostDateTimeProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName);
+            var createdProperty = new HostDateTimeProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue);
 
             _properties.Add(createdProperty);
 

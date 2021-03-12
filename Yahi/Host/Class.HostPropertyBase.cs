@@ -48,6 +48,7 @@ namespace DevBot9.Protocols.Homie {
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$settable", _isSettableAttribute.ToString().ToLower());
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$retained", _isRetainedAttribute.ToString().ToLower());
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$unit", _unitAttribute);
+            _parentDevice.InternalPropertyPublish($"{_propertyId}", _rawValue);
 
             if (Type == PropertyType.Parameter) {
                 _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {

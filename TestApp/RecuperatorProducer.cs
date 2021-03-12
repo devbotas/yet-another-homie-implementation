@@ -35,13 +35,13 @@ namespace TestApp {
             _hostDevice.UpdateNodeInfo("ventilation", "Ventilation related properties", "no-type");
 
 
-            _inletTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "ventilation", "inlet-temperature", "Inlet sensor", "°C");
-            _actualPower = _hostDevice.CreateHostIntegerProperty(PropertyType.State, "general", "actual-power", "Actual power", "%");
+            _inletTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "ventilation", "inlet-temperature", "Inlet sensor", 16, "°C");
+            _actualPower = _hostDevice.CreateHostIntegerProperty(PropertyType.State, "general", "actual-power", "Actual power", 10, "%");
             _turnOnOff = _hostDevice.CreateHostBooleanProperty(PropertyType.Command, "general", "self-destruct", "On/off switch");
             _turnOnOff.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Beginning self-destruct in {_turnOnOff.Value}");
             };
-            _power = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "ventilation", "ventilation-power", "Ventilation power", "%");
+            _power = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "ventilation", "ventilation-power", "Ventilation power", 50, "%");
             _power.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Ventilation power set to {_power.Value}");
                 Task.Run(async () => {

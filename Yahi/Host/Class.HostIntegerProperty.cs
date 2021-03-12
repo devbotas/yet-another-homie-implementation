@@ -15,9 +15,8 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostIntegerProperty(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) : base(propertyType, propertyId, friendlyName, dataType, format, unit) {
-            _rawValue = "0";
-
+        internal HostIntegerProperty(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, int initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, dataType, format, unit) {
+            _rawValue = initialValue.ToString();
         }
 
         internal override void Initialize(Device parentDevice) {

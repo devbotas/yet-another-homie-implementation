@@ -34,11 +34,11 @@ namespace TestApp {
             _hostDevice.UpdateNodeInfo("general", "General information and properties", "no-type");
 
             // Temperatures. These are pretty self-explanatory, right?
-            _actualAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "general", "actual-air-temperature", "Actual measured air temperature", "°C");
-            _targetAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "general", "target-air-temperature", "Target air temperature", "°C");
+            _actualAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "general", "actual-air-temperature", "Actual measured air temperature", 18, "°C");
+            _targetAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "general", "target-air-temperature", "Target air temperature", 23, "°C");
 
             // Besides obvious ON and OFF states, there's a transient STARTING state. This simulated the non-instant startup of the device.
-            _actualState = _hostDevice.CreateHostEnumProperty(PropertyType.State, "general", "actual-state", "Actual power state", new[] { "ON", "OFF", "STARTING" });
+            _actualState = _hostDevice.CreateHostEnumProperty(PropertyType.State, "general", "actual-state", "Actual power state", new[] { "ON", "OFF", "STARTING" }, "OFF");
 
             // Creating a switch. It also simulates startup sequence ON -> STARTING -> OFF. Shutdown sequence is instant ON -> OFF.
             _onOffSwitch = _hostDevice.CreateHostEnumProperty(PropertyType.Command, "general", "turn-on-off", "Turn device on or off", new[] { "ON", "OFF" });
@@ -66,7 +66,7 @@ namespace TestApp {
             _hostDevice.UpdateNodeInfo("ventilation", "Ventilation information and properties", "no-type");
 
             // Allows user to set ventilation level (or power). This will actually be used in simulation loop.
-            _ventilationLevel = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "ventilation", "level", "Level of ventilation", "%");
+            _ventilationLevel = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "ventilation", "level", "Level of ventilation", 50, "%");
 
             #endregion
 
@@ -76,8 +76,8 @@ namespace TestApp {
             _hostDevice.UpdateNodeInfo("service", "Service related properties", "no-type");
 
             // Previous and next service dates. These are read-only properties. They are changed by "perform service" command.
-            _previousServiceDate = _hostDevice.CreateHostDateTimeProperty(PropertyType.State, "service", "previous-service-date", "Date of the last service");
-            _nextServiceDate = _hostDevice.CreateHostDateTimeProperty(PropertyType.State, "service", "next-service-date", "Date for the next service");
+            _previousServiceDate = _hostDevice.CreateHostDateTimeProperty(PropertyType.State, "service", "previous-service-date", "Date of the last service", DateTime.Now.AddMonths(3));
+            _nextServiceDate = _hostDevice.CreateHostDateTimeProperty(PropertyType.State, "service", "next-service-date", "Date for the next service", DateTime.Now);
 
             // This is a write-only property, that is — a command. It sets last service date to actual datetime, and also sets next service date to some time in the future.
             // Popular automation software have lots of problems with this kind of workflow, when there's a command that doesn't really have a state register.
@@ -100,11 +100,6 @@ namespace TestApp {
                 _mqttClient.Subscribe(new string[] { topic }, new byte[] { 1 });
             });
 
-            // TODO: Values cannot be set before host.Initialize() method is called.
-            _actualState.Value = "OFF";
-            _targetAirTemperature.Value = 23;
-            _ventilationLevel.Value = 50;
-            _nextServiceDate.Value = DateTime.Now.AddMonths(3);
 
             // finally, running the simulation loop. We're good to go!
             Task.Run(async () => await RunSimulationLoopContinuously(new CancellationToken()));
