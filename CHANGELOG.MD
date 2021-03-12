@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0] - 2021-03-12
+### Added
+- Homie property creators now allow to pass an initial value, which will be published during initialization.
+
+### Fixed
+- Now actually fixing wrong decimal delimiters in float/string conversion.
+
+
 ## [0.5.1] - 2021-03-11
 ### Fixed
 - Adding InvarianCulture when converting floats to/from string, so we always have "." as decimal delimiter.
