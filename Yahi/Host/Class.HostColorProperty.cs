@@ -18,7 +18,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostColorProperty(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, ColorFormat format, string unit) : base(propertyType, propertyId, friendlyName, dataType, format.ToString().ToLower(), unit) {
+        internal HostColorProperty(PropertyType propertyType, string propertyId, string friendlyName, ColorFormat format, string unit) : base(propertyType, propertyId, friendlyName, DataType.Color, format.ToString().ToLower(), unit) {
             _rawValue = "0,0,0";
             _format = format;
         }

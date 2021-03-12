@@ -16,7 +16,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostFloatProperty(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, float initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, dataType, format, unit) {
+        internal HostFloatProperty(PropertyType propertyType, string propertyId, string friendlyName, float initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, DataType.Float, format, unit) {
             _rawValue = initialValue.ToString("0.0#", CultureInfo.InvariantCulture);
         }
 

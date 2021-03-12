@@ -15,7 +15,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostIntegerProperty(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, int initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, dataType, format, unit) {
+        internal HostIntegerProperty(PropertyType propertyType, string propertyId, string friendlyName, int initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, DataType.Integer, format, unit) {
             _rawValue = initialValue.ToString();
         }
 

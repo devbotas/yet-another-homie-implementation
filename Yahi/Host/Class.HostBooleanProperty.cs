@@ -15,7 +15,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostBooleanProperty(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, bool initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, dataType, format, unit) {
+        internal HostBooleanProperty(PropertyType propertyType, string propertyId, string friendlyName, bool initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, DataType.Boolean, format, unit) {
             _rawValue = initialValue.ToString().ToLower();
         }
 

@@ -16,7 +16,7 @@ namespace DevBot9.Protocols.Homie {
         public HostIntegerProperty CreateHostIntegerProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, int initialValue = 0, string unit = "") {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostIntegerProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Integer, initialValue, "", unit);
+            var createdProperty = new HostIntegerProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
 
             _properties.Add(createdProperty);
 
@@ -26,7 +26,7 @@ namespace DevBot9.Protocols.Homie {
         public HostFloatProperty CreateHostFloatProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, float initialValue = 0.0f, string unit = "") {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostFloatProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Float, initialValue, "", unit);
+            var createdProperty = new HostFloatProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
 
             _properties.Add(createdProperty);
 
@@ -36,7 +36,7 @@ namespace DevBot9.Protocols.Homie {
         public HostStringProperty CreateHostStringProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, string initialValue = "", string unit = "") {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostStringProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.String, initialValue, "", unit);
+            var createdProperty = new HostStringProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
 
             _properties.Add(createdProperty);
 
@@ -46,7 +46,7 @@ namespace DevBot9.Protocols.Homie {
         public HostBooleanProperty CreateHostBooleanProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, bool initialValue = false) {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostBooleanProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Boolean, initialValue, "", "");
+            var createdProperty = new HostBooleanProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", "");
 
             _properties.Add(createdProperty);
 
@@ -56,7 +56,7 @@ namespace DevBot9.Protocols.Homie {
         public HostColorProperty CreateHostColorProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, ColorFormat colorFormat = ColorFormat.Rgb) {
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostColorProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, DataType.Color, colorFormat, "");
+            var createdProperty = new HostColorProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, colorFormat, "");
 
             _properties.Add(createdProperty);
 
