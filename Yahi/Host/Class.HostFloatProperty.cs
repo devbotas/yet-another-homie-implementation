@@ -7,7 +7,7 @@ namespace DevBot9.Protocols.Homie {
             get {
                 float returnValue;
 
-                returnValue = float.Parse(_rawValue);
+                returnValue = float.Parse(_rawValue, CultureInfo.InvariantCulture);
 
                 return returnValue;
             }
