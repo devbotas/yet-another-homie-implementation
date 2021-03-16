@@ -1,11 +1,17 @@
 ﻿using System;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// This class provides Homie Color property implementation. It can transparently convert between HSV and RGB types of data.
+    /// </summary>
     public class HomieColor {
         private double _redValue = 0;
         private double _greenValue = 0;
         private double _blueValue = 0;
 
+        /// <summary>
+        /// Parses RGB string and sets internal variables.
+        /// </summary>
         public void SetRgb(string rgbString) {
             var colorParts = rgbString.Split(',');
 
@@ -14,6 +20,9 @@ namespace DevBot9.Protocols.Homie {
             _blueValue = int.Parse(colorParts[2]);
         }
 
+        /// <summary>
+        /// Parses HSV string and sets internal variables.
+        /// </summary>
         public void SetHsv(string hsvString) {
             var colorParts = hsvString.Split(',');
 
@@ -67,6 +76,9 @@ namespace DevBot9.Protocols.Homie {
             _blueValue = (bluePrime + m) * 255;
         }
 
+        /// <summary>
+        /// Returns color in RGB string format.
+        /// </summary>
         public string ToRgbString() {
             var returnColor = "0,0,0";
 
@@ -75,6 +87,10 @@ namespace DevBot9.Protocols.Homie {
             return returnColor;
 
         }
+
+        /// <summary>
+        /// Returns color in HSV string format.
+        /// </summary>
         public string ToHsvString() {
             var returnColor = "0,0,0";
 

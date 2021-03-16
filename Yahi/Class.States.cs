@@ -1,4 +1,7 @@
 ﻿namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// State defined by the Homie convention.
+    /// </summary>
     public class States {
         public static string Init => "init";
         public static string Ready => "ready";

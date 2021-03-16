@@ -1,9 +1,13 @@
 ﻿using System;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// A property of type Color, as defined by the Homie convention.
+    /// </summary>
     public class HostColorProperty : HostPropertyBase {
-        private ColorFormat _format = ColorFormat.Rgb;
-
+        /// <summary>
+        /// Set value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
+        /// </summary>
         public HomieColor Value {
             get {
                 var returnValue = new HomieColor();
@@ -17,6 +21,8 @@ namespace DevBot9.Protocols.Homie {
                 SetValue(value);
             }
         }
+
+        private ColorFormat _format = ColorFormat.Rgb;
 
         internal HostColorProperty(PropertyType propertyType, string propertyId, string friendlyName, ColorFormat format, string unit) : base(propertyType, propertyId, friendlyName, DataType.Color, format.ToString().ToLower(), unit) {
             _rawValue = "0,0,0";

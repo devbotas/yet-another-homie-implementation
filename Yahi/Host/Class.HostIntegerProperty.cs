@@ -1,7 +1,13 @@
 ﻿using System;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// A property of type Integer, as defined by the Homie convention.
+    /// </summary>
     public class HostIntegerProperty : HostPropertyBase {
+        /// <summary>
+        /// Set value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
+        /// </summary>
         public int Value {
             get {
                 int returnValue;

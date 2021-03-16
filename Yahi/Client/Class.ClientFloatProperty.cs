@@ -2,7 +2,13 @@
 using System.Globalization;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// A property of type Float, as defined by the Homie convention.
+    /// </summary>
     public class ClientFloatProperty : ClientPropertyBase {
+        /// <summary>
+        /// Set value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
+        /// </summary>
         public float Value {
             get {
                 float returnValue;

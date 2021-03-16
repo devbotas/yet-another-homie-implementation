@@ -1,7 +1,15 @@
 ﻿using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// A base class for the Host properties. Should not be consumed directly.
+    /// </summary>
     public class HostPropertyBase : PropertyBase {
+        /// <summary>
+        /// Logical type of the property. This is NOT defined by Homie convention, but rather and additional constrain added by YAHI. However, it is fully Homie-compliant.
+        /// </summary>
+        public PropertyType Type { get; protected set; } = PropertyType.State;
+
         protected string _rawValue = "";
         protected readonly string _nameAttribute;
         protected readonly DataType _dataTypeAttribute;
@@ -9,7 +17,6 @@ namespace DevBot9.Protocols.Homie {
         protected readonly bool _isSettableAttribute;
         protected readonly bool _isRetainedAttribute;
         protected readonly string _unitAttribute;
-        public PropertyType Type { get; protected set; } = PropertyType.State;
 
         protected HostPropertyBase(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) {
             Type = propertyType;
@@ -21,7 +28,6 @@ namespace DevBot9.Protocols.Homie {
             _unitAttribute = unit;
 
             switch (Type) {
-
                 case PropertyType.State:
                     _isRetainedAttribute = true;
                     _isSettableAttribute = false;
@@ -74,6 +80,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         protected virtual bool ValidatePayload(string payloadToValidate) {
+            // This method must be overloaded by childs, so it doesn't really matter what it returns.
             return false;
         }
     }

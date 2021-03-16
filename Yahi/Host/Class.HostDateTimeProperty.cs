@@ -1,9 +1,13 @@
 ﻿using System;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// A property of type DateTime, as defined by the Homie convention.
+    /// </summary>
     public class HostDateTimeProperty : HostPropertyBase {
-        private string _isoFormatString = "yyyy-MM-ddTHH:mm:ss.fff";
-
+        /// <summary>
+        /// Set value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
+        /// </summary>
         public DateTime Value {
             get {
                 var returnValue = DateTime.Parse(_rawValue);
@@ -14,6 +18,9 @@ namespace DevBot9.Protocols.Homie {
                 SetValue(value);
             }
         }
+
+
+        private string _isoFormatString = "yyyy-MM-ddTHH:mm:ss.fff";
 
         internal HostDateTimeProperty(PropertyType propertyType, string propertyId, string friendlyName, DateTime initialValue) : base(propertyType, propertyId, friendlyName, DataType.DateTime, "", "") {
             if (initialValue != null) {
