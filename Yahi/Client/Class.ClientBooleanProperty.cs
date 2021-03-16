@@ -2,7 +2,13 @@
 using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// A property of type Boolean, as defined by the Homie convention.
+    /// </summary>
     public class ClientBooleanProperty : ClientPropertyBase {
+        /// <summary>
+        /// Set value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
+        /// </summary>
         public bool Value {
             get {
                 bool returnValue;

@@ -1,10 +1,18 @@
 ﻿using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// A base class for the Client properties. Should not be consumed directly.
+    /// </summary>
     public class ClientPropertyBase : PropertyBase {
+        /// <summary>
+        /// Logical type of the property. This is NOT defined by Homie convention, but rather and additional constrain added by YAHI. However, it is fully Homie-compliant.
+        /// </summary>
         public PropertyType Type { get; protected set; } = PropertyType.State;
 
-        private string _name = "";
+        /// <summary>
+        /// Friendly name of the property.
+        /// </summary>
         public string Name {
             get { return _name; }
             protected set {
@@ -13,7 +21,9 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        private DataType _dataType = DataType.String;
+        /// <summary>
+        /// Data type of the property, as defined by the Homie convention.
+        /// </summary>
         public DataType DataType {
             get { return _dataType; }
             protected set {
@@ -22,7 +32,9 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        private string _format = "";
+        /// <summary>
+        /// Format of the property, as (inconsistently) defined by the Homie convention.
+        /// </summary>
         public string Format {
             get { return _format; }
             protected set {
@@ -31,7 +43,9 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        private string _unit = "";
+        /// <summary>
+        /// Unit of the property, as (softly) defined by the Homie convention.
+        /// </summary>
         public string Unit {
             get { return _unit; }
             protected set {
@@ -40,6 +54,10 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
+        private string _name = "";
+        private DataType _dataType = DataType.String;
+        private string _format = "";
+        private string _unit = "";
         protected string _rawValue = "";
 
         protected ClientPropertyBase(string propertyId) {

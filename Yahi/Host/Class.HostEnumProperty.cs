@@ -2,7 +2,13 @@
 using System.Linq;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// A property of type Enum, as defined by the Homie convention.
+    /// </summary>
     public class HostEnumProperty : HostPropertyBase {
+        /// <summary>
+        /// Setting this property will invoke validator and if it passes then the value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
+        /// </summary>
         public string Value {
             get {
                 var returnValue = _rawValue;
