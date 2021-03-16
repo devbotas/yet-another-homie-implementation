@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.7.0] - 2021-03-16
+### Added
+- YAHI is now multi-target NuGet, adding support for .NET Standard 2.0 and .NET 5.
+- All the classes and properties are now at least somewhat documented.
+
+### Changed
+- A few small non-breaking changes here ant there.
+
+
 ## [0.6.0] - 2021-03-12
 ### Added
 - Homie property creators now allow to pass an initial value, which will be published during initialization.
