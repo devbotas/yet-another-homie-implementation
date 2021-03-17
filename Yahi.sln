@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{CC91BECF-2E1A-4BA9-91EE-BF363A58BB98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{58A63FF1-7A42-4BBB-A1AD-328D59E91D98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58A63FF1-7A42-4BBB-A1AD-328D59E91D98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58A63FF1-7A42-4BBB-A1AD-328D59E91D98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC91BECF-2E1A-4BA9-91EE-BF363A58BB98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC91BECF-2E1A-4BA9-91EE-BF363A58BB98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC91BECF-2E1A-4BA9-91EE-BF363A58BB98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC91BECF-2E1A-4BA9-91EE-BF363A58BB98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
