@@ -33,7 +33,13 @@ namespace DevBot9.Protocols.Homie {
             var stateTopic = $"{_baseTopic}/{_deviceId}/$state";
             _topicHandlerMap.Add(stateTopic, new List<Action<string>>());
             _topicHandlerMap[stateTopic].Add((value) => {
-                State = value;
+                // Payload is lower case, so we need to do some magic štuff to validate it.
+                if (value.Length >= 4) {
+                    var uppercasedPayload = value.Substring(0, 1).ToUpper() + value.Substring(1);
+                    if (Enum.TryParse<HomieState>(uppercasedPayload, out var parsedState)) {
+                        State = parsedState;
+                    };
+                }
             });
             _subscribeToTopicDelegate(stateTopic);
         }

@@ -20,7 +20,7 @@ namespace DevBot9.Protocols.Homie {
             base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
 
             // One can pretty much do anything while in "init" state.
-            SetState(States.Init);
+            SetState(HomieState.Init);
 
             // Building node subtree.
             var nodesList = "";
@@ -44,16 +44,15 @@ namespace DevBot9.Protocols.Homie {
             Thread.Sleep(1000);
 
             // Off we go. At this point discovery services should rebuild their trees.
-            SetState(States.Ready);
+            SetState(HomieState.Ready);
         }
 
         /// <summary>
         /// Set the state of the Device. Homie convention defines these states: init, ready, disconnected, sleeping, lost, alert.
         /// </summary>
-        public void SetState(string stateToSet) {
-#warning make an enum maybe?..
+        public void SetState(HomieState stateToSet) {
             State = stateToSet;
-            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$state", State);
+            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$state", State.ToString().ToLower());
         }
 
         /// <summary>
@@ -164,13 +163,13 @@ namespace DevBot9.Protocols.Homie {
 
         #region Private stuff
 
-        private List<NodeInfo> _nodes = new List<NodeInfo>();
+        private readonly List<NodeInfo> _nodes = new List<NodeInfo>();
 
         internal HostDevice(string baseTopic, string id, string friendlyName = "") {
             _baseTopic = baseTopic;
             _deviceId = id;
             Name = friendlyName;
-            State = States.Init;
+            State = HomieState.Init;
         }
 
 

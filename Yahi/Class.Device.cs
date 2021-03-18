@@ -32,7 +32,7 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// State of the device. Homie convention defines these: init, ready, disconnected, sleeping, lost, alert.
         /// </summary>
-        public string State { get; protected set; }
+        public HomieState State { get; protected set; }
 
         /// <summary>
         /// Call this function to pass incoming publish events from the external MQTT broker. YAHI will then handle the payload and raise events, if needed.

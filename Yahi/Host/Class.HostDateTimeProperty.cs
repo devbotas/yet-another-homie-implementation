@@ -20,15 +20,10 @@ namespace DevBot9.Protocols.Homie {
         }
 
 
-        private string _isoFormatString = "yyyy-MM-ddTHH:mm:ss.fff";
+        private readonly string _isoFormatString = "yyyy-MM-ddTHH:mm:ss.fff";
 
         internal HostDateTimeProperty(PropertyType propertyType, string propertyId, string friendlyName, DateTime initialValue) : base(propertyType, propertyId, friendlyName, DataType.DateTime, "", "") {
-            if (initialValue != null) {
-                _rawValue = initialValue.ToString(_isoFormatString);
-            }
-            else {
-                _rawValue = new DateTime(2000, 01, 01).ToString(_isoFormatString);
-            }
+            _rawValue = initialValue.ToString(_isoFormatString);
         }
 
         internal override void Initialize(Device parentDevice) {
@@ -36,9 +31,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
-            var isPayloadGood = false;
-
-            isPayloadGood = DateTime.TryParse(payloadToValidate, out var parsedDateTime);
+            var isPayloadGood = DateTime.TryParse(payloadToValidate, out var _);
 
             return isPayloadGood;
         }

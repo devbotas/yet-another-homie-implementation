@@ -6,9 +6,9 @@ using uPLibrary.Networking.M2Mqtt;
 
 namespace TestApp {
     internal class LightbulbProducer {
-        private MqttClient _mqttClient;
-        private string _mqttBrokerIp = "172.16.0.2";
-        private string _mqttClientGuid = Guid.NewGuid().ToString();
+        private readonly MqttClient _mqttClient;
+        private readonly string _mqttBrokerIp = "172.16.0.2";
+        private readonly string _mqttClientGuid = Guid.NewGuid().ToString();
 
         private HostDevice _hostDevice;
         private HostBooleanProperty _onOffSwitch;

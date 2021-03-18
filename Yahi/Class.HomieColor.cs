@@ -92,8 +92,6 @@ namespace DevBot9.Protocols.Homie {
         /// Returns color in HSV string format.
         /// </summary>
         public string ToHsvString() {
-            var returnColor = "0,0,0";
-
             var xMax = Math.Max(_redValue, _greenValue);
             xMax = Math.Max(xMax, _blueValue);
 
