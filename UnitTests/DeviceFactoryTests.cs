@@ -16,25 +16,39 @@ namespace YahiTests {
 
         [Test]
         public void InitializeWithProvidedBaseTopic() {
+            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
+                Assert.That(() => DeviceFactory.Initialize(badTopicLevel), Throws.ArgumentException);
+            }
+
+            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
+                Assert.DoesNotThrow(() => DeviceFactory.Initialize(goodTopicLevel));
+            }
+
             var baseTopic = "provided-topic";
-
             DeviceFactory.Initialize(baseTopic);
-
             if (DeviceFactory.BaseTopic != baseTopic) { Assert.Fail($"Base topic is not {baseTopic}"); };
         }
 
         [Test]
         public void CreateClientDeviceWithIncorrectId() {
-            Assert.That(() => DeviceFactory.CreateClientDevice(null), Throws.ArgumentException);
-            Assert.That(() => DeviceFactory.CreateClientDevice(""), Throws.ArgumentException);
-            Assert.That(() => DeviceFactory.CreateClientDevice("no/slash"), Throws.ArgumentException);
+            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
+                Assert.That(() => DeviceFactory.CreateClientDevice(badTopicLevel), Throws.ArgumentException);
+            }
+
+            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
+                Assert.DoesNotThrow(() => DeviceFactory.CreateClientDevice(goodTopicLevel));
+            }
         }
 
         [Test]
         public void CreateHostDeviceWithIncorrectId() {
-            Assert.That(() => DeviceFactory.CreateHostDevice(null, "some friendly name"), Throws.ArgumentException);
-            Assert.That(() => DeviceFactory.CreateHostDevice("", "some friendly name"), Throws.ArgumentException);
-            Assert.That(() => DeviceFactory.CreateHostDevice("no/slash", "some friendly name"), Throws.ArgumentException);
+            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
+                Assert.That(() => DeviceFactory.CreateHostDevice(badTopicLevel, "some friendly name"), Throws.ArgumentException);
+            }
+
+            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
+                Assert.DoesNotThrow(() => DeviceFactory.CreateHostDevice(goodTopicLevel, "some friendly name"));
+            }
         }
     }
 }

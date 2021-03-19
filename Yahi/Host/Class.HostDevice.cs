@@ -59,6 +59,8 @@ namespace DevBot9.Protocols.Homie {
         /// Creates and/or updates the node for the Device. Nodes are somewhat virtual in Homie, you can create them at any time when build your Device tree, as long as <see cref="Initialize(PublishToTopicDelegate, SubscribeToTopicDelegate)"/> is not called yet.
         /// </summary>
         public void UpdateNodeInfo(string nodeId, string friendlyName, string type) {
+            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
+
             if (_nodes.Any(n => n.Id == nodeId) == false) {
                 _nodes.Add(new NodeInfo() { Id = nodeId, Name = friendlyName, Type = type });
             }

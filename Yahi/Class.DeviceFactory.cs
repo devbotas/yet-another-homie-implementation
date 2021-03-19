@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -11,10 +12,13 @@ namespace DevBot9.Protocols.Homie {
         public static string BaseTopic { get; private set; } = "homie";
 
         /// <summary>
-        /// Initializes the device factory.
+        /// Initializes the device factory with a base topic.
         /// </summary>
         /// <param name="baseTopic"></param>
         public static void Initialize(string baseTopic = "homie") {
+            if (string.IsNullOrEmpty(baseTopic)) { throw new ArgumentException("Base topic cannot be null or an empty string", nameof(baseTopic)); }
+            if (Regex.IsMatch(baseTopic, _topicLevelRegexString) == false) { throw new ArgumentException("Base topic can only be lowercase letters, numbers and hyphens", nameof(baseTopic)); }
+
             BaseTopic = baseTopic;
         }
 
@@ -22,8 +26,7 @@ namespace DevBot9.Protocols.Homie {
         /// Creates a Client Device.
         /// </summary>
         public static ClientDevice CreateClientDevice(string deviceId) {
-            if (string.IsNullOrEmpty(deviceId)) { throw new ArgumentException("Device ID cannot be null or an empty string", nameof(deviceId)); }
-            if (deviceId.Contains("/")) { throw new ArgumentException("Device ID can only be letters, numbers and hyphens", nameof(deviceId)); }
+            if (ValidateTopicLevel(deviceId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(deviceId)); }
 
             var returnDevice = new ClientDevice(BaseTopic, deviceId);
 
@@ -34,12 +37,29 @@ namespace DevBot9.Protocols.Homie {
         /// Creates a Host Device.
         /// </summary>
         public static HostDevice CreateHostDevice(string deviceId, string friendlyName) {
-            if (string.IsNullOrEmpty(deviceId)) { throw new ArgumentException("Device ID cannot be null or an empty string", nameof(deviceId)); }
-            if (deviceId.Contains("/")) { throw new ArgumentException("Device ID can only be letters, numbers and hyphens", nameof(deviceId)); }
+            if (ValidateTopicLevel(deviceId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(deviceId)); }
 
             var returnDevice = new HostDevice(BaseTopic, deviceId, friendlyName);
 
             return returnDevice;
         }
+
+        public static bool ValidateTopicLevel(string topicLevelToValidate, out string validationMessage) {
+            var validationPassed = true;
+            validationMessage = "Ok";
+
+            if (string.IsNullOrEmpty(topicLevelToValidate)) {
+                validationPassed = false;
+                validationMessage = "Topic level cannot be null or an empty string";
+            }
+            else if (Regex.IsMatch(topicLevelToValidate, _topicLevelRegexString) == false) {
+                validationPassed = false;
+                validationMessage = "Topic level can only be lowercase letters, numbers and hyphens";
+            }
+
+            return validationPassed;
+        }
+
+        internal static string _topicLevelRegexString = "^[a-z0-9][a-z0-9-]+$";
     }
 }
