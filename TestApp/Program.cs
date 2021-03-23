@@ -12,9 +12,6 @@ namespace TestApp {
             var recuperatorConsumer = new RecuperatorConsumer();
             recuperatorConsumer.Initialize();
 
-            var recuperatorProducer = new RecuperatorProducer();
-            recuperatorProducer.Initialize();
-
             var airConditionerProducer = new AirConditionerProducer();
             airConditionerProducer.Initialize(brokerIp);
 
