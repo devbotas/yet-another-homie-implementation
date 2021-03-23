@@ -19,7 +19,7 @@ namespace TestApp {
             airConditionerProducer.Initialize(brokerIp);
 
             var lightbulbProducer = new LightbulbProducer();
-            lightbulbProducer.Initialize();
+            lightbulbProducer.Initialize(brokerIp);
 
             Console.WriteLine("Hello World!");
             Console.ReadLine();
