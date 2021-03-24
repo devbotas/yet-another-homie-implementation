@@ -68,6 +68,8 @@ namespace DevBot9.Protocols.Homie {
 
         protected List<string> _publishedTopics = new List<string>();
 
+        protected bool _isInitializing = true;
+
         protected Device() {
             // Just making public constructor unavailable to user, as this class should not be consumed directly.
         }
@@ -102,6 +104,10 @@ namespace DevBot9.Protocols.Homie {
                 _publishedTopics.Add(topicId);
             }
             _publishToTopicDelegate(topicId, value, 1, true);
+        }
+
+        internal bool GetIsInitializing() {
+            return _isInitializing;
         }
         #endregion
     }

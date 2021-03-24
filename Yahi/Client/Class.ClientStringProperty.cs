@@ -17,8 +17,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal ClientStringProperty(PropertyType propertyType, string propertyId) : base(propertyId) {
-            Type = propertyType;
+        public ClientStringProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
         }
 
         internal override void Initialize(Device parentDevice) {

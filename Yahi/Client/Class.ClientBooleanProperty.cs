@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -21,31 +20,31 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal ClientBooleanProperty(PropertyType propertyType, string propertyId) : base(propertyId) {
-            Type = propertyType;
+        internal ClientBooleanProperty(ClientPropertyMetadata creationProperties) : base(creationProperties) {
+            // Type = propertyType;
         }
 
         internal override void Initialize(Device parentDevice) {
             base.Initialize(parentDevice);
-            if (Type == PropertyType.State) {
-                _parentDevice.InternalPropertySubscribe($"{_propertyId}", (payload) => {
-                    if (ValidatePayload(payload) == true) {
-                        _rawValue = payload;
+            //if (Type == PropertyType.State) {
+            //    _parentDevice.InternalPropertySubscribe($"{_propertyId}", (payload) => {
+            //        if (ValidatePayload(payload) == true) {
+            //            _rawValue = payload;
 
-                        RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
-                    }
-                });
-            }
+            //            RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
+            //        }
+            //    });
+            //}
 
-            if (Type == PropertyType.Parameter) {
-                _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {
-                    if (ValidatePayload(payload) == true) {
-                        _rawValue = payload;
+            //if (Type == PropertyType.Parameter) {
+            //    _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {
+            //        if (ValidatePayload(payload) == true) {
+            //            _rawValue = payload;
 
-                        RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
-                    }
-                });
-            }
+            //            RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
+            //        }
+            //    });
+            //}
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {

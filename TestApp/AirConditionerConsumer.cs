@@ -12,7 +12,6 @@ namespace TestApp {
         private ClientDevice _clientDevice;
         private ClientFloatProperty _inletTemperature;
         private ClientStringProperty _turnOnOfProperty;
-        private ClientIntegerProperty _actualPower;
         private ClientStringProperty _actualState;
 
         public AirConditionerConsumer() { }
@@ -26,14 +25,14 @@ namespace TestApp {
             // Creating a air conditioner device.
             _clientDevice = DeviceFactory.CreateClientDevice("air-conditioner");
 
-            // Creating properties.
-            _turnOnOfProperty = _clientDevice.CreateClientStringProperty(PropertyType.Command, "general", "turn-on-off");
-            _actualState = _clientDevice.CreateClientStringProperty(PropertyType.State, "general", "actual-state");
+            // Creating properties.          
+            _turnOnOfProperty = _clientDevice.CreateClientStringProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Command, NodeId = "general", PropertyId = "turn-on-off", DataType = DataType.Enum, Format = "ON,OFF" });
+            _actualState = _clientDevice.CreateClientStringProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-state", DataType = DataType.Enum, Format = "ON,OFF,STARTING" });
             _actualState.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Actual state: {_actualState.Value}");
             };
 
-            _inletTemperature = _clientDevice.CreateClientFloatProperty(PropertyType.State, "general", "actual-air-temperature");
+            _inletTemperature = _clientDevice.CreateClientFloatProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-air-temperature", DataType = DataType.Float, });
             _inletTemperature.PropertyChanged += (sender, e) => {
                 // Simulating some overheated dude.
                 if (_inletTemperature.Value > 25) {

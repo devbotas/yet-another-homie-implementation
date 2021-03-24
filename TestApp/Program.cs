@@ -18,6 +18,13 @@ namespace TestApp {
             var lightbulbProducer = new LightbulbProducer();
             lightbulbProducer.Initialize(brokerIp);
 
+            var homieFecther = new HomieTopicFetcher();
+            homieFecther.Initialize(brokerIp);
+            homieFecther.FetchTopics(DeviceFactory.BaseTopic + "/#", out var topicDump2);
+
+            var dynamicConsumer = new DynamicConsumer();
+            dynamicConsumer.Initialize(brokerIp, topicDump2);
+
             Console.WriteLine("Hello World!");
             Console.ReadLine();
         }

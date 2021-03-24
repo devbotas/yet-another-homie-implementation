@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace DevBot9.Protocols.Homie {
@@ -47,8 +47,8 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a client string property.
         /// </summary>
-        public ClientStringProperty CreateClientStringProperty(PropertyType propertyType, string nodeId, string propertyId) {
-            var createdProperty = new ClientStringProperty(propertyType, $"{nodeId}/{propertyId}");
+        public ClientStringProperty CreateClientStringProperty(ClientPropertyMetadata creationOptions) {
+            var createdProperty = new ClientStringProperty(creationOptions);
 
             _properties.Add(createdProperty);
 
@@ -58,8 +58,8 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a client integer property.
         /// </summary>
-        public ClientIntegerProperty CreateClientIntegerProperty(PropertyType propertyType, string nodeId, string propertyId) {
-            var createdProperty = new ClientIntegerProperty(propertyType, $"{nodeId}/{propertyId}");
+        public ClientIntegerProperty CreateClientIntegerProperty(ClientPropertyMetadata creationOptions) {
+            var createdProperty = new ClientIntegerProperty(creationOptions);
 
             _properties.Add(createdProperty);
 
@@ -69,8 +69,8 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a client float property.
         /// </summary>
-        public ClientFloatProperty CreateClientFloatProperty(PropertyType propertyType, string nodeId, string propertyId) {
-            var createdProperty = new ClientFloatProperty(propertyType, $"{nodeId}/{propertyId}");
+        public ClientFloatProperty CreateClientFloatProperty(ClientPropertyMetadata creationOptions) {
+            var createdProperty = new ClientFloatProperty(creationOptions);
 
             _properties.Add(createdProperty);
 
@@ -80,8 +80,8 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a client boolean property.
         /// </summary>
-        public ClientBooleanProperty CreateClientBooleanProperty(PropertyType propertyType, string nodeId, string propertyId) {
-            var createdProperty = new ClientBooleanProperty(propertyType, $"{nodeId}/{propertyId}");
+        public ClientBooleanProperty CreateClientBooleanProperty(ClientPropertyMetadata creationOptions) {
+            var createdProperty = new ClientBooleanProperty(creationOptions);
 
             _properties.Add(createdProperty);
 

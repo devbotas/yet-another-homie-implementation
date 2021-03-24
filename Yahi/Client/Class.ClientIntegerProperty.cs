@@ -20,9 +20,8 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal ClientIntegerProperty(PropertyType propertyType, string propertyId) : base(propertyId) {
+        internal ClientIntegerProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
             _rawValue = "0";
-            Type = propertyType;
         }
 
         internal override void Initialize(Device parentDevice) {
