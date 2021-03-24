@@ -110,7 +110,7 @@ namespace TestApp {
         }
 
         private async Task RunSimulationLoopContinuously(CancellationToken cancellationToken) {
-            var _simulatedTransientTargetTemperature = 21.0;
+            var _simulatedTransientTargetTemperature = 23.0;
 
             while (cancellationToken.IsCancellationRequested == false) {
                 var _simulatedAirTemperature = _simulatedTransientTargetTemperature + 0.3 * Math.Sin(DateTime.Now.Second);

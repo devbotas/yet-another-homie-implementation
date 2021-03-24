@@ -9,8 +9,8 @@ namespace TestApp {
 
             DeviceFactory.Initialize("homie");
 
-            var recuperatorConsumer = new RecuperatorConsumer();
-            recuperatorConsumer.Initialize();
+            var recuperatorConsumer = new AirConditionerConsumer();
+            recuperatorConsumer.Initialize(brokerIp);
 
             var airConditionerProducer = new AirConditionerProducer();
             airConditionerProducer.Initialize(brokerIp);
