@@ -31,7 +31,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
-            var returnValue = float.TryParse(payloadToValidate, out _);
+            var returnValue = float.TryParse(payloadToValidate, NumberStyles.Float, CultureInfo.InvariantCulture, out _);
 
             return returnValue;
         }

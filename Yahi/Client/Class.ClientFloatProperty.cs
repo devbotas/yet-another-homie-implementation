@@ -31,7 +31,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
-            var returnValue = float.TryParse(payloadToValidate, out _);
+            var returnValue = float.TryParse(payloadToValidate, NumberStyles.Float, CultureInfo.InvariantCulture, out _);
 
             return returnValue;
         }
@@ -41,7 +41,7 @@ namespace DevBot9.Protocols.Homie {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
                     _rawValue = valueToSet.ToString(CultureInfo.InvariantCulture);
-                    _parentDevice.InternalPropertyPublish($"{_propertyId}", _rawValue);
+                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
                     break;
 
                 case PropertyType.State:
