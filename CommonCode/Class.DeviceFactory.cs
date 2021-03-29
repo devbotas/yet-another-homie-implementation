@@ -1,5 +1,5 @@
-using System;
-using System.Text.RegularExpressions;
+﻿using System;
+// using System.Text.RegularExpressions;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -17,7 +17,7 @@ namespace DevBot9.Protocols.Homie {
         /// <param name="baseTopic"></param>
         public static void Initialize(string baseTopic = "homie") {
             if (string.IsNullOrEmpty(baseTopic)) { throw new ArgumentException("Base topic cannot be null or an empty string", nameof(baseTopic)); }
-            if (Regex.IsMatch(baseTopic, _topicLevelRegexString) == false) { throw new ArgumentException("Base topic can only be lowercase letters, numbers and hyphens", nameof(baseTopic)); }
+            // if (Regex.IsMatch(baseTopic, _topicLevelRegexString) == false) { throw new ArgumentException("Base topic can only be lowercase letters, numbers and hyphens", nameof(baseTopic)); }
 
             BaseTopic = baseTopic;
         }
@@ -52,10 +52,10 @@ namespace DevBot9.Protocols.Homie {
                 validationPassed = false;
                 validationMessage = "Topic level cannot be null or an empty string";
             }
-            else if (Regex.IsMatch(topicLevelToValidate, _topicLevelRegexString) == false) {
-                validationPassed = false;
-                validationMessage = "Topic level can only be lowercase letters, numbers and hyphens";
-            }
+            //else if (Regex.IsMatch(topicLevelToValidate, _topicLevelRegexString) == false) {
+            //    validationPassed = false;
+            //    validationMessage = "Topic level can only be lowercase letters, numbers and hyphens";
+            //}
 
             return validationPassed;
         }

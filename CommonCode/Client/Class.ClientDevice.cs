@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+using System.Collections;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -17,30 +16,30 @@ namespace DevBot9.Protocols.Homie {
             base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
 
             var homieTopic = $"{_baseTopic}/{_deviceId}/$homie";
-            _topicHandlerMap.Add(homieTopic, new List<Action<string>>());
-            _topicHandlerMap[homieTopic].Add((value) => {
-                HomieVersion = value;
-            });
+            _topicHandlerMap.Add(homieTopic, new ArrayList());
+            ActionString handler = delegate (string value) { HomieVersion = value; };
+            ((ArrayList)_topicHandlerMap[homieTopic]).Add(handler);
             _subscribeToTopicDelegate(homieTopic);
 
             var nameTopic = $"{_baseTopic}/{_deviceId}/$name";
-            _topicHandlerMap.Add(nameTopic, new List<Action<string>>());
-            _topicHandlerMap[nameTopic].Add((value) => {
-                Name = value;
-            });
+            _topicHandlerMap.Add(nameTopic, new ArrayList());
+            ActionString handler2 = delegate (string value) { Name = value; };
+            ((ArrayList)_topicHandlerMap[nameTopic]).Add(handler);
             _subscribeToTopicDelegate(nameTopic);
 
             var stateTopic = $"{_baseTopic}/{_deviceId}/$state";
-            _topicHandlerMap.Add(stateTopic, new List<Action<string>>());
-            _topicHandlerMap[stateTopic].Add((value) => {
+            _topicHandlerMap.Add(stateTopic, new ArrayList());
+            ActionString handler3 = delegate (string value) {
                 // Payload is lower case, so we need to do some magic štuff to validate it.
                 if (value.Length >= 4) {
                     var uppercasedPayload = value.Substring(0, 1).ToUpper() + value.Substring(1);
-                    if (Enum.TryParse<HomieState>(uppercasedPayload, out var parsedState)) {
-                        State = parsedState;
-                    };
+#warning Need to port to nF
+                    //if (Enum.TryParse<HomieState>(uppercasedPayload, out var parsedState)) {
+                    //    State = parsedState;
+                    //};
                 }
-            });
+            };
+            ((ArrayList)_topicHandlerMap[stateTopic]).Add(handler);
             _subscribeToTopicDelegate(stateTopic);
         }
 

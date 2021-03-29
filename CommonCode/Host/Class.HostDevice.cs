@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections;
 using System.Threading;
 
 namespace DevBot9.Protocols.Homie {
@@ -24,7 +23,7 @@ namespace DevBot9.Protocols.Homie {
 
             // Building node subtree.
             var nodesList = "";
-            foreach (var node in _nodes) {
+            foreach (NodeInfo node in _nodes) {
                 InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{node.Id}/$name", node.Name);
                 InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{node.Id}/$type", node.Type);
                 InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{node.Id}/$properties", node.Properties);
@@ -61,13 +60,22 @@ namespace DevBot9.Protocols.Homie {
         public void UpdateNodeInfo(string nodeId, string friendlyName, string type) {
             if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
 
-            if (_nodes.Any(n => n.Id == nodeId) == false) {
-                _nodes.Add(new NodeInfo() { Id = nodeId, Name = friendlyName, Type = type });
+            // Trying to find if that's an existing node.
+            NodeInfo nodeToUpdate = null;
+            for (var i = 0; i < _nodes.Count; i++) {
+                var currentNode = (NodeInfo)_nodes[i];
+                if (currentNode.Id == nodeId) { nodeToUpdate = currentNode; }
             }
 
-            var nodeToUpdate = _nodes.First(n => n.Id == nodeId);
-            nodeToUpdate.Name = friendlyName;
-            nodeToUpdate.Type = type;
+            // If not found - add new. Otherwise - update.
+            if (nodeToUpdate == null) {
+                nodeToUpdate = new NodeInfo() { Id = nodeId, Name = friendlyName, Type = type };
+                _nodes.Add(nodeToUpdate);
+            }
+            else {
+                nodeToUpdate.Name = friendlyName;
+                nodeToUpdate.Type = type;
+            }
         }
 
         /// <summary>
@@ -165,7 +173,7 @@ namespace DevBot9.Protocols.Homie {
 
         #region Private stuff
 
-        private readonly List<NodeInfo> _nodes = new List<NodeInfo>();
+        private readonly ArrayList _nodes = new ArrayList();
 
         internal HostDevice(string baseTopic, string id, string friendlyName = "") {
             _baseTopic = baseTopic;
@@ -176,11 +184,19 @@ namespace DevBot9.Protocols.Homie {
 
 
         private void UpdateNodePropertyMap(string nodeId, string propertyId) {
-            if (_nodes.Any(n => n.Id == nodeId) == false) {
-                _nodes.Add(new NodeInfo() { Id = nodeId });
+            // Trying to find if that's an existing node.
+            NodeInfo nodeToUpdate = null;
+            for (var i = 0; i < _nodes.Count; i++) {
+                var currentNode = (NodeInfo)_nodes[i];
+                if (currentNode.Id == nodeId) { nodeToUpdate = currentNode; }
             }
 
-            var nodeToUpdate = _nodes.First(n => n.Id == nodeId);
+            // If not found - add new.
+            if (nodeToUpdate == null) {
+                nodeToUpdate = new NodeInfo() { Id = nodeId };
+                _nodes.Add(nodeToUpdate);
+            }
+
             nodeToUpdate.AddProperty(propertyId);
         }
 

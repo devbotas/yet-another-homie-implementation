@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -38,8 +38,9 @@ namespace DevBot9.Protocols.Homie {
         /// Call this function to pass incoming publish events from the external MQTT broker. YAHI will then handle the payload and raise events, if needed.
         /// </summary>
         public void HandlePublishReceived(string fullTopic, string payload) {
-            if (_topicHandlerMap.ContainsKey(fullTopic)) {
-                foreach (var handler in _topicHandlerMap[fullTopic]) {
+            if (_topicHandlerMap.Contains(fullTopic)) {
+                var zeList = (ArrayList)_topicHandlerMap[fullTopic];
+                foreach (ActionString handler in zeList) {
                     handler(payload);
                 }
             }
@@ -49,7 +50,7 @@ namespace DevBot9.Protocols.Homie {
         /// Returns an array of all topics that this device instance has published to. This is more for debugging. Function may be removed in 1.x release.
         /// </summary>
         public string[] GetAllPublishedTopics() {
-            var returnArray = _publishedTopics.ToArray();
+            var returnArray = (string[])_publishedTopics.ToArray(typeof(string));
 
             return returnArray;
         }
@@ -60,14 +61,15 @@ namespace DevBot9.Protocols.Homie {
         protected string _baseTopic = "temp";
         protected string _deviceId = "some-device";
 
-        protected List<PropertyBase> _properties = new List<PropertyBase>();
-
+        protected ArrayList _properties = new ArrayList();
 
         protected PublishToTopicDelegate _publishToTopicDelegate;
         protected SubscribeToTopicDelegate _subscribeToTopicDelegate;
-        protected Dictionary<string, List<Action<string>>> _topicHandlerMap = new Dictionary<string, List<Action<string>>>();
+        //protected Dictionary<string, List<Action<string>>> _topicHandlerMap = new Dictionary<string, List<Action<string>>>();
+        protected Hashtable _topicHandlerMap = new Hashtable();
 
-        protected List<string> _publishedTopics = new List<string>();
+
+        protected ArrayList _publishedTopics = new ArrayList();
 
         protected bool _isInitializing = true;
 
@@ -79,7 +81,7 @@ namespace DevBot9.Protocols.Homie {
             _publishToTopicDelegate = publishToTopicDelegate;
             _subscribeToTopicDelegate = subscribeToTopicDelegate;
 
-            foreach (var property in _properties) {
+            foreach (PropertyBase property in _properties) {
                 property.Initialize(this);
             }
         }
@@ -91,11 +93,11 @@ namespace DevBot9.Protocols.Homie {
         internal void InternalPropertySubscribe(string propertyTopic, Action<string> actionToTakeOnReceivedMessage) {
             var fullTopic = $"{_baseTopic}/{_deviceId}/{propertyTopic}";
 
-            if (_topicHandlerMap.ContainsKey(fullTopic) == false) {
-                _topicHandlerMap.Add(fullTopic, new List<Action<string>>());
+            if (_topicHandlerMap.Contains(fullTopic) == false) {
+                _topicHandlerMap.Add(fullTopic, new ArrayList());
             }
 
-            _topicHandlerMap[fullTopic].Add(actionToTakeOnReceivedMessage);
+           ((ArrayList)_topicHandlerMap[fullTopic]).Add(actionToTakeOnReceivedMessage);
 
             _subscribeToTopicDelegate(fullTopic);
         }

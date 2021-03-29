@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -45,9 +44,11 @@ namespace DevBot9.Protocols.Homie {
 
         protected override bool ValidatePayload(string payloadToValidate) {
             var isPayloadGood = false;
-            var enumParts = _formatAttribute.Split(',').ToList();
+            var enumParts = _formatAttribute.Split(',');
 
-            if (enumParts.Any(e => e == payloadToValidate)) { isPayloadGood = true; }
+            foreach (var part in enumParts) {
+                if (part == payloadToValidate) { isPayloadGood = true; }
+            }
 
             return isPayloadGood;
         }
