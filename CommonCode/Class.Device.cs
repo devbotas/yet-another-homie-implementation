@@ -62,6 +62,7 @@ namespace DevBot9.Protocols.Homie {
 
         protected List<PropertyBase> _properties = new List<PropertyBase>();
 
+
         protected PublishToTopicDelegate _publishToTopicDelegate;
         protected SubscribeToTopicDelegate _subscribeToTopicDelegate;
         protected Dictionary<string, List<Action<string>>> _topicHandlerMap = new Dictionary<string, List<Action<string>>>();
