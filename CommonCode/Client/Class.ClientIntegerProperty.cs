@@ -29,7 +29,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
-            var returnValue = int.TryParse(payloadToValidate, out _);
+            var returnValue = Helpers.TryParseInt(payloadToValidate, out _);
 
             return returnValue;
         }

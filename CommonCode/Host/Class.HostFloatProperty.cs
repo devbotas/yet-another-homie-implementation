@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -13,7 +12,7 @@ namespace DevBot9.Protocols.Homie {
             get {
                 float returnValue;
 
-                returnValue = float.Parse(_rawValue, CultureInfo.InvariantCulture);
+                returnValue = Helpers.ParseFloat(_rawValue);
 
                 return returnValue;
             }
@@ -23,7 +22,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         internal HostFloatProperty(PropertyType propertyType, string propertyId, string friendlyName, float initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, DataType.Float, format, unit) {
-            _rawValue = initialValue.ToString("0.0#", CultureInfo.InvariantCulture);
+            _rawValue = Helpers.FloatToString(initialValue, "0.0#");
         }
 
         internal override void Initialize(Device parentDevice) {
@@ -31,7 +30,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
-            var returnValue = float.TryParse(payloadToValidate, NumberStyles.Float, CultureInfo.InvariantCulture, out _);
+            var returnValue = Helpers.TryParseFloat(payloadToValidate, out _);
 
             return returnValue;
         }
@@ -41,7 +40,7 @@ namespace DevBot9.Protocols.Homie {
                 case PropertyType.State:
                 case PropertyType.Parameter:
 
-                    _rawValue = valueToSet.ToString("0.0#", CultureInfo.InvariantCulture);
+                    _rawValue = Helpers.FloatToString(valueToSet, "0.0#");
 
                     _parentDevice.InternalPropertyPublish($"{_propertyId}", _rawValue);
                     break;

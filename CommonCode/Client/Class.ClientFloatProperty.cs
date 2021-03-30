@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -12,7 +11,7 @@ namespace DevBot9.Protocols.Homie {
         public float Value {
             get {
                 float returnValue;
-                returnValue = float.Parse(_rawValue, CultureInfo.InvariantCulture);
+                returnValue = Helpers.ParseFloat(_rawValue);
 
                 return returnValue;
             }
@@ -30,7 +29,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
-            var returnValue = float.TryParse(payloadToValidate, NumberStyles.Float, CultureInfo.InvariantCulture, out _);
+            var returnValue = Helpers.TryParseFloat(payloadToValidate, out _);
 
             return returnValue;
         }
@@ -39,7 +38,7 @@ namespace DevBot9.Protocols.Homie {
             switch (Type) {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
-                    _rawValue = valueToSet.ToString(CultureInfo.InvariantCulture);
+                    _rawValue = Helpers.FloatToString(valueToSet);
                     _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
                     break;
 

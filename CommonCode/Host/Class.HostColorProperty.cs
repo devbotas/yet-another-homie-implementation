@@ -39,29 +39,29 @@ namespace DevBot9.Protocols.Homie {
 
             var areNumbersGood = true;
             if (_format == ColorFormat.Rgb) {
-                if (int.TryParse(colorParts[0], out var red)) {
+                if (Helpers.TryParseInt(colorParts[0], out var red)) {
                     if (red < 0) { areNumbersGood &= false; }
                     if (red > 255) { areNumbersGood &= false; }
                 };
-                if (int.TryParse(colorParts[1], out var green)) {
+                if (Helpers.TryParseInt(colorParts[1], out var green)) {
                     if (green < 0) { areNumbersGood &= false; }
                     if (green > 255) { areNumbersGood &= false; }
                 };
-                if (int.TryParse(colorParts[2], out var blue)) {
+                if (Helpers.TryParseInt(colorParts[2], out var blue)) {
                     if (blue < 0) { areNumbersGood &= false; }
                     if (blue > 255) { areNumbersGood &= false; }
                 }
             }
             if (_format == ColorFormat.Hsv) {
-                if (int.TryParse(colorParts[0], out var hue)) {
+                if (Helpers.TryParseInt(colorParts[0], out var hue)) {
                     if (hue < 0) { areNumbersGood &= false; }
                     if (hue > 360) { areNumbersGood &= false; }
                 };
-                if (int.TryParse(colorParts[1], out var saturation)) {
+                if (Helpers.TryParseInt(colorParts[1], out var saturation)) {
                     if (saturation < 0) { areNumbersGood &= false; }
                     if (saturation > 100) { areNumbersGood &= false; }
                 };
-                if (int.TryParse(colorParts[2], out var value)) {
+                if (Helpers.TryParseInt(colorParts[2], out var value)) {
                     if (value < 0) { areNumbersGood &= false; }
                     if (value > 100) { areNumbersGood &= false; }
                 }

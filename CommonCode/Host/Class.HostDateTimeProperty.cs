@@ -10,7 +10,7 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public DateTime Value {
             get {
-                var returnValue = DateTime.Parse(_rawValue);
+                var returnValue = Helpers.ParseDateTime(_rawValue);
 
                 return returnValue;
             }
@@ -31,7 +31,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
-            var isPayloadGood = DateTime.TryParse(payloadToValidate, out var _);
+            var isPayloadGood = Helpers.TryParseDateTime(payloadToValidate, out var _);
 
             return isPayloadGood;
         }

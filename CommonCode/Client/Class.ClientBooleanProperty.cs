@@ -11,7 +11,7 @@ namespace DevBot9.Protocols.Homie {
         public bool Value {
             get {
                 bool returnValue;
-                returnValue = bool.Parse(_rawValue);
+                returnValue = Helpers.ParseBool(_rawValue);
 
                 return returnValue;
             }

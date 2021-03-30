@@ -12,7 +12,7 @@ namespace DevBot9.Protocols.Homie {
             get {
                 bool returnValue;
 
-                returnValue = bool.Parse(_rawValue);
+                returnValue = Helpers.ParseBool(_rawValue);
 
                 return returnValue;
             }
