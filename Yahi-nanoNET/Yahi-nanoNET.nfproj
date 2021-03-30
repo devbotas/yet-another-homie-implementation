@@ -15,6 +15,15 @@
     <RootNamespace>Yahi_nanoNET</RootNamespace>
     <AssemblyName>Yahi_nanoNET</AssemblyName>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>DevBot9.NanoFramework.Homie</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Me</Authors>
+    <Company>Me</Company>
+    <Product>DevBot9.NanoFramework.Homie</Product>
+    <Description>Homie</Description>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
