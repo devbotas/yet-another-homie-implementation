@@ -12,18 +12,42 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <FileAlignment>512</FileAlignment>
-    <RootNamespace>Yahi_nanoNET</RootNamespace>
-    <AssemblyName>Yahi_nanoNET</AssemblyName>
+    <RootNamespace>Yahi</RootNamespace>
+    <AssemblyName>DevBot9.NanoFramework.Homie</AssemblyName>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>DevBot9.NanoFramework.Homie</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>Me</Authors>
-    <Company>Me</Company>
-    <Product>DevBot9.NanoFramework.Homie</Product>
-    <Description>Homie</Description>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <FileVersion>1.0.0</FileVersion>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>
+    </PackageId>
+    <Version>
+    </Version>
+    <Authors>
+    </Authors>
+    <Company>
+    </Company>
+    <Product>
+    </Product>
+    <Description>
+    </Description>
+    <AssemblyVersion>
+    </AssemblyVersion>
+    <FileVersion>
+    </FileVersion>
+    <NeutralLanguage>
+    </NeutralLanguage>
+    <Copyright>
+    </Copyright>
+    <PackageTags>
+    </PackageTags>
+    <PackageProjectUrl>
+    </PackageProjectUrl>
+    <PackageIcon>
+    </PackageIcon>
+    <RepositoryUrl>
+    </RepositoryUrl>
+    <RepositoryType>
+    </RepositoryType>
+    <PackageReleaseNotes>
+    </PackageReleaseNotes>
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
@@ -48,6 +72,11 @@
     </Reference>
     <Reference Include="System.Math, Version=1.3.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.System.Math.1.3.1-preview.31\lib\System.Math.dll</HintPath>
+      <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
+    </Reference>
+    <Reference Include="System.Text.RegularExpressions, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\nanoFramework.System.Text.RegularExpressions.1.0.0-preview.22\lib\System.Text.RegularExpressions.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>

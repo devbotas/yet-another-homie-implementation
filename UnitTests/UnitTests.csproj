@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Yahi\Yahi-bigNET.csproj" />
+    <ProjectReference Include="..\Yahi-bigNET\Yahi-bigNET.csproj" />
   </ItemGroup>
 
 </Project>

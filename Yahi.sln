@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yahi-bigNET", "Yahi\Yahi-bigNET.csproj", "{53E35E1A-9E97-4B85-8A3F-6E1A7622A6A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yahi-bigNET", "Yahi-bigNET\Yahi-bigNET.csproj", "{53E35E1A-9E97-4B85-8A3F-6E1A7622A6A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp", "TestApp\TestApp.csproj", "{58A63FF1-7A42-4BBB-A1AD-328D59E91D98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yahi-TestApp-bigNET-PC", "Yahi-TestApp-bigNET-PC\Yahi-TestApp-bigNET-PC.csproj", "{58A63FF1-7A42-4BBB-A1AD-328D59E91D98}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{6150B420-0998-4CCE-BD04-A77A2B01394B}"
 	ProjectSection(SolutionItems) = preProject
@@ -18,6 +18,8 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommonCode", "CommonCode\CommonCode.shproj", "{5D02513A-2022-481F-92BE-4EF5192993F8}"
 EndProject
 Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "Yahi-nanoNET", "Yahi-nanoNET\Yahi-nanoNET.nfproj", "{AE1B8007-F999-417C-A814-0830091346D4}"
+EndProject
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "Yahi-TestApp-nanoNET-ESP32WroverKit", "Yahi-TestApp-nanoNET-ESP32WroverKit\Yahi-TestApp-nanoNET-ESP32WroverKit.nfproj", "{73BA3763-37FE-4468-B41A-D5A5CB214BDE}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -47,6 +49,12 @@ Global
 		{AE1B8007-F999-417C-A814-0830091346D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE1B8007-F999-417C-A814-0830091346D4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE1B8007-F999-417C-A814-0830091346D4}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{73BA3763-37FE-4468-B41A-D5A5CB214BDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73BA3763-37FE-4468-B41A-D5A5CB214BDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73BA3763-37FE-4468-B41A-D5A5CB214BDE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{73BA3763-37FE-4468-B41A-D5A5CB214BDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73BA3763-37FE-4468-B41A-D5A5CB214BDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73BA3763-37FE-4468-B41A-D5A5CB214BDE}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
