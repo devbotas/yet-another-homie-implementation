@@ -44,6 +44,9 @@ namespace TestApp {
             };
 
             _intensity = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "general", "intensity", "Intensity", 0, "%");
+            _intensity.PropertyChanged += (sender, e) => {
+                Debug.WriteLine($"Intensity changed to {_intensity.Value}");
+            };
 
             #endregion
 

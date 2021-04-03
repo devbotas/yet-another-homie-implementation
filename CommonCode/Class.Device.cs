@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+﻿using System.Collections;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
