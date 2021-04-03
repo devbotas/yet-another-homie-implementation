@@ -90,5 +90,104 @@ namespace DevBot9.Protocols.Homie {
 #endif
             return returnValue;
         }
+
+
+        #region Enum extensions
+        // Two reasons for those: first, bigNET and nanoNET have different ToString() implementations.
+        // bigNET returns enum's name, nanoNET return value as a number. Second, it generally helps,
+        // as there is some letter capitality to deal with.
+        public static string ToHomiePayload(this DataType dataType) {
+            var returnValue = "";
+
+            switch (dataType) {
+                case DataType.String:
+                    returnValue = "string";
+                    break;
+
+                case DataType.Integer:
+                    returnValue = "integer";
+                    break;
+
+                case DataType.Float:
+                    returnValue = "float";
+                    break;
+
+                case DataType.Percent:
+                    returnValue = "percent";
+                    break;
+
+                case DataType.Boolean:
+                    returnValue = "boolean";
+                    break;
+
+                case DataType.Enum:
+                    returnValue = "enum";
+                    break;
+
+                case DataType.Color:
+                    returnValue = "color";
+                    break;
+
+                case DataType.DateTime:
+                    returnValue = "datetime";
+                    break;
+
+                case DataType.Duration:
+                    returnValue = "duration";
+                    break;
+            }
+
+            return returnValue;
+        }
+
+        public static string ToHomiePayload(this HomieState homieState) {
+            var returnValue = "";
+
+            switch (homieState) {
+                case HomieState.Init:
+                    returnValue = "init";
+                    break;
+
+                case HomieState.Ready:
+                    returnValue = "ready";
+                    break;
+
+                case HomieState.Disconnected:
+                    returnValue = "disconnected";
+                    break;
+
+                case HomieState.Sleeping:
+                    returnValue = "sleeping";
+                    break;
+
+                case HomieState.Lost:
+                    returnValue = "lost";
+                    break;
+
+                case HomieState.Alert:
+                    returnValue = "alert";
+                    break;
+            }
+
+            return returnValue;
+        }
+
+        public static string ToHomiePayload(this ColorFormat colorFormat) {
+            var returnValue = "";
+
+            switch (colorFormat) {
+                case ColorFormat.Rgb:
+                    returnValue = "rgb";
+                    break;
+
+                case ColorFormat.Hsv:
+                    returnValue = "hsv";
+                    break;
+            }
+
+            return returnValue;
+        }
+
+        #endregion
     }
 }

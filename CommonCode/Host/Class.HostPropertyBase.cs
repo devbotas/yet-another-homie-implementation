@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace DevBot9.Protocols.Homie {
+﻿namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// A base class for the Host properties. Should not be consumed directly.
     /// </summary>
@@ -49,7 +47,7 @@ namespace DevBot9.Protocols.Homie {
             _parentDevice = parentDevice;
 
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$name", _nameAttribute);
-            _parentDevice.InternalPropertyPublish($"{_propertyId}/$datatype", _dataTypeAttribute.ToString().ToLower());
+            _parentDevice.InternalPropertyPublish($"{_propertyId}/$datatype", _dataTypeAttribute.ToHomiePayload());
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$format", _formatAttribute);
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$settable", _isSettableAttribute.ToString().ToLower());
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$retained", _isRetainedAttribute.ToString().ToLower());

@@ -51,7 +51,7 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public void SetState(HomieState stateToSet) {
             State = stateToSet;
-            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$state", State.ToString().ToLower());
+            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$state", State.ToHomiePayload());
         }
 
         /// <summary>

@@ -24,7 +24,7 @@ namespace DevBot9.Protocols.Homie {
 
         private ColorFormat _format = ColorFormat.Rgb;
 
-        internal HostColorProperty(PropertyType propertyType, string propertyId, string friendlyName, ColorFormat format, string unit) : base(propertyType, propertyId, friendlyName, DataType.Color, format.ToString().ToLower(), unit) {
+        internal HostColorProperty(PropertyType propertyType, string propertyId, string friendlyName, ColorFormat format, string unit) : base(propertyType, propertyId, friendlyName, DataType.Color, format.ToHomiePayload(), unit) {
             _rawValue = "0,0,0";
             _format = format;
         }
