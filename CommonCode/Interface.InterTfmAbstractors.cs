@@ -6,6 +6,9 @@ using System;
 
 namespace DevBot9.Protocols.Homie {
     public static class Helpers {
+
+        #region Parsers
+
         public static float ParseFloat(string stringToParse) {
             float returnValue;
 
@@ -29,19 +32,20 @@ namespace DevBot9.Protocols.Homie {
         }
 
         public static bool TryParseInt(string stringToParse, out int result) {
-            var returnValue = false;
+            var parseSucceeded = false;
 
 #if !NANOFRAMEWORK_1_0
-            returnValue = int.TryParse(stringToParse, out result);
+            parseSucceeded = int.TryParse(stringToParse, out result);
 #else
             try {
                 result = int.Parse(stringToParse);
+                parseSucceeded = true;
             }
             catch (System.Exception) {
                 result = int.MinValue;
             }
 #endif
-            return returnValue;
+            return parseSucceeded;
         }
         public static bool ParseBool(string stringToParse) {
             var returnValue = false;
@@ -49,8 +53,8 @@ namespace DevBot9.Protocols.Homie {
 #if !NANOFRAMEWORK_1_0
             returnValue = bool.Parse(stringToParse);
 #else
-            if (stringToParse == bool.TrueString) { returnValue = true; }
-            if (stringToParse == bool.FalseString) { returnValue = false; }
+            if (stringToParse.ToLower() == bool.TrueString.ToLower()) { returnValue = true; }
+            if (stringToParse.ToLower() == bool.FalseString.ToLower()) { returnValue = false; }
 #endif
             return returnValue;
         }
@@ -68,18 +72,21 @@ namespace DevBot9.Protocols.Homie {
         }
 
         public static bool TryParseDateTime(string stringToParse, out DateTime result) {
-            var returnValue = false;
+            var parseSucceeded = false;
 
 #if !NANOFRAMEWORK_1_0
-            returnValue = DateTime.TryParse(stringToParse, out result);
+            parseSucceeded = DateTime.TryParse(stringToParse, out result);
 #else
 #warning Need to reimplement DateTime parsing
-            returnValue = true;
+            parseSucceeded = true;
             result = DateTime.UtcNow;
 
 #endif
-            return returnValue;
+            return parseSucceeded;
         }
+
+        #endregion
+
         public static string FloatToString(float numberToConvert, string format = "0.0") {
             string returnValue;
 
@@ -90,7 +97,6 @@ namespace DevBot9.Protocols.Homie {
 #endif
             return returnValue;
         }
-
 
         #region Enum extensions
         // Two reasons for those: first, bigNET and nanoNET have different ToString() implementations.
