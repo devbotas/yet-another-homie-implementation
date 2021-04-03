@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 
 namespace DevBot9.Protocols.Homie {
@@ -90,7 +90,7 @@ namespace DevBot9.Protocols.Homie {
             InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{propertyTopic}", value);
         }
 
-        internal void InternalPropertySubscribe(string propertyTopic, Action<string> actionToTakeOnReceivedMessage) {
+        internal void InternalPropertySubscribe(string propertyTopic, ActionString actionToTakeOnReceivedMessage) {
             var fullTopic = $"{_baseTopic}/{_deviceId}/{propertyTopic}";
 
             if (_topicHandlerMap.Contains(fullTopic) == false) {
