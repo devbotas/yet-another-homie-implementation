@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -21,6 +21,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         internal ClientBooleanProperty(ClientPropertyMetadata creationProperties) : base(creationProperties) {
+            _rawValue = "false";
             // Type = propertyType;
         }
 
