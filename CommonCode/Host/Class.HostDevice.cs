@@ -82,6 +82,9 @@ namespace DevBot9.Protocols.Homie {
         /// Creates a host integer property.
         /// </summary>
         public HostIntegerProperty CreateHostIntegerProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, int initialValue = 0, string unit = "") {
+            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
+            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
+
             UpdateNodePropertyMap(nodeId, propertyId);
 
             var createdProperty = new HostIntegerProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
@@ -95,6 +98,9 @@ namespace DevBot9.Protocols.Homie {
         /// Creates a host float property.
         /// </summary>
         public HostFloatProperty CreateHostFloatProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, float initialValue = 0.0f, string unit = "") {
+            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
+            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
+
             UpdateNodePropertyMap(nodeId, propertyId);
 
             var createdProperty = new HostFloatProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
@@ -108,6 +114,9 @@ namespace DevBot9.Protocols.Homie {
         /// Creates a host string property.
         /// </summary>
         public HostStringProperty CreateHostStringProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, string initialValue = "", string unit = "") {
+            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
+            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
+
             UpdateNodePropertyMap(nodeId, propertyId);
 
             var createdProperty = new HostStringProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
@@ -121,6 +130,9 @@ namespace DevBot9.Protocols.Homie {
         /// Creates a host boolean property.
         /// </summary>
         public HostBooleanProperty CreateHostBooleanProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, bool initialValue = false) {
+            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
+            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
+
             UpdateNodePropertyMap(nodeId, propertyId);
 
             var createdProperty = new HostBooleanProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", "");
@@ -134,6 +146,9 @@ namespace DevBot9.Protocols.Homie {
         /// Creates a host color property.
         /// </summary>
         public HostColorProperty CreateHostColorProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, ColorFormat colorFormat = ColorFormat.Rgb) {
+            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
+            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
+
             UpdateNodePropertyMap(nodeId, propertyId);
 
             var createdProperty = new HostColorProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, colorFormat, "");
@@ -147,6 +162,9 @@ namespace DevBot9.Protocols.Homie {
         /// Creates a host enum property.
         /// </summary>
         public HostEnumProperty CreateHostEnumProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, in string[] possibleValues, string initialValue = "") {
+            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
+            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
+
             UpdateNodePropertyMap(nodeId, propertyId);
 
             var createdProperty = new HostEnumProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, possibleValues, initialValue);
@@ -160,6 +178,9 @@ namespace DevBot9.Protocols.Homie {
         /// Creates a host date ant time property.
         /// </summary>
         public HostDateTimeProperty CreateHostDateTimeProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, DateTime initialValue) {
+            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
+            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
+
             UpdateNodePropertyMap(nodeId, propertyId);
 
             var createdProperty = new HostDateTimeProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue);
