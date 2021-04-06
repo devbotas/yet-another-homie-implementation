@@ -58,6 +58,27 @@ namespace DevBot9.Protocols.Homie {
 #endif
             return returnValue;
         }
+        public static bool TryParseBool(string stringToParse, out bool result) {
+            var parseSucceeded = false;
+
+#if !NANOFRAMEWORK_1_0
+            parseSucceeded = bool.TryParse(stringToParse, out result);
+#else
+            if (stringToParse.ToLower() == bool.TrueString.ToLower()) {
+                result = true;
+                parseSucceeded = true;
+            }
+            else if (stringToParse.ToLower() == bool.FalseString.ToLower()) {
+                result = false;
+                parseSucceeded = true;
+            }
+            else {
+                result = false;
+                parseSucceeded = false;
+            }
+#endif
+            return parseSucceeded;
+        }
 
         public static DateTime ParseDateTime(string stringToParse) {
             var returnValue = DateTime.UtcNow;

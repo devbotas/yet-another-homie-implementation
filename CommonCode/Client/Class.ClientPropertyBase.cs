@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -70,6 +69,7 @@ namespace DevBot9.Protocols.Homie {
             DataType = creationOptions.DataType;
             Format = creationOptions.Format;
             Unit = creationOptions.Unit;
+            if (creationOptions.InitialValue != "") { _rawValue = creationOptions.InitialValue; }
         }
 
         internal override void Initialize(Device parentDevice) {

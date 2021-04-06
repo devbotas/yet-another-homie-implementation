@@ -21,7 +21,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         internal ClientIntegerProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
-            _rawValue = "0";
+            if (Helpers.TryParseInt(_rawValue, out var _) == false) { _rawValue = "0"; }
         }
 
         internal override void Initialize(Device parentDevice) {

@@ -22,7 +22,6 @@ namespace DevBot9.Protocols.Homie {
 
         internal override void Initialize(Device parentDevice) {
             base.Initialize(parentDevice);
-
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {

@@ -21,8 +21,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         internal ClientBooleanProperty(ClientPropertyMetadata creationProperties) : base(creationProperties) {
-            _rawValue = "false";
-            // Type = propertyType;
+            if (Helpers.TryParseBool(_rawValue, out var _) == false) { _rawValue = "false"; }
         }
 
         internal override void Initialize(Device parentDevice) {

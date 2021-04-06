@@ -21,7 +21,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         internal ClientFloatProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
-            _rawValue = "0.0";
+            if (Helpers.TryParseFloat(_rawValue, out var _) == false) { _rawValue = "0.0"; }
         }
 
         internal override void Initialize(Device parentDevice) {
