@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DevBot9.Protocols.Homie;
 
 namespace TestApp {

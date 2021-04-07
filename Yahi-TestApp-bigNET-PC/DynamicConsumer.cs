@@ -24,7 +24,7 @@ namespace TestApp {
 
             var homieTree = HomieTopicTreeParser.Parse(topicDump, DeviceFactory.BaseTopic);
 
-            if (homieTree.Count != 1) { throw new ArgumentException("For now, only a single device in the topic dump is accepted."); }
+            if (homieTree.Count == 0) { throw new ArgumentException("Please give me at least one device..."); }
 
             _clientDevice = DeviceFactory.CreateClientDevice(homieTree[0].Id);
 

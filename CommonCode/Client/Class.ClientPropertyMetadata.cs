@@ -8,5 +8,9 @@
         public string Format { get; set; } = "";
         public string Unit { get; set; } = "";
         public string InitialValue { get; set; }
+
+        public override string ToString() {
+            return PropertyId + ":" + InitialValue;
+        }
     }
 }
