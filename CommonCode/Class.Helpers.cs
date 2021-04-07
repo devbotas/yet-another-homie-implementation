@@ -215,6 +215,18 @@ namespace DevBot9.Protocols.Homie {
             return returnValue;
         }
 
+        public static string ToHomiePayload(this bool booleanValue) {
+            var returnValue = booleanValue ? "true" : "false";
+
+            return returnValue;
+        }
+
+        public static string ToHomiePayload(this int intValue) {
+            var returnValue = intValue.ToString();
+
+            return returnValue;
+        }
+
         #endregion
     }
 }

@@ -61,8 +61,7 @@ namespace DevBot9.Protocols.Homie {
             switch (Type) {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
-                    // Booleans in .NET are converted to "True" "False" (uppercase first letter) which isn't valid according to homie convention, hence converting manually.
-                    _rawValue = valueToSet ? "true" : "false";
+                    _rawValue = valueToSet.ToHomiePayload();
                     _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
                     break;
 

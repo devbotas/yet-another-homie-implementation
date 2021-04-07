@@ -14,7 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Class.HomieColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Class.PropertyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Class.PropertyChangedEventArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interface.InterTfmAbstractors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Class.Helpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interface.INotifyPropertyChanged.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Client\Class.ClientBooleanProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Client\Class.ClientDevice.cs" />
