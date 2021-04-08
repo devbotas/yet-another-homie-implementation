@@ -24,7 +24,7 @@ namespace TestApp {
             // Now, iterating over devices we have just found.
             foreach (var device in returnTree) {
                 // Filtering out device attributes. We'll get nodes from them.
-                var deviceAttributesRegex = new Regex(@$"^({baseTopic})\/({device.Id})\/(\$[a-z0-9][a-z0-9-]+):(\S+)$");
+                var deviceAttributesRegex = new Regex(@$"^({baseTopic})\/({device.Id})\/(\$[a-z0-9][a-z0-9-]+):(.+)$");
                 foreach (var inputString in input) {
                     var regexMatch = deviceAttributesRegex.Match(inputString);
                     if (regexMatch.Success) {
@@ -39,7 +39,7 @@ namespace TestApp {
                     device.Nodes.Add(newNode);
 
                     // Filtering out attributes for this node. We'll get properties from them.
-                    var nodeAttributesRegex = new Regex(@$"^({baseTopic})\/({device.Id})\/({node})\/(\$[a-z0-9][a-z0-9-]+):(\S+)$");
+                    var nodeAttributesRegex = new Regex(@$"^({baseTopic})\/({device.Id})\/({node})\/(\$[a-z0-9][a-z0-9-]+):(.+)$");
                     foreach (var inputString in input) {
                         var regexMatch = nodeAttributesRegex.Match(inputString);
                         if (regexMatch.Success) {
