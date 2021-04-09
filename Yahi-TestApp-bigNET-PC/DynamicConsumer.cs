@@ -24,12 +24,12 @@ namespace TestApp {
 
             var homieTree = HomieTopicTreeParser.Parse(topicDump, DeviceFactory.BaseTopic);
 
-            if (homieTree.Count == 0) { throw new ArgumentException("Please give me at least one device..."); }
+            if (homieTree.Length == 0) { throw new ArgumentException("Please give me at least one device..."); }
 
             _clientDevice = DeviceFactory.CreateClientDevice(homieTree[0].Id);
 
-            for (var i = 0; i < homieTree[0].Nodes.Count; i++) {
-                Debug.Print($"Iterating over nodes. Currently: \"{homieTree[0].Nodes[i].Id}\" with {homieTree[0].Nodes[i].Properties.Count} properties.");
+            for (var i = 0; i < homieTree[0].Nodes.Length; i++) {
+                Debug.Print($"Iterating over nodes. Currently: \"{homieTree[0].Nodes[i].Id}\" with {homieTree[0].Nodes[i].Properties.Length} properties.");
 
                 foreach (var propertyMetadata in homieTree[0].Nodes[i].Properties) {
                     Debug.Print($"    Creating property \"{propertyMetadata.PropertyId}\" of type {propertyMetadata.DataType}. It is a {propertyMetadata.PropertyType}.");
