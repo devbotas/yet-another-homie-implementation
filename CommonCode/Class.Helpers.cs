@@ -106,6 +106,54 @@ namespace DevBot9.Protocols.Homie {
             return parseSucceeded;
         }
 
+        public static bool TryParseHomieDataType(string stringToParse, out DataType parsedType) {
+            var isParsed = false;
+            switch (stringToParse) {
+                case "string":
+                    parsedType = DataType.String;
+                    break;
+
+                case "integer":
+                    parsedType = DataType.Integer;
+                    break;
+
+                case "float":
+                    parsedType = DataType.Float;
+                    break;
+
+                case "percent":
+                    parsedType = DataType.Percent;
+                    break;
+
+                case "boolean":
+                    parsedType = DataType.Boolean;
+                    break;
+
+                case "enum":
+                    parsedType = DataType.Enum;
+                    break;
+
+                case "color":
+                    parsedType = DataType.Color;
+                    break;
+
+                case "datetime":
+                    parsedType = DataType.DateTime;
+                    break;
+
+                case "duration":
+                    parsedType = DataType.Duration;
+                    break;
+
+                default:
+                    parsedType = DataType.String;
+                    break;
+            }
+
+            return isParsed;
+        }
+
+
         #endregion
 
         public static string FloatToString(float numberToConvert, string format = "0.0") {
