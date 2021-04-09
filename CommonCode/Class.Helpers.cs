@@ -107,7 +107,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         public static bool TryParseHomieDataType(string stringToParse, out DataType parsedType) {
-            var isParsed = false;
+            var isParsed = true;
             switch (stringToParse) {
                 case "string":
                     parsedType = DataType.String;
@@ -147,6 +147,7 @@ namespace DevBot9.Protocols.Homie {
 
                 default:
                     parsedType = DataType.String;
+                    isParsed = false;
                     break;
             }
 
