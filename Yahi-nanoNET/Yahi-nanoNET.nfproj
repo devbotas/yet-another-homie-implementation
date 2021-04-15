@@ -15,7 +15,8 @@
     <RootNamespace>Yahi</RootNamespace>
     <AssemblyName>DevBot9.NanoFramework.Homie</AssemblyName>
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>
+    </GeneratePackageOnBuild>
     <PackageId>
     </PackageId>
     <Version>
@@ -51,7 +52,6 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
