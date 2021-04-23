@@ -26,9 +26,9 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\DevBot9.NanoFramework.Homie.dll" target="lib\DevBot9.NanoFramework.Homie.dll" />
-    <file src="bin\Release\DevBot9.NanoFramework.Homie.pdb" target="lib\DevBot9.NanoFramework.Homie.pdb" />
-    <file src="bin\Release\DevBot9.NanoFramework.Homie.pdbx" target="lib\DevBot9.NanoFramework.Homie.pdbx" />
-    <file src="bin\Release\DevBot9.NanoFramework.Homie.pe" target="lib\DevBot9.NanoFramework.Homie.pe" />
+    <file src="DevBot9.NanoFramework.Homie.dll" target="lib\DevBot9.NanoFramework.Homie.dll" />
+    <file src="DevBot9.NanoFramework.Homie.pdb" target="lib\DevBot9.NanoFramework.Homie.pdb" />
+    <file src="DevBot9.NanoFramework.Homie.pdbx" target="lib\DevBot9.NanoFramework.Homie.pdbx" />
+    <file src="DevBot9.NanoFramework.Homie.pe" target="lib\DevBot9.NanoFramework.Homie.pe" />
   </files>
 </package>
