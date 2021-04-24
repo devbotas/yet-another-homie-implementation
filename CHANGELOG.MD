@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.8.0] - 2021-04-24
+### Added
+- Adding a few unit tests.
+- Adding few helper classes to parse existing MQTT tree.
+- YAHI now supports nanoFramework! A lot of cool internal stuff (like genenerics) had to be replaced with simplier constructs. Code looks way more 2005-ish now.
+- Both bigNET and nanoNET nugets are now built using Nuke build system.
+
+### Changed
+- Recuperator producer and consumer is now replaced by AirConditioner counterparts.
+- Client-side properties can now also be created by parsing existing MQTT tree. Constructors had to be changed.
+- Codebase was split into shared code project and satellite bigNET/nanoNET projects.
+
+### Fixed
+- A few small client-side bugs were fixed.
+
+
 ## [0.7.0] - 2021-03-16
 ### Added
 - YAHI is now multi-target NuGet, adding support for .NET Standard 2.0 and .NET 5.
