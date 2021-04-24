@@ -8,8 +8,7 @@
     <owners>devbotas</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 
-    <releaseNotes>
-    </releaseNotes>
+    <releaseNotes>$releaseNotes$</releaseNotes>
     <developmentDependency>false</developmentDependency>
     <projectUrl>https://github.com/devbotas/yet-another-homie-implementation</projectUrl>
 

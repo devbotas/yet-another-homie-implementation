@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.IO;
@@ -35,9 +36,10 @@ class Build : NukeBuild {
     string FileVersion { get; set; }
     string PackageVersion { get; set; }
     bool IsPreview { get; set; }
+    string ReleaseNotes { get; set; }
 
 
-    Target GetInfo => _ => _
+    Target GetVersionInfo => _ => _
         .Executes(() => {
             Console.WriteLine("Version?");
             var version = Console.ReadLine();
@@ -65,8 +67,28 @@ class Build : NukeBuild {
             ReportSummary(_ => _.AddPair("Version", PackageVersion));
         });
 
+    Target GetReleaseNotes => _ => _
+        .DependsOn(GetVersionInfo)
+        .Executes(() => {
+            Console.WriteLine("Paste (or type) your release notes here. Enter 'q' to finish. Multi-line Markdown is OK. COMMAS ARE NOT OKAY! Don't ask me, why.");
+
+            var releaseNotesBuilder = new StringBuilder();
+            var continueEntering = true;
+            while (continueEntering) {
+                var line = Console.ReadLine();
+                if (line == "q") { continueEntering = false; }
+                else {
+                    releaseNotesBuilder.AppendLine(line);
+                }
+            }
+
+            ReleaseNotes = releaseNotesBuilder.ToString().Trim();
+
+            if (ReleaseNotes.Contains(',')) { ControlFlow.Fail("Commas in release notes break 'dotnet pack' command. I do not know, why. For now, just don't use commas."); }
+        });
+
     Target UpdateBigNetVersions => _ => _
-    .DependsOn(GetInfo)
+    .DependsOn(GetVersionInfo)
     .Executes(() => {
         var csprojContent = File.ReadAllText(BigNetProjectFile);
 
@@ -78,7 +100,7 @@ class Build : NukeBuild {
     });
 
     Target UpdateNanoNetVersions => _ => _
-        .DependsOn(GetInfo)
+        .DependsOn(GetVersionInfo)
         .Executes(() => {
             var assemblyInfoContent = File.ReadAllText(NanoNetAssemblyInfoFile);
 
@@ -89,8 +111,7 @@ class Build : NukeBuild {
         });
 
     Target Clean => _ => _
-        .Before(RestoreNanoNet)
-        .DependsOn(UpdateNanoNetVersions, UpdateBigNetVersions)
+        .DependsOn(UpdateNanoNetVersions, UpdateBigNetVersions, GetReleaseNotes)
         .Executes(() => {
             EnsureCleanDirectory(OutputDirectory);
         });
@@ -148,26 +169,28 @@ class Build : NukeBuild {
             bigNetNugetSettings = bigNetNugetSettings.SetConfiguration(Configuration);
             bigNetNugetSettings = bigNetNugetSettings.SetNoBuild(InvokedTargets.Contains(RebuildBigNet));
             bigNetNugetSettings = bigNetNugetSettings.SetOutputDirectory(OutputDirectory);
+            bigNetNugetSettings = bigNetNugetSettings.SetPackageReleaseNotes(ReleaseNotes);
             DotNetPack(bigNetNugetSettings);
 
             ReportSummary(_ => _.AddPair("Packages", OutputDirectory.GlobFiles("*.nupkg").Count.ToString()));
         });
 
     Target PackNanoNet => _ => _
-    .DependsOn(RebuildNanoNet)
-    .Produces(OutputDirectory / "*.nupkg")
-    .Executes(() => {
-        var nanoNetNugetSettings = new NuGetPackSettings();
-        nanoNetNugetSettings = nanoNetNugetSettings.SetTargetPath(NanoNuspecFile);
-        nanoNetNugetSettings = nanoNetNugetSettings.SetConfiguration(Configuration);
-        nanoNetNugetSettings = nanoNetNugetSettings.SetBuild(false);
-        nanoNetNugetSettings = nanoNetNugetSettings.SetOutputDirectory(OutputDirectory);
-        nanoNetNugetSettings = nanoNetNugetSettings.SetBasePath(Configuration == Configuration.Release ? NanoNetDirectory / "bin/release" : NanoNetDirectory / "bin/debug");
-        nanoNetNugetSettings = nanoNetNugetSettings.SetVersion(PackageVersion);
-        NuGetPack(nanoNetNugetSettings);
+        .DependsOn(RebuildNanoNet)
+        .Produces(OutputDirectory / "*.nupkg")
+        .Executes(() => {
+            var nanoNetNugetSettings = new NuGetPackSettings();
+            nanoNetNugetSettings = nanoNetNugetSettings.SetTargetPath(NanoNuspecFile);
+            nanoNetNugetSettings = nanoNetNugetSettings.SetConfiguration(Configuration);
+            nanoNetNugetSettings = nanoNetNugetSettings.SetBuild(false);
+            nanoNetNugetSettings = nanoNetNugetSettings.SetOutputDirectory(OutputDirectory);
+            nanoNetNugetSettings = nanoNetNugetSettings.SetProperty("releaseNotes", ReleaseNotes);
+            nanoNetNugetSettings = nanoNetNugetSettings.SetBasePath(Configuration == Configuration.Release ? NanoNetDirectory / "bin/release" : NanoNetDirectory / "bin/debug");
+            nanoNetNugetSettings = nanoNetNugetSettings.SetVersion(PackageVersion);
+            NuGetPack(nanoNetNugetSettings);
 
-        ReportSummary(_ => _.AddPair("Packages", OutputDirectory.GlobFiles("*.nupkg").Count.ToString()));
-    });
+            ReportSummary(_ => _.AddPair("Packages", OutputDirectory.GlobFiles("*.nupkg").Count.ToString()));
+        });
 
     Target Finalize => _ => _
         .DependsOn(PackBigNet, PackNanoNet)
