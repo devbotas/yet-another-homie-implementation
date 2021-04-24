@@ -14,7 +14,7 @@ using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 using static Nuke.Common.Tools.NuGet.NuGetTasks;
 
 class Build : NukeBuild {
-    public static int Main() => Execute<Build>(x => x.Pack);
+    public static int Main() => Execute<Build>(x => x.Finalize);
 
     AbsolutePath OutputDirectory => RootDirectory / "Build" / "output";
     AbsolutePath BigNetDirectory => RootDirectory / "Yahi-bigNET";
@@ -38,7 +38,6 @@ class Build : NukeBuild {
 
 
     Target GetInfo => _ => _
-        .Before(Clean)
         .Executes(() => {
             Console.WriteLine("Version?");
             var version = Console.ReadLine();
@@ -66,42 +65,50 @@ class Build : NukeBuild {
             ReportSummary(_ => _.AddPair("Version", PackageVersion));
         });
 
+    Target UpdateBigNetVersions => _ => _
+    .DependsOn(GetInfo)
+    .Executes(() => {
+        var csprojContent = File.ReadAllText(BigNetProjectFile);
+
+        ReplaceVersion(ref csprojContent, AssemblyVersion, "<AssemblyVersion>", "</AssemblyVersion>");
+        ReplaceVersion(ref csprojContent, FileVersion, "<FileVersion>", "</FileVersion>");
+        ReplaceVersion(ref csprojContent, PackageVersion, "<Version>", "</Version>");
+
+        File.WriteAllText(BigNetProjectFile, csprojContent);
+    });
+
     Target UpdateNanoNetVersions => _ => _
         .DependsOn(GetInfo)
         .Executes(() => {
             var assemblyInfoContent = File.ReadAllText(NanoNetAssemblyInfoFile);
 
-            // Replacing AssemblyVersion.
-            var assemblyVersionStartPosition = assemblyInfoContent.IndexOf("[assembly: AssemblyVersion(\"") + "[assembly: AssemblyVersion(\"".Length;
-            var assemblyVersionEndPosition = assemblyInfoContent.IndexOf("\")]", assemblyVersionStartPosition);
-            assemblyInfoContent = assemblyInfoContent.Remove(assemblyVersionStartPosition, assemblyVersionEndPosition - assemblyVersionStartPosition);
-            assemblyInfoContent = assemblyInfoContent.Insert(assemblyVersionStartPosition, AssemblyVersion);
-
-            // Replacing FileVersion.
-            var fileVersionStartPosition = assemblyInfoContent.IndexOf("[assembly: AssemblyFileVersion(\"") + "[assembly: AssemblyFileVersion(\"".Length;
-            var fileVersionEndPosition = assemblyInfoContent.IndexOf("\")]", fileVersionStartPosition);
-            assemblyInfoContent = assemblyInfoContent.Remove(fileVersionStartPosition, fileVersionEndPosition - fileVersionStartPosition);
-            assemblyInfoContent = assemblyInfoContent.Insert(fileVersionStartPosition, FileVersion);
+            ReplaceVersion(ref assemblyInfoContent, AssemblyVersion, "[assembly: AssemblyVersion(\"", "\")]");
+            ReplaceVersion(ref assemblyInfoContent, FileVersion, "[assembly: AssemblyFileVersion(\"", "\")]");
 
             File.WriteAllText(NanoNetAssemblyInfoFile, assemblyInfoContent);
         });
 
     Target Clean => _ => _
-        .Before(Restore)
-        .DependsOn(UpdateNanoNetVersions)
+        .Before(RestoreNanoNet)
+        .DependsOn(UpdateNanoNetVersions, UpdateBigNetVersions)
         .Executes(() => {
             EnsureCleanDirectory(OutputDirectory);
         });
 
-    Target Restore => _ => _
+    Target RestoreBigNet => _ => _
         .DependsOn(Clean)
         .Executes(() => {
             MSBuild(s => s.SetTargetPath(BigNetProjectFile).SetTargets("Restore"));
+        });
+
+    Target RestoreNanoNet => _ => _
+        .DependsOn(Clean)
+        .Executes(() => {
             MSBuild(s => s.SetTargetPath(NanoNetProjectFile).SetTargets("Restore"));
         });
 
     Target RebuildBigNet => _ => _
-        .DependsOn(Restore)
+        .DependsOn(RestoreBigNet)
         .Executes(() => {
             var buildSettings = new MSBuildSettings();
             buildSettings = buildSettings.SetTargetPath(BigNetProjectFile);
@@ -117,7 +124,7 @@ class Build : NukeBuild {
         });
 
     Target RebuildNanoNet => _ => _
-        .DependsOn(Restore)
+        .DependsOn(RestoreNanoNet)
         .Executes(() => {
             var buildSettings = new MSBuildSettings();
             buildSettings = buildSettings.SetTargetPath(NanoNetProjectFile);
@@ -132,12 +139,10 @@ class Build : NukeBuild {
             MSBuild(buildSettings);
         });
 
-    Target Pack => _ => _
-        .DependsOn(RebuildBigNet, RebuildNanoNet)
+    Target PackBigNet => _ => _
+        .DependsOn(RebuildBigNet)
         .Produces(OutputDirectory / "*.nupkg")
         .Executes(() => {
-
-
             var bigNetNugetSettings = new DotNetPackSettings();
             bigNetNugetSettings = bigNetNugetSettings.SetProject(BigNetProjectFile);
             bigNetNugetSettings = bigNetNugetSettings.SetConfiguration(Configuration);
@@ -145,16 +150,35 @@ class Build : NukeBuild {
             bigNetNugetSettings = bigNetNugetSettings.SetOutputDirectory(OutputDirectory);
             DotNetPack(bigNetNugetSettings);
 
-            var nanoNetNugetSettings = new NuGetPackSettings();
-            nanoNetNugetSettings = nanoNetNugetSettings.SetTargetPath(NanoNuspecFile);
-            nanoNetNugetSettings = nanoNetNugetSettings.SetConfiguration(Configuration);
-            nanoNetNugetSettings = nanoNetNugetSettings.SetBuild(false);
-            nanoNetNugetSettings = nanoNetNugetSettings.SetOutputDirectory(OutputDirectory);
-            nanoNetNugetSettings = nanoNetNugetSettings.SetBasePath(Configuration == Configuration.Release ? NanoNetDirectory / "bin/release" : NanoNetDirectory / "bin/debug");
-            nanoNetNugetSettings = nanoNetNugetSettings.SetVersion(PackageVersion);
-            NuGetPack(nanoNetNugetSettings);
-
             ReportSummary(_ => _.AddPair("Packages", OutputDirectory.GlobFiles("*.nupkg").Count.ToString()));
         });
 
+    Target PackNanoNet => _ => _
+    .DependsOn(RebuildNanoNet)
+    .Produces(OutputDirectory / "*.nupkg")
+    .Executes(() => {
+        var nanoNetNugetSettings = new NuGetPackSettings();
+        nanoNetNugetSettings = nanoNetNugetSettings.SetTargetPath(NanoNuspecFile);
+        nanoNetNugetSettings = nanoNetNugetSettings.SetConfiguration(Configuration);
+        nanoNetNugetSettings = nanoNetNugetSettings.SetBuild(false);
+        nanoNetNugetSettings = nanoNetNugetSettings.SetOutputDirectory(OutputDirectory);
+        nanoNetNugetSettings = nanoNetNugetSettings.SetBasePath(Configuration == Configuration.Release ? NanoNetDirectory / "bin/release" : NanoNetDirectory / "bin/debug");
+        nanoNetNugetSettings = nanoNetNugetSettings.SetVersion(PackageVersion);
+        NuGetPack(nanoNetNugetSettings);
+
+        ReportSummary(_ => _.AddPair("Packages", OutputDirectory.GlobFiles("*.nupkg").Count.ToString()));
+    });
+
+    Target Finalize => _ => _
+        .DependsOn(PackBigNet, PackNanoNet)
+        .Executes(() => {
+
+        });
+
+    static void ReplaceVersion(ref string content, string versionToInject, string startTag, string endTag) {
+        var startPosition = content.IndexOf(startTag) + startTag.Length;
+        var endPosition = content.IndexOf(endTag, startPosition);
+        content = content.Remove(startPosition, endPosition - startPosition);
+        content = content.Insert(startPosition, versionToInject);
+    }
 }
