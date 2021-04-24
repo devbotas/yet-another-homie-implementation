@@ -6,10 +6,6 @@
     "build": {
       "type": "object",
       "properties": {
-        "BigNetSolution": {
-          "type": "string",
-          "description": "Path to a solution file that is automatically loaded"
-        },
         "Configuration": {
           "type": "string",
           "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
@@ -45,15 +41,11 @@
         },
         "MsBuildPlatform": {
           "type": "string",
-          "description": "Forcing build to x86, because nanoFramework deosn't build with amd64",
+          "description": "Forcing build to x86, because nanoFramework doesn't build with amd64",
           "enum": [
             "x64",
             "x86"
           ]
-        },
-        "NanoNetSolution": {
-          "type": "string",
-          "description": "Path to a solution file that is automatically loaded"
         },
         "NoLogo": {
           "type": "boolean",
@@ -81,10 +73,12 @@
             "type": "string",
             "enum": [
               "Clean",
+              "GetInfo",
               "Pack",
               "RebuildBigNet",
               "RebuildNanoNet",
-              "Restore"
+              "Restore",
+              "UpdateNanoNetVersions"
             ]
           }
         },
@@ -95,10 +89,12 @@
             "type": "string",
             "enum": [
               "Clean",
+              "GetInfo",
               "Pack",
               "RebuildBigNet",
               "RebuildNanoNet",
-              "Restore"
+              "Restore",
+              "UpdateNanoNetVersions"
             ]
           }
         },

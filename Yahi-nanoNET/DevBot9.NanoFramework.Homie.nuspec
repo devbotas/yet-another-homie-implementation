@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>DevBot9.NanoFramework.Homie</id>
-    <version>0.8.0-preview.1</version>
+    <version>$version$</version>
     <title>DevBot9.NanoFramework.Homie</title>
     <authors>devbotas</authors>
     <owners>devbotas</owners>
