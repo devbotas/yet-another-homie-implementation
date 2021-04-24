@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.IO;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.MSBuild;
 using Nuke.Common.Tools.NuGet;
@@ -43,10 +45,12 @@ class Build : NukeBuild {
         .Executes(() => {
             Console.WriteLine("Version?");
             var version = Console.ReadLine();
-
+            var commitsAheadOfRelease = 0;
             var currentBranch = GitCurrentBranch();
             if ((currentBranch == "Development") || currentBranch.StartsWith("Features/")) {
                 IsPreview = true;
+                var gitCommandResult = Git($"rev-list --count {GitCurrentBranch()} ^Release");
+                commitsAheadOfRelease = int.Parse(((BlockingCollection<Output>)gitCommandResult).Take().Text);
                 Logger.Info($"Branch is {currentBranch}, so that's a preview release.");
             }
             else if ((currentBranch == "Release") || currentBranch.StartsWith("Releases/")) {
@@ -58,7 +62,7 @@ class Build : NukeBuild {
             }
 
             var finalVersionString = version;
-            if (IsPreview) finalVersionString += "-preview." + DateTime.Now.ToString("yyyyMMdd.HHmm");
+            if (IsPreview) finalVersionString += "-preview." + commitsAheadOfRelease;
 
             AssemblyVersion = version + ".0";
             FileVersion = version + ".0";
