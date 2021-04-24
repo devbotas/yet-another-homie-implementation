@@ -6,12 +6,11 @@
     <title>DevBot9.NanoFramework.Homie</title>
     <authors>devbotas</authors>
     <owners>devbotas</owners>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
     <releaseNotes>$releaseNotes$</releaseNotes>
     <developmentDependency>false</developmentDependency>
     <projectUrl>https://github.com/devbotas/yet-another-homie-implementation</projectUrl>
-
     <copyright>Copyright (c) devbotas</copyright>
     <description>Homie implementation for nanoFramework.</description>
     <summary></summary>
