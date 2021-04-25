@@ -43,13 +43,19 @@ class Build : NukeBuild {
 
     Target GetVersionInfo => _ => _
         .Executes(() => {
-            Console.WriteLine("Version?");
+            // Extracting current version. For preview releases, this will save some typing, as the version does not change.
+            var currentVersion = ExtractVersion(BigNetProjectFile, "<AssemblyVersion>", "</AssemblyVersion>");
+            Console.WriteLine($"Current version is {currentVersion}. Enter another, shall you wish (MAJOR.MINOR.PATCH):");
             var version = Console.ReadLine();
+            if (version == "") version = currentVersion.Substring(0, currentVersion.Length - 2); // <-- stripping build number, as we do not operate in those (maybe we should).
+
+            // Figuring out the branch repository is currently on. For non-release branches, like Development or Feature/*, we'll automatically add "preview" suffixes.
             var commitsAheadOfRelease = 0;
             var currentBranch = GitCurrentBranch();
             if ((currentBranch == "Development") || currentBranch.StartsWith("Features/")) {
                 IsPreview = true;
                 var gitCommandResult = Git($"rev-list --count {GitCurrentBranch()} ^Release");
+                // The following line is based on pure faith that nobody changes their underlying implementations...
                 commitsAheadOfRelease = int.Parse(((BlockingCollection<Output>)gitCommandResult).Take().Text);
                 Logger.Info($"Branch is {currentBranch}, so that's a preview release.");
             }
@@ -61,9 +67,9 @@ class Build : NukeBuild {
                 ControlFlow.Fail("You're on some illegal branch!");
             }
 
+            // Constructing version strings.
             var finalVersionString = version;
             if (IsPreview) finalVersionString += "-preview." + commitsAheadOfRelease;
-
             AssemblyVersion = version + ".0";
             FileVersion = version + ".0";
             PackageVersion = finalVersionString;
@@ -74,7 +80,7 @@ class Build : NukeBuild {
     Target GetReleaseNotes => _ => _
         .DependsOn(GetVersionInfo)
         .Executes(() => {
-            Console.WriteLine("Paste (or type) your release notes here. Enter 'q' to finish. Multi-line Markdown is OK. COMMAS ARE NOT OKAY! Don't ask me, why.");
+            Console.WriteLine("Paste (or type) your release notes here. Enter 'q' to finish. Multi-line Markdown is OK. COMMAS ARE NOT OKAY! Don't ask me why.");
 
             var releaseNotesBuilder = new StringBuilder();
             var continueEntering = true;
@@ -91,31 +97,23 @@ class Build : NukeBuild {
             if (ReleaseNotes.Contains(',')) { ControlFlow.Fail("Commas in release notes break 'dotnet pack' command. I do not know, why. For now, just don't use commas."); }
         });
 
-    Target UpdateBigNetVersions => _ => _
-    .DependsOn(GetVersionInfo)
-    .Executes(() => {
-        var csprojContent = File.ReadAllText(BigNetProjectFile);
-
-        ReplaceVersion(ref csprojContent, AssemblyVersion, "<AssemblyVersion>", "</AssemblyVersion>");
-        ReplaceVersion(ref csprojContent, FileVersion, "<FileVersion>", "</FileVersion>");
-        ReplaceVersion(ref csprojContent, PackageVersion, "<Version>", "</Version>");
-
-        File.WriteAllText(BigNetProjectFile, csprojContent);
-    });
-
-    Target UpdateNanoNetVersions => _ => _
+    Target UpdateVersions => _ => _
         .DependsOn(GetVersionInfo)
         .Executes(() => {
-            var assemblyInfoContent = File.ReadAllText(NanoNetAssemblyInfoFile);
+            var csprojContent = File.ReadAllText(BigNetProjectFile);
+            ReplaceVersion(ref csprojContent, AssemblyVersion, "<AssemblyVersion>", "</AssemblyVersion>");
+            ReplaceVersion(ref csprojContent, FileVersion, "<FileVersion>", "</FileVersion>");
+            ReplaceVersion(ref csprojContent, PackageVersion, "<Version>", "</Version>");
+            File.WriteAllText(BigNetProjectFile, csprojContent);
 
+            var assemblyInfoContent = File.ReadAllText(NanoNetAssemblyInfoFile);
             ReplaceVersion(ref assemblyInfoContent, AssemblyVersion, "[assembly: AssemblyVersion(\"", "\")]");
             ReplaceVersion(ref assemblyInfoContent, FileVersion, "[assembly: AssemblyFileVersion(\"", "\")]");
-
             File.WriteAllText(NanoNetAssemblyInfoFile, assemblyInfoContent);
         });
 
     Target Clean => _ => _
-        .DependsOn(UpdateNanoNetVersions, UpdateBigNetVersions, GetReleaseNotes)
+        .DependsOn(UpdateVersions, GetReleaseNotes)
         .Executes(() => {
             EnsureCleanDirectory(OutputDirectory);
         });
@@ -201,6 +199,19 @@ class Build : NukeBuild {
         .Executes(() => {
 
         });
+
+    string ExtractVersion(string file, string startTag, string endTag) {
+        var returnVersion = "";
+
+        var content = File.ReadAllText(file);
+
+        var startPosition = content.IndexOf(startTag) + startTag.Length;
+        var endPosition = content.IndexOf(endTag, startPosition);
+
+        returnVersion = content.Substring(startPosition, endPosition - startPosition);
+
+        return returnVersion;
+    }
 
     static void ReplaceVersion(ref string content, string versionToInject, string startTag, string endTag) {
         var startPosition = content.IndexOf(startTag) + startTag.Length;
