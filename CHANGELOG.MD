@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.0-preview.13] - 2021-05-03
+### Added
+
+### Changed
+- Using "Fx" format for float properties instead of "0.0#".
+
+### Fixed
+- Command properties now do not publish to main topic on startup.
+- Moving TreeParser to proper namespace.
+- Fixed naming for Lightbulb property so it reflects being a parameter.
+
+
 ## [0.8.0] - 2021-04-24
 ### Added
 - Adding a few unit tests.
