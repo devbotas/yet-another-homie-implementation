@@ -74,6 +74,7 @@ class Build : NukeBuild {
             FileVersion = version + ".0";
             PackageVersion = finalVersionString;
 
+            Logger.Info($"Final version string: {finalVersionString}");
             ReportSummary(_ => _.AddPair("Version", PackageVersion));
         });
 
