@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Text.RegularExpressions;
-using DevBot9.Protocols.Homie;
 
-namespace TestApp {
+namespace DevBot9.Protocols.Homie {
     public class HomieTopicTreeParser {
         /// <summary>
         /// Parses Homie tree from provided topic and value dump.
