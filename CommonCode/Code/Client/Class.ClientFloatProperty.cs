@@ -38,7 +38,7 @@ namespace DevBot9.Protocols.Homie {
             switch (Type) {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
-                    _rawValue = Helpers.FloatToString(valueToSet);
+                    _rawValue = Helpers.FloatToString(valueToSet, Format);
                     _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
                     break;
 

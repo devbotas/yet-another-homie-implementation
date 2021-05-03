@@ -157,7 +157,16 @@ namespace DevBot9.Protocols.Homie {
 
         #endregion
 
-        public static string FloatToString(float numberToConvert, string format = "0.0") {
+        public static string GetFloatFormatString(int decimalPlaces) {
+            if (decimalPlaces > 7) { decimalPlaces = 7; }
+            if (decimalPlaces < 1) { decimalPlaces = 1; }
+
+            var returnFormat = $"F{decimalPlaces}";
+
+            return returnFormat;
+        }
+
+        public static string FloatToString(float numberToConvert, string format) {
             string returnValue;
 
 #if !NANOFRAMEWORK_1_0

@@ -21,8 +21,8 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostFloatProperty(PropertyType propertyType, string propertyId, string friendlyName, float initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, DataType.Float, format, unit) {
-            _rawValue = Helpers.FloatToString(initialValue, "0.0#");
+        internal HostFloatProperty(PropertyType propertyType, string propertyId, string friendlyName, float initialValue, int decimalPlaces, string unit) : base(propertyType, propertyId, friendlyName, DataType.Float, Helpers.GetFloatFormatString(decimalPlaces), unit) {
+            _rawValue = Helpers.FloatToString(initialValue, _formatAttribute);
         }
 
         internal override void Initialize(Device parentDevice) {
@@ -40,7 +40,7 @@ namespace DevBot9.Protocols.Homie {
                 case PropertyType.State:
                 case PropertyType.Parameter:
 
-                    _rawValue = Helpers.FloatToString(valueToSet, "0.0#");
+                    _rawValue = Helpers.FloatToString(valueToSet, _formatAttribute);
 
                     _parentDevice.InternalPropertyPublish($"{_propertyId}", _rawValue);
                     break;
