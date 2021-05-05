@@ -35,7 +35,7 @@ namespace DevBot9.Protocols.Homie {
                 localFormat += "," + possibleValues[i];
             }
             _formatAttribute = localFormat;
-            _rawValue = possibleValues[0];
+            _rawValue = initialValue;
         }
 
         internal override void Initialize(Device parentDevice) {
