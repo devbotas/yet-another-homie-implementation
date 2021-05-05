@@ -71,6 +71,11 @@
             }
 
             if (Type == PropertyType.Command) {
+                // Before subsribing to SET events, need to clear the topic. It may be present on the broker from previous runs,
+                // resulting in command activation when this devices boots up. Although there is *no* actual message sent. 
+                _parentDevice.InternalPropertyPublish($"{_propertyId}/set", "");
+
+                // Now subsribing to a clean topic.
                 _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {
                     if (ValidatePayload(payload) == true) {
                         _rawValue = payload;
