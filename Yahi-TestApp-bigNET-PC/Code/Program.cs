@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using DevBot9.Protocols.Homie;
 
 namespace TestApp {
@@ -20,7 +20,8 @@ namespace TestApp {
 
             var homieFecther = new HomieTopicFetcher();
             homieFecther.Initialize(brokerIp);
-            homieFecther.FetchTopics(DeviceFactory.BaseTopic + "/#", out var topicDump2);
+            homieFecther.FetchTopics(DeviceFactory.BaseTopic + "/#", out var topicDump); // <-- NOTE: when topic count is >300, this does not return all the topics for some reason! Half of them are missed.
+            homieFecther.FetchDevices(DeviceFactory.BaseTopic, out var topicDump2); //<-- This will filter Homie devices subtrees only. Other topics will be droppped.
 
             var dynamicConsumer = new DynamicConsumer();
             dynamicConsumer.Initialize(brokerIp, topicDump2);
