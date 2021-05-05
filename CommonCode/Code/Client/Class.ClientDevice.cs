@@ -86,6 +86,17 @@ namespace DevBot9.Protocols.Homie {
 
             return createdProperty;
         }
+
+        /// <summary>
+        /// Creates a client enum property.
+        /// </summary>
+        public ClientEnumProperty CreateClientEnumProperty(ClientPropertyMetadata creationOptions) {
+            var createdProperty = new ClientEnumProperty(creationOptions);
+
+            _properties.Add(createdProperty);
+
+            return createdProperty;
+        }
         #endregion
 
         #region Private stuff

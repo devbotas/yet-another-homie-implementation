@@ -11,8 +11,8 @@ namespace TestApp {
 
         private ClientDevice _clientDevice;
         private ClientFloatProperty _inletTemperature;
-        private ClientStringProperty _turnOnOfProperty;
-        private ClientStringProperty _actualState;
+        private ClientEnumProperty _turnOnOfProperty;
+        private ClientEnumProperty _actualState;
 
         public AirConditionerConsumer() { }
 
@@ -26,8 +26,8 @@ namespace TestApp {
             _clientDevice = DeviceFactory.CreateClientDevice("air-conditioner");
 
             // Creating properties.          
-            _turnOnOfProperty = _clientDevice.CreateClientStringProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Command, NodeId = "general", PropertyId = "turn-on-off", DataType = DataType.Enum, Format = "ON,OFF" });
-            _actualState = _clientDevice.CreateClientStringProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-state", DataType = DataType.Enum, Format = "ON,OFF,STARTING" });
+            _turnOnOfProperty = _clientDevice.CreateClientEnumProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Command, NodeId = "general", PropertyId = "turn-on-off", Format = "ON,OFF" });
+            _actualState = _clientDevice.CreateClientEnumProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-state", Format = "ON,OFF,STARTING" });
             _actualState.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Actual state: {_actualState.Value}");
             };
