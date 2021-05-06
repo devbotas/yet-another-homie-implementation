@@ -121,10 +121,6 @@ namespace DevBot9.Protocols.Homie {
                     parsedType = DataType.Float;
                     break;
 
-                case "percent":
-                    parsedType = DataType.Percent;
-                    break;
-
                 case "boolean":
                     parsedType = DataType.Boolean;
                     break;
@@ -195,10 +191,6 @@ namespace DevBot9.Protocols.Homie {
 
                 case DataType.Float:
                     returnValue = "float";
-                    break;
-
-                case DataType.Percent:
-                    returnValue = "percent";
                     break;
 
                 case DataType.Boolean:

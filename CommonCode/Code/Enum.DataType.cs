@@ -7,8 +7,8 @@
         String = 0,
         Integer,
         Float,
-        Percent,
-        Boolean,
+        // Percent, // <-- I'm starting to think that this is not a type actually. Confusing even if it is, so removing. We have percent in the units field, no need for a dedicated data type.
+        Boolean = 4,
         Enum,
         Color,
         DateTime,
