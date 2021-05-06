@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 
 namespace DevBot9.Protocols.Homie {
@@ -106,6 +106,20 @@ namespace DevBot9.Protocols.Homie {
             else if (creationOptions.DataType != DataType.Enum) { throw new ArgumentException($"You're creating a {nameof(ClientEnumProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
 
             var createdProperty = new ClientEnumProperty(creationOptions);
+
+            _properties.Add(createdProperty);
+
+            return createdProperty;
+        }
+
+        /// <summary>
+        /// Creates a client color property.
+        /// </summary>
+        public ClientColorProperty CreateClientColorProperty(ClientPropertyMetadata creationOptions) {
+            if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Color; }
+            else if (creationOptions.DataType != DataType.Color) { throw new ArgumentException($"You're creating a {nameof(ClientColorProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+
+            var createdProperty = new ClientColorProperty(creationOptions);
 
             _properties.Add(createdProperty);
 

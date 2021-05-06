@@ -186,6 +186,26 @@ namespace DevBot9.Protocols.Homie {
             return isParsed;
         }
 
+        public static bool TryParseHomieColorFormat(string stringToParse, out ColorFormat parsedFormat) {
+            var isParsed = true;
+            switch (stringToParse) {
+                case "rgb":
+                    parsedFormat = ColorFormat.Rgb;
+                    break;
+
+                case "hsv":
+                    parsedFormat = ColorFormat.Hsv;
+                    break;
+
+                default:
+                    parsedFormat = ColorFormat.Rgb;
+                    isParsed = false;
+                    break;
+            }
+
+            return isParsed;
+        }
+
         #endregion
 
         public static string GetFloatFormatString(int decimalPlaces) {

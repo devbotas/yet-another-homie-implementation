@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.HomieTopicTreeParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PropertyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PropertyChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientColorProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientEnumProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientBooleanProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientDevice.cs" />

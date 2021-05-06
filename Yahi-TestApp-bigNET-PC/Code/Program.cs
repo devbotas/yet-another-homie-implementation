@@ -15,6 +15,9 @@ namespace TestApp {
             var airConditionerProducer = new AirConditionerProducer();
             airConditionerProducer.Initialize(brokerIp);
 
+            var lightbulbConsumer = new LightbulbConsumer();
+            lightbulbConsumer.Initialize(brokerIp);
+
             var lightbulbProducer = new LightbulbProducer();
             lightbulbProducer.Initialize(brokerIp);
 

@@ -113,7 +113,13 @@ namespace DevBot9.Protocols.Homie {
                     break;
 
                 case DataType.Color:
-                    Format = creationOptions.Format;
+                    if (Helpers.TryParseHomieColorFormat(creationOptions.Format, out var _)) {
+                        Format = creationOptions.Format;
+                    }
+                    else {
+                        throw new ArgumentException($"Unrecognized color format: {creationOptions.Format}", nameof(creationOptions.Format));
+                    }
+
                     Unit = "";
                     break;
 
