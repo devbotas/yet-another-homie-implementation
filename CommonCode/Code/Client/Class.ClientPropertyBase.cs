@@ -58,8 +58,6 @@ namespace DevBot9.Protocols.Homie {
         private DataType _dataType = DataType.String;
         private string _format = "";
         private string _unit = "";
-        private bool _isSettable = true;
-        private bool _isRetained = true;
         protected string _rawValue = "";
 
         protected ClientPropertyBase(ClientPropertyMetadata creationOptions) {
@@ -134,39 +132,6 @@ namespace DevBot9.Protocols.Homie {
         internal override void Initialize(Device parentDevice) {
             _parentDevice = parentDevice;
 
-            //_parentDevice.InternalPropertySubscribe($"{_propertyId}/$name", (value) => {
-            //    if (parentDevice.GetIsInitializing()) { Name = value; }
-            //});
-
-            //_parentDevice.InternalPropertySubscribe($"{_propertyId}/$datatype", (value) => {
-            //    if (parentDevice.GetIsInitializing()) { DataType = DataType.String; }
-            //});
-
-            //_parentDevice.InternalPropertySubscribe($"{_propertyId}/$format", (value) => {
-            //    if (parentDevice.GetIsInitializing()) { Format = value; }
-            //});
-
-            //_parentDevice.InternalPropertySubscribe($"{_propertyId}/$settable", (value) => {
-            //    if (parentDevice.GetIsInitializing()) {
-            //        if (bool.TryParse(value, out _isSettable)) {
-            //            DefineType(_isSettable, _isRetained);
-            //        }
-            //    }
-            //});
-
-            //_parentDevice.InternalPropertySubscribe($"{_propertyId}/$retained", (value) => {
-            //    if (parentDevice.GetIsInitializing()) {
-            //        if (bool.TryParse(value, out _isRetained)) {
-            //            DefineType(_isSettable, _isRetained);
-            //        }
-            //    }
-            //});
-
-            //_parentDevice.InternalPropertySubscribe($"{_propertyId}/$unit", (value) => {
-            //    if (parentDevice.GetIsInitializing() == false) { Unit = value; }
-            //});
-
-
             if (Type == PropertyType.State) {
                 _parentDevice.InternalPropertySubscribe($"{_propertyId}", (payload) => {
                     if (ValidatePayload(payload) == true) {
@@ -189,17 +154,6 @@ namespace DevBot9.Protocols.Homie {
         }
         protected virtual bool ValidatePayload(string payloadToValidate) {
             return false;
-        }
-
-        private PropertyType DefineType(bool isSettable, bool isRetained) {
-            var returnType = PropertyType.State;
-
-            if ((isSettable == false) && (isRetained == true)) { returnType = PropertyType.State; }
-            if ((isSettable == true) && (isRetained == false)) { returnType = PropertyType.Command; }
-            if ((isSettable == true) && (isRetained == true)) { returnType = PropertyType.Parameter; }
-            if ((isSettable == false) && (isRetained == false)) { throw new ArgumentException("Not allowed by YAHI..."); }
-
-            return returnType;
         }
     }
 }
