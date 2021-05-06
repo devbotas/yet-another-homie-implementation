@@ -63,13 +63,72 @@ namespace DevBot9.Protocols.Homie {
         protected string _rawValue = "";
 
         protected ClientPropertyBase(ClientPropertyMetadata creationOptions) {
-            _propertyId = creationOptions.NodeId + "/" + creationOptions.PropertyId;
-            Type = creationOptions.PropertyType;
             Name = creationOptions.Name;
+            Type = creationOptions.PropertyType;
+            _propertyId = creationOptions.NodeId + "/" + creationOptions.PropertyId;
             DataType = creationOptions.DataType;
-            Format = creationOptions.Format;
-            Unit = creationOptions.Unit;
-            if (creationOptions.InitialValue != "") { _rawValue = creationOptions.InitialValue; }
+
+            if (Type == PropertyType.Command) {
+                // Discarding initial value, it there was any. These are not applicable to commands.
+                _rawValue = "";
+            }
+
+            switch (DataType) {
+                case DataType.String:
+                    Format = "";
+                    Unit = "";
+                    break;
+
+                case DataType.Integer:
+                    Format = "";
+                    Unit = creationOptions.Unit;
+                    break;
+
+                case DataType.Float:
+                    Format = creationOptions.Format;
+                    Unit = creationOptions.Unit;
+                    break;
+
+                case DataType.Boolean:
+                    Format = "";
+                    Unit = "";
+                    break;
+
+                case DataType.Enum:
+                    var possibleValues = creationOptions.Format.Split(',');
+                    if (possibleValues.Length < 2) { throw new ArgumentException("Please provide at least two possible values for this property.", nameof(creationOptions.Format)); }
+
+                    if (Type != PropertyType.Command) {
+                        if (string.IsNullOrEmpty(creationOptions.InitialValue)) { _rawValue = possibleValues[0]; }
+                        else {
+                            var isMatchFound = false;
+                            foreach (var value in possibleValues) {
+                                if (value == creationOptions.InitialValue) { isMatchFound = true; }
+                            }
+
+                            if (isMatchFound == false) { throw new ArgumentException("Initial value is not one of the possible values", nameof(creationOptions.InitialValue)); }
+                        }
+                    }
+
+                    Format = creationOptions.Format;
+                    Unit = "";
+                    break;
+
+                case DataType.Color:
+                    Format = creationOptions.Format;
+                    Unit = "";
+                    break;
+
+                case DataType.DateTime:
+                    Format = "";
+                    Unit = "";
+                    break;
+
+                case DataType.Duration:
+                    Format = "";
+                    Unit = "";
+                    break;
+            }
         }
 
         internal override void Initialize(Device parentDevice) {

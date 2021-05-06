@@ -3,7 +3,8 @@
     /// Possible data type formats of the Homie property.
     /// </summary>
     public enum DataType {
-        String,
+        Blank = -1,
+        String = 0,
         Integer,
         Float,
         Percent,
