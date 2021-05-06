@@ -150,6 +150,41 @@ namespace DevBot9.Protocols.Homie {
             return isParsed;
         }
 
+        public static bool TryParseHomieState(string stringToParse, out HomieState parsedState) {
+            var isParsed = true;
+            switch (stringToParse) {
+                case "init":
+                    parsedState = HomieState.Init;
+                    break;
+
+                case "ready":
+                    parsedState = HomieState.Ready;
+                    break;
+
+                case "disconnected":
+                    parsedState = HomieState.Disconnected;
+                    break;
+
+                case "sleeping":
+                    parsedState = HomieState.Sleeping;
+                    break;
+
+                case "lost":
+                    parsedState = HomieState.Lost;
+                    break;
+
+                case "alert":
+                    parsedState = HomieState.Alert;
+                    break;
+
+                default:
+                    parsedState = HomieState.Lost;
+                    isParsed = false;
+                    break;
+            }
+
+            return isParsed;
+        }
 
         #endregion
 
