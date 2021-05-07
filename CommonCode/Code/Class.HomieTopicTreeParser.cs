@@ -60,7 +60,7 @@ namespace DevBot9.Protocols.Homie {
                         newNode.Properties[p] = newProperty;
 
                         // Parsing property attributes and value.
-                        var propertySubtreeRegex = new Regex($@"^({baseTopic})\/({newDevice.Id})\/({newNode.Id})\/({newProperty.PropertyId})(\/\$[a-z0-9][a-z0-9-]+)?(:|\/)(.+)$");
+                        var propertySubtreeRegex = new Regex($@"^({baseTopic})\/({newDevice.Id})\/({newNode.Id})\/({newProperty.PropertyId})(\/\$?[a-z0-9][a-z0-9-]+)?(:|\/)(.+)$");
                         var isSettable = false;
                         var isRetained = false;
                         var isSettableReceived = false;
@@ -96,6 +96,8 @@ namespace DevBot9.Protocols.Homie {
                                 }
 
                                 if (key == "/$unit") { newProperty.Unit = value; }
+
+                                if (key == "/set") { /* Discarding this one. This is a historically cached command, and these should not execute during initialization.*/ }
 
                                 if (key == "") { newProperty.InitialValue = value; }
                             }
