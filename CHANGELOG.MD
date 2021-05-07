@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.9.0-preview.28] - 2021-05-07
+### Added
+- Implemented ClientColorProperty and ClientEnumProperty.
+- Added alternative FetchDevices method to HomieTopicFetcher
+### Changed
+- Client-side property creators now actually check if data is valid and throws exceptions if it is not.
+- HomieColor is now based on static methods.
+
+### Fixed
+- Commands will now not be executed during initialization if there a retained topic in MQTT broker.
+
+### Removed
+- Removing Percent data type because it is confusing and redundant.
+
+
 ## [0.9.0-preview.13] - 2021-05-03
 ### Added
 
