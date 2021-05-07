@@ -10,10 +10,10 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public HomieColor Value {
             get {
-                var returnValue = new HomieColor();
+                var returnValue = HomieColor.CreateBlack();
 
-                if (_format == ColorFormat.Rgb) { returnValue.SetRgb(_rawValue); }
-                if (_format == ColorFormat.Hsv) { returnValue.SetHsv(_rawValue); }
+                if (_format == ColorFormat.Rgb) { returnValue = HomieColor.FromRgbString(_rawValue); }
+                if (_format == ColorFormat.Hsv) { returnValue = HomieColor.FromHsvString(_rawValue); }
 
                 return returnValue;
             }

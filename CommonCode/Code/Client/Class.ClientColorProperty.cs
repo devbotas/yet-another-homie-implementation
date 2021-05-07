@@ -14,14 +14,8 @@ namespace DevBot9.Protocols.Homie {
             get {
                 HomieColor returnValue;
 
-                if (_colorFormat == ColorFormat.Rgb) {
-                    returnValue = new HomieColor();
-                    returnValue.SetRgb(_rawValue);
-                }
-                else {
-                    returnValue = new HomieColor();
-                    returnValue.SetHsv(_rawValue);
-                }
+                if (_colorFormat == ColorFormat.Rgb) { returnValue = HomieColor.FromRgbString(_rawValue); }
+                else { returnValue = HomieColor.FromHsvString(_rawValue); }
 
                 return returnValue;
             }
@@ -31,9 +25,10 @@ namespace DevBot9.Protocols.Homie {
         }
 
         internal ClientColorProperty(ClientPropertyMetadata creationProperties) : base(creationProperties) {
-            if (Helpers.TryParseBool(_rawValue, out var _) == false) { _rawValue = "false"; }
+            if (Helpers.TryParseBool(_rawValue, out var _) == false) { _rawValue = "0,0,0"; }
 
-            Helpers.TryParseHomieColorFormat(Format, out _colorFormat);
+            // This will always pass, because incorrect Format string will throw an exception in constructors above.
+            var alwaysTrue = Helpers.TryParseHomieColorFormat(Format, out _colorFormat);
         }
 
         internal override void Initialize(Device parentDevice) {
@@ -41,38 +36,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
-            var colorParts = payloadToValidate.Split(',');
-            if (colorParts.Length != 3) { return false; }
-
-            var areNumbersGood = true;
-            if (Format == ColorFormat.Rgb.ToHomiePayload()) {
-                if (Helpers.TryParseInt(colorParts[0], out var red)) {
-                    if (red < 0) { areNumbersGood &= false; }
-                    if (red > 255) { areNumbersGood &= false; }
-                };
-                if (Helpers.TryParseInt(colorParts[1], out var green)) {
-                    if (green < 0) { areNumbersGood &= false; }
-                    if (green > 255) { areNumbersGood &= false; }
-                };
-                if (Helpers.TryParseInt(colorParts[2], out var blue)) {
-                    if (blue < 0) { areNumbersGood &= false; }
-                    if (blue > 255) { areNumbersGood &= false; }
-                }
-            }
-            if (Format == ColorFormat.Hsv.ToHomiePayload()) {
-                if (Helpers.TryParseInt(colorParts[0], out var hue)) {
-                    if (hue < 0) { areNumbersGood &= false; }
-                    if (hue > 360) { areNumbersGood &= false; }
-                };
-                if (Helpers.TryParseInt(colorParts[1], out var saturation)) {
-                    if (saturation < 0) { areNumbersGood &= false; }
-                    if (saturation > 100) { areNumbersGood &= false; }
-                };
-                if (Helpers.TryParseInt(colorParts[2], out var value)) {
-                    if (value < 0) { areNumbersGood &= false; }
-                    if (value > 100) { areNumbersGood &= false; }
-                }
-            }
+            var areNumbersGood = HomieColor.ValidatePayload(payloadToValidate, _colorFormat);
 
             return areNumbersGood;
         }
