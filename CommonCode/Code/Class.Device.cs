@@ -64,7 +64,6 @@ namespace DevBot9.Protocols.Homie {
 
         protected PublishToTopicDelegate _publishToTopicDelegate;
         protected SubscribeToTopicDelegate _subscribeToTopicDelegate;
-        //protected Dictionary<string, List<Action<string>>> _topicHandlerMap = new Dictionary<string, List<Action<string>>>();
         protected Hashtable _topicHandlerMap = new Hashtable();
 
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>

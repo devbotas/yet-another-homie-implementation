@@ -26,25 +26,6 @@ namespace DevBot9.Protocols.Homie {
 
         internal override void Initialize(Device parentDevice) {
             base.Initialize(parentDevice);
-            //if (Type == PropertyType.State) {
-            //    _parentDevice.InternalPropertySubscribe($"{_propertyId}", (payload) => {
-            //        if (ValidatePayload(payload) == true) {
-            //            _rawValue = payload;
-
-            //            RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
-            //        }
-            //    });
-            //}
-
-            //if (Type == PropertyType.Parameter) {
-            //    _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {
-            //        if (ValidatePayload(payload) == true) {
-            //            _rawValue = payload;
-
-            //            RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Value)));
-            //        }
-            //    });
-            //}
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {

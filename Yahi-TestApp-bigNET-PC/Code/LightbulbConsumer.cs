@@ -25,10 +25,10 @@ namespace TestApp {
             // Creating properties.          
             _color = _clientDevice.CreateClientColorProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Parameter, NodeId = "general", PropertyId = "color", Format = "rgb" });
             _color.PropertyChanged += (sender, e) => {
-                Console.WriteLine("naaah, changing it.");
-                var newColor = new HomieColor();
-                newColor.SetRgb("128,128,250");
-                _color.Value = newColor;
+                if (_color.Value.RedValue > 0) {
+                    Console.WriteLine("Me no like red!");
+                    _color.Value = HomieColor.FromRgbString("0,128,128");
+                }
             };
 
             // Initializing all the Homie stuff.

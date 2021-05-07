@@ -3,7 +3,7 @@
     /// Possible data type formats of the Homie property.
     /// </summary>
     public enum DataType {
-        Blank = -1,
+        Blank = -1, // <-- Blank is useful when creating client properties manually.
         String = 0,
         Integer,
         Float,
