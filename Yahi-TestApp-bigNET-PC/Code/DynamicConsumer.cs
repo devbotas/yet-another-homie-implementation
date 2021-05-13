@@ -22,7 +22,7 @@ namespace TestApp {
             _mqttClient.MqttMsgPublishReceived += HandlePublishReceived;
             _mqttClient.Connect(_mqttClientGuid);
 
-            var homieTree = HomieTopicTreeParser.Parse(topicDump, DeviceFactory.BaseTopic);
+            var homieTree = HomieTopicTreeParser.Parse(topicDump, DeviceFactory.BaseTopic, out var _);
 
             if (homieTree.Length == 0) { throw new ArgumentException("Please give me at least one device..."); }
 

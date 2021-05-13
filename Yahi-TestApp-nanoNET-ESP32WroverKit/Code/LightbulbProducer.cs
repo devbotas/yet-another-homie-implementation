@@ -107,7 +107,7 @@ namespace TestApp {
 
             var redCycle = _cachedRed / 255 * intensity;
             var greenCycle = _cachedGreen / 255 * intensity;
-            var blueCycle = _cachedGreen / 255 * intensity;
+            var blueCycle = _cachedBlue / 255 * intensity;
 
             _redPin.SetActiveDutyCyclePercentage(redCycle);
             _greenPin.SetActiveDutyCyclePercentage(greenCycle);

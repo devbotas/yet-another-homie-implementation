@@ -21,10 +21,11 @@ namespace TestApp {
             var lightbulbProducer = new LightbulbProducer();
             lightbulbProducer.Initialize(brokerIp);
 
+            // Note that Eclipse Mosquitto broker can transmit ~100 retained messages by default. Set max_queue_messages to 0 in mosquito.conf to remove this limit,
+            // or otherwise parser will have a lot of problems.
             var homieFecther = new HomieTopicFetcher();
             homieFecther.Initialize(brokerIp);
-            homieFecther.FetchTopics(DeviceFactory.BaseTopic + "/#", out var topicDump); // <-- NOTE: when topic count is >300, this does not return all the topics for some reason! Half of them are missed.
-            homieFecther.FetchDevices(DeviceFactory.BaseTopic, out var topicDump2); //<-- This will filter Homie devices subtrees only. Other topics will be droppped.
+            homieFecther.FetchTopics(DeviceFactory.BaseTopic + "/#", out var topicDump2);
 
             var dynamicConsumer = new DynamicConsumer();
             dynamicConsumer.Initialize(brokerIp, topicDump2);
