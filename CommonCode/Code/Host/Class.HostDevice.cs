@@ -10,6 +10,16 @@ namespace DevBot9.Protocols.Homie {
         #region Public interface
 
         /// <summary>
+        /// Last Will topic, to be broadcasted by broker if device disconnects abruptly. This will be set internally to {baseTopic}/{deviceid}/$state, as defined by Homie.
+        /// </summary>
+        public string WillTopic { get; private set; } = "";
+
+        /// <summary>
+        /// Last Will payload, to be broadcasted by broker if device disconnects abruptly. This will be set insternally to 'lost', as defined by Homie.
+        /// </summary>
+        public string WillPayload { get; private set; } = "lost";
+
+        /// <summary>
         /// Initializes the entire Host Device tree: actually creates internal property variables, publishes to topics and so on. This method must be called, or otherwise entire Host Device tree will not work.
         /// </summary>
         /// <param name="publishToTopicDelegate">This is a mandatory publishing delegate. Wihout it, Host Device will not work.</param>
@@ -201,6 +211,7 @@ namespace DevBot9.Protocols.Homie {
             _deviceId = id;
             Name = friendlyName;
             State = HomieState.Init;
+            WillTopic = $"{baseTopic}/{id}/$state";
         }
 
 

@@ -17,11 +17,11 @@ namespace TestApp {
         public LightbulbProducer() { }
 
         public void Initialize(string mqttBrokerIpAddress) {
+            _hostDevice = DeviceFactory.CreateHostDevice("lightbulb", "Colorful lightbulb");
+
             _mqttClient = new MqttClient(mqttBrokerIpAddress);
             _mqttClient.MqttMsgPublishReceived += HandlePublishReceived;
-            _mqttClient.Connect(_mqttClientGuid);
-
-            _hostDevice = DeviceFactory.CreateHostDevice("lightbulb", "Colorful lightbulb");
+            _mqttClient.Connect(_mqttClientGuid, "", "", true, 1, true, _hostDevice.WillTopic, _hostDevice.WillPayload, true, 10);
 
             #region General node
 

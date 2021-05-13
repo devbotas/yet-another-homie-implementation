@@ -23,11 +23,12 @@ namespace TestApp {
         public AirConditionerProducer() { }
 
         public void Initialize(string mqttBrokerIpAddress) {
+            _hostDevice = DeviceFactory.CreateHostDevice("air-conditioner", "Air conditioning unit");
+
             _mqttClient = new MqttClient(mqttBrokerIpAddress);
             _mqttClient.MqttMsgPublishReceived += HandlePublishReceived;
-            _mqttClient.Connect(_mqttClientGuid);
+            _mqttClient.Connect(_mqttClientGuid, "", "", true, 1, true, _hostDevice.WillTopic, _hostDevice.WillPayload, true, 10);
 
-            _hostDevice = DeviceFactory.CreateHostDevice("air-conditioner", "Air conditioning unit");
 
             #region General node
 
