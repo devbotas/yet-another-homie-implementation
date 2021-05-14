@@ -1,9 +1,18 @@
 # Changelog
 
+## [0.9.0-preview.34] - 2021-05-14
+### Added
+- Host Devices now expose Last Will topic and payload. Users can use those when connecting to broker.
+
+### Changed
+- Completely revamping HomieTopicTreeParser. It is now more robust and parses as much as possible and returns a perfectly valid Homie device tree.
+
+
 ## [0.9.0-preview.28] - 2021-05-07
 ### Added
 - Implemented ClientColorProperty and ClientEnumProperty.
 - Added alternative FetchDevices method to HomieTopicFetcher
+
 ### Changed
 - Client-side property creators now actually check if data is valid and throws exceptions if it is not.
 - HomieColor is now based on static methods.
