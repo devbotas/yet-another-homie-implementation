@@ -208,6 +208,8 @@ namespace DevBot9.Protocols.Homie {
 
         #endregion
 
+        #region String helpers
+
         public static string GetFloatFormatString(int decimalPlaces) {
             if (decimalPlaces > 7) { decimalPlaces = 7; }
             if (decimalPlaces < 1) { decimalPlaces = 1; }
@@ -227,6 +229,20 @@ namespace DevBot9.Protocols.Homie {
 #endif
             return returnValue;
         }
+
+        public static bool StartsWith(this string originalString, string stringToCheck) {
+            var returnValue = false;
+
+            if (string.IsNullOrEmpty(originalString)) { returnValue = false; }
+            if (string.IsNullOrEmpty(stringToCheck)) { returnValue = false; }
+            if (stringToCheck.Length > originalString.Length) { returnValue = false; }
+
+            if (originalString.Substring(0, stringToCheck.Length) == stringToCheck) { returnValue = true; }
+
+            return returnValue;
+        }
+
+        #endregion
 
         #region Enum extensions
         // Two reasons for those: first, bigNET and nanoNET have different ToString() implementations.
