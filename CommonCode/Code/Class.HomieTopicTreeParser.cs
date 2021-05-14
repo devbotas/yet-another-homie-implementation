@@ -27,7 +27,7 @@ namespace DevBot9.Protocols.Homie {
                 for (var d = 0; d < foundDeviceIds.Count; d++) {
                     var deviceId = (string)foundDeviceIds[d];
                     // Adding a new device to hashtable, if it is not there yet.
-                    if (sortedTopics.ContainsKey(deviceId) == false) { sortedTopics.Add(deviceId, new ArrayList()); }
+                    if (sortedTopics.Contains(deviceId) == false) { sortedTopics.Add(deviceId, new ArrayList()); }
 
                     // Adding a relevant topic for that device.
                     if (inputString.StartsWith($@"{baseTopic}/{deviceId}/")) { ((ArrayList)(sortedTopics[deviceId])).Add(inputString); }
@@ -150,7 +150,7 @@ namespace DevBot9.Protocols.Homie {
                     }
 
                     // Figuring out properties we have for this node.
-                    if (candidateNode.Attributes.ContainsKey("$properties")) {
+                    if (candidateNode.Attributes.Contains("$properties")) {
                         goodNodes.Add(candidateNode);
                     }
                     else {
