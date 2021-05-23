@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSharp.BlankApplication")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("DevBot9.NanoFramework.Homie.Utilities")]
+[assembly: AssemblyDescription("Some optional utility classes to make your life with YAHI easier")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CSharp.BlankApplication")]
-[assembly: AssemblyCopyright("Copyright © ")]
+[assembly: AssemblyProduct("DevBot9.NanoFramework.Homie.Utilities")]
+[assembly: AssemblyCopyright("Copyright © devbotas")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

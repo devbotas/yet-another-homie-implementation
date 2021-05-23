@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Text;
 using DevBot9.Protocols.Homie;
 using DevBot9.Protocols.Homie.Utilities;
-using uPLibrary.Networking.M2Mqtt;
 
 namespace TestApp {
     internal class DynamicConsumer {
-        private MqttClient _mqttClient;
-        private string _mqttClientGuid = Guid.NewGuid().ToString();
+        private ResilientHomieBroker _broker = new ResilientHomieBroker();
 
         private ClientDevice _clientDevice;
         private List<ClientPropertyBase> _properties = new List<ClientPropertyBase>();
@@ -18,11 +15,6 @@ namespace TestApp {
         public DynamicConsumer() { }
 
         public void Initialize(string mqttBrokerIpAddress, string[] topicDump) {
-            // Initializing broker.
-            _mqttClient = new MqttClient(mqttBrokerIpAddress);
-            _mqttClient.MqttMsgPublishReceived += HandlePublishReceived;
-            _mqttClient.Connect(_mqttClientGuid);
-
             var homieTree = HomieTopicTreeParser.Parse(topicDump, DeviceFactory.BaseTopic, out var _);
 
             if (homieTree.Length == 0) { throw new ArgumentException("Please give me at least one device..."); }
@@ -67,17 +59,10 @@ namespace TestApp {
 
             }
 
-
             // Initializing all the Homie stuff.
-            _clientDevice.Initialize((topic, value, qosLevel, isRetained) => {
-                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), qosLevel, isRetained);
-            }, topic => {
-                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 1 });
-            });
-        }
-
-        private void HandlePublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e) {
-            _clientDevice.HandlePublishReceived(e.Topic, Encoding.UTF8.GetString(e.Message));
+            _broker.PublishReceived += _clientDevice.HandlePublishReceived;
+            _broker.Initialize(mqttBrokerIpAddress);
+            _clientDevice.Initialize(_broker.PublishToTopic, _broker.SubscribeToTopic);
         }
     }
 }
