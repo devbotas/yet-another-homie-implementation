@@ -20,13 +20,13 @@ class Build : NukeBuild {
     public static int Main() => Execute<Build>(x => x.Finalize);
 
     AbsolutePath OutputDirectory => RootDirectory / "Build" / "output";
-    AbsolutePath BigNetDirectory => RootDirectory / "Yahi-bigNET";
-    AbsolutePath NanoNetDirectory => RootDirectory / "Yahi-nanoNET";
-    AbsolutePath NanoNuspecFile => NanoNetDirectory / "DevBot9.NanoFramework.Homie.nuspec";
+    AbsolutePath BigNetDirectory;
+    AbsolutePath NanoNetDirectory;
+    AbsolutePath NanoNuspecFile;
 
-    AbsolutePath BigNetProjectFile => BigNetDirectory / "Yahi-bigNET.csproj";
-    AbsolutePath NanoNetProjectFile => NanoNetDirectory / "Yahi-nanoNET.nfproj";
-    AbsolutePath NanoNetAssemblyInfoFile => NanoNetDirectory / "Properties" / "AssemblyInfo.cs";
+    AbsolutePath BigNetProjectFile;
+    AbsolutePath NanoNetProjectFile;
+    AbsolutePath NanoNetAssemblyInfoFile;
 
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
@@ -41,7 +41,36 @@ class Build : NukeBuild {
     string ReleaseNotes { get; set; }
 
 
+    Target SelectNugetToBuild => _ => _
+        .Executes(() => {
+            Console.WriteLine($"Which Nuget to build? 1 - main one, 2 - helpers:");
+            var nugetSelection = Console.ReadKey();
+
+            if (nugetSelection.Key == ConsoleKey.D1) {
+                BigNetDirectory = RootDirectory / "Yahi-bigNET";
+                NanoNetDirectory = RootDirectory / "Yahi-nanoNET";
+                NanoNuspecFile = NanoNetDirectory / "DevBot9.NanoFramework.Homie.nuspec";
+
+                BigNetProjectFile = BigNetDirectory / "Yahi-bigNET.csproj";
+                NanoNetProjectFile = NanoNetDirectory / "Yahi-nanoNET.nfproj";
+                NanoNetAssemblyInfoFile = NanoNetDirectory / "Properties" / "AssemblyInfo.cs";
+            }
+            else if (nugetSelection.Key == ConsoleKey.D2) {
+                BigNetDirectory = RootDirectory / "Yahi.Utilities-bigNET";
+                NanoNetDirectory = RootDirectory / "Yahi.Utilities-nanoNET";
+                NanoNuspecFile = NanoNetDirectory / "DevBot9.NanoFramework.Homie.Utilities.nuspec";
+
+                BigNetProjectFile = BigNetDirectory / "Yahi.Utilities-bigNET.csproj";
+                NanoNetProjectFile = NanoNetDirectory / "Yahi.Utilities-nanoNET.nfproj";
+                NanoNetAssemblyInfoFile = NanoNetDirectory / "Properties" / "AssemblyInfo.cs";
+            }
+            else {
+                Console.WriteLine($"No build, then.");
+            }
+        });
+
     Target GetVersionInfo => _ => _
+        .DependsOn(SelectNugetToBuild)
         .Executes(() => {
             // Extracting current version. For preview releases, this will save some typing, as the version does not change.
             var currentVersion = ExtractVersion(BigNetProjectFile, "<AssemblyVersion>", "</AssemblyVersion>");
