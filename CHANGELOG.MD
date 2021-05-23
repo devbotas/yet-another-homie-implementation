@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.0-preview.38] - 2021-05-23
+### Added
+- Companion Homie.Utilieties Nuget now has a ResilientHomieBroker class. It can be used to create a reconnecting Homie connection.
+
+### Changed
+- HomieTopicTreeParser moved to a separate Homie.Utilities Nuget.
+
+
 ## [0.9.0-preview.34] - 2021-05-14
 ### Added
 - Host Devices now expose Last Will topic and payload. Users can use those when connecting to broker.
