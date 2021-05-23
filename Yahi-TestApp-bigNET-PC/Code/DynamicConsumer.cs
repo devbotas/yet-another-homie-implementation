@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using DevBot9.Protocols.Homie;
+using DevBot9.Protocols.Homie.Utilities;
 using uPLibrary.Networking.M2Mqtt;
 
 namespace TestApp {

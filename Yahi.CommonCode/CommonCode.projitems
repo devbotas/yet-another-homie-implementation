@@ -13,7 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.DeviceFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.Helpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.HomieColor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.HomieTopicTreeParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PropertyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PropertyChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientColorProperty.cs" />

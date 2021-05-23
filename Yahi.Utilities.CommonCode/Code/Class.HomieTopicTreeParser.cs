@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Text.RegularExpressions;
 
-namespace DevBot9.Protocols.Homie {
+namespace DevBot9.Protocols.Homie.Utilities {
     public class HomieTopicTreeParser {
         /// <summary>
         /// Parses Homie tree from provided topic and value dump.

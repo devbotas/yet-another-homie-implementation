@@ -40,5 +40,5 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-  <Import Project="..\CommonCode\CommonCode.projitems" Label="Shared" />
+  <Import Project="..\Yahi.CommonCode\CommonCode.projitems" Label="Shared" />
 </Project>

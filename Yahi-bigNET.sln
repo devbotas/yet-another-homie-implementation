@@ -15,12 +15,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{CC91BECF-2E1A-4BA9-91EE-BF363A58BB98}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommonCode", "CommonCode\CommonCode.shproj", "{5D02513A-2022-481F-92BE-4EF5192993F8}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Yahi.CommonCode", "Yahi.CommonCode\Yahi.CommonCode.shproj", "{5D02513A-2022-481F-92BE-4EF5192993F8}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Yahi.Utilities.CommonCode", "Yahi.Utilities.CommonCode\Yahi.Utilities.CommonCode.shproj", "{75611D2D-63E5-4E81-9B75-02522024ED0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yahi.Utilities-bigNET", "Yahi.Utilities-bigNET\Yahi.Utilities-bigNET.csproj", "{DFB4D19C-B231-4B71-958B-1EB90DF4164D}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		CommonCode\CommonCode.projitems*{53e35e1a-9e97-4b85-8a3f-6e1a7622a6a3}*SharedItemsImports = 5
-		CommonCode\CommonCode.projitems*{5d02513a-2022-481f-92be-4ef5192993f8}*SharedItemsImports = 13
+		Yahi.CommonCode\CommonCode.projitems*{53e35e1a-9e97-4b85-8a3f-6e1a7622a6a3}*SharedItemsImports = 5
+		Yahi.CommonCode\CommonCode.projitems*{5d02513a-2022-481f-92be-4ef5192993f8}*SharedItemsImports = 13
+		Yahi.Utilities.CommonCode\Yahi.Utilities.CommonCode.projitems*{75611d2d-63e5-4e81-9b75-02522024ed0b}*SharedItemsImports = 13
+		Yahi.Utilities.CommonCode\Yahi.Utilities.CommonCode.projitems*{dfb4d19c-b231-4b71-958b-1eb90df4164d}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +45,10 @@ Global
 		{CC91BECF-2E1A-4BA9-91EE-BF363A58BB98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC91BECF-2E1A-4BA9-91EE-BF363A58BB98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC91BECF-2E1A-4BA9-91EE-BF363A58BB98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFB4D19C-B231-4B71-958B-1EB90DF4164D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFB4D19C-B231-4B71-958B-1EB90DF4164D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFB4D19C-B231-4B71-958B-1EB90DF4164D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFB4D19C-B231-4B71-958B-1EB90DF4164D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

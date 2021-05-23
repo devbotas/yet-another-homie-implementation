@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Yahi.Utilities_bigNET</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Authors>devbotas</Authors>
+    <Company>devbotas</Company>
+    <Product>DevBot9.Protocols.Homie.Utilities</Product>
+    <PackageId>DevBot9.Protocols.Homie.Utilities</PackageId>
+    <Version>0.1.0</Version>
+    <Description>Some optional utility classes to make your life with YAHI easier.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/devbotas/yet-another-homie-implementation</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/devbotas/yet-another-homie-implementation</RepositoryUrl>
+    <PackageTags>homie; iot; c#</PackageTags>
+  </PropertyGroup>
+
+  <Import Project="..\Yahi.Utilities.CommonCode\Yahi.Utilities.CommonCode.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <PackageReference Include="M2MqttDotnetCore" Version="1.1.0" />
+    <PackageReference Include="NLog" Version="4.7.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yahi-bigNET\Yahi-bigNET.csproj" />
+  </ItemGroup>
+
+</Project>
