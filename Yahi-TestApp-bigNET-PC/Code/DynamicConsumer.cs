@@ -21,7 +21,7 @@ namespace TestApp {
             for (var i = 0; i < _clientDevice.Nodes.Length; i++) {
                 Debug.Print($"Iterating over nodes. Currently: \"{_clientDevice.Nodes[i].Name}\" with {_clientDevice.Nodes[i].Properties.Length} properties.");
 
-                foreach (ClientPropertyBase property in _clientDevice.Nodes[i].Properties) {
+                foreach (var property in _clientDevice.Nodes[i].Properties) {
                     property.PropertyChanged += (sender, e) => {
 #warning Should I expose _rawValue property for read access?.. Otherwise I cannot access it as a  PropertyBase member...
                         // Debug.WriteLine($"Value of property \"{property.Name}\" changed to \"{property.Value}\".");

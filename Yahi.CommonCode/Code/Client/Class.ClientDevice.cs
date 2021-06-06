@@ -7,8 +7,10 @@ namespace DevBot9.Protocols.Homie {
     /// </summary>
     public class ClientDevice : Device {
         #region Public interface
-        public ClientNode[] Nodes;
-
+        /// <summary>
+        /// Device Nodes, as defined by the Homie convention.
+        /// </summary>
+        public ClientNode[] Nodes { get; private set; } = new ClientNode[0];
 
         /// <summary>
         /// Initializes the entire Client Device tree: actually creates internal property variables, subscribes to topics and so on. This method must be called, or otherwise entire Client Device tree will not work.

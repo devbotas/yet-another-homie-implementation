@@ -3,6 +3,9 @@ using System.Collections;
 using System.Text.RegularExpressions;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// This class is useful when parsing MQTT topics trying to figure out if those topics are actually correct. If they are, then this class is later used to create a <see cref="ClientDevice"/>.
+    /// </summary>
     public class ClientDeviceMetadata {
         private string _baseTopic;
 
@@ -18,6 +21,9 @@ namespace DevBot9.Protocols.Homie {
             _baseTopic = baseTopic;
         }
 
+        /// <summary>
+        /// Tries parsing a whole tree of a single device.
+        /// </summary>
         public bool TryParse(ArrayList topicList, ref ArrayList problemList) {
             var isParsedWell = false;
 

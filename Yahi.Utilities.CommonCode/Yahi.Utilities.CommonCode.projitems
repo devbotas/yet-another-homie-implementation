@@ -9,7 +9,6 @@
     <Import_RootNamespace>DevBot9.Protocols.Homie.Utilities</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.HomieTopicTreeParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.ResilientHomieBroker.cs" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 
 namespace DevBot9.Protocols.Homie {
+    /// <summary>
+    /// Properties of a Node. Yeah, very useful comment, I know.
+    /// </summary>
     public class ClientNodeMetadata {
         public string Id { get; internal set; } = "";
         public string NameAttribute { get; internal set; } = "";

@@ -23,7 +23,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a Client Device.
+        /// Creates a Client Device from the provided ID string. This is for manual creation; all the properties will have to be added manually, too.
         /// </summary>
         public static ClientDevice CreateClientDevice(string deviceId) {
             if (ValidateTopicLevel(deviceId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(deviceId)); }
@@ -33,6 +33,9 @@ namespace DevBot9.Protocols.Homie {
             return returnDevice;
         }
 
+        /// <summary>
+        /// Creates an entire Client Device from the provided metadata tree. Useful when access to all of the properties are needed.
+        /// </summary>
         public static ClientDevice CreateClientDevice(ClientDeviceMetadata deviceMetadata) {
             if (ValidateTopicLevel(deviceMetadata.Id, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(deviceMetadata.Id)); }
 
