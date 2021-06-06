@@ -33,6 +33,14 @@ namespace DevBot9.Protocols.Homie {
             return returnDevice;
         }
 
+        public static ClientDevice CreateClientDevice(ClientDeviceMetadata deviceMetadata) {
+            if (ValidateTopicLevel(deviceMetadata.Id, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(deviceMetadata.Id)); }
+
+            var returnDevice = new ClientDevice(BaseTopic, deviceMetadata);
+
+            return returnDevice;
+        }
+
         /// <summary>
         /// Creates a Host Device.
         /// </summary>

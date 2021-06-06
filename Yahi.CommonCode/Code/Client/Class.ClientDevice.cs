@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 
 namespace DevBot9.Protocols.Homie {
@@ -7,6 +7,8 @@ namespace DevBot9.Protocols.Homie {
     /// </summary>
     public class ClientDevice : Device {
         #region Public interface
+        public ClientNode[] Nodes;
+
 
         /// <summary>
         /// Initializes the entire Client Device tree: actually creates internal property variables, subscribes to topics and so on. This method must be called, or otherwise entire Client Device tree will not work.
@@ -139,6 +141,75 @@ namespace DevBot9.Protocols.Homie {
         internal ClientDevice(string baseTopic, string id) {
             _baseTopic = baseTopic;
             _deviceId = id;
+        }
+
+        internal ClientDevice(string baseTopic, ClientDeviceMetadata deviceMetadata) {
+            _baseTopic = baseTopic;
+            _deviceId = deviceMetadata.Id;
+            Name = deviceMetadata.NameAttribute;
+
+            if (Helpers.TryParseHomieState(deviceMetadata.StateAttribute, out var parsedState)) {
+                State = parsedState;
+            }
+            else {
+                State = HomieState.Lost;
+            }
+
+            Nodes = new ClientNode[deviceMetadata.Nodes.Length];
+
+            for (var n = 0; n < deviceMetadata.Nodes.Length; n++) {
+                var nodeMetaData = deviceMetadata.Nodes[n];
+                var node = new ClientNode();
+                Nodes[n] = node;
+
+                node.Name = nodeMetaData.NameAttribute;
+                node.Type = nodeMetaData.TypeAttribute;
+                node.Properties = new ClientPropertyBase[nodeMetaData.Properties.Length];
+
+                for (var p = 0; p < nodeMetaData.Properties.Length; p++) {
+                    var propertyMetadata = nodeMetaData.Properties[p];
+
+
+                    switch (propertyMetadata.DataType) {
+                        case DataType.Integer:
+                            var newIntegerProperty = CreateClientIntegerProperty(propertyMetadata);
+                            node.Properties[p] = newIntegerProperty;
+                            break;
+
+                        case DataType.Float:
+                            var newFloatProperty = CreateClientFloatProperty(propertyMetadata);
+                            node.Properties[p] = newFloatProperty;
+                            break;
+
+                        case DataType.Boolean:
+                            var newBooleanProperty = CreateClientBooleanProperty(propertyMetadata);
+                            node.Properties[p] = newBooleanProperty;
+                            break;
+
+                        case DataType.Enum:
+                            var newEnumProperty = CreateClientEnumProperty(propertyMetadata);
+                            node.Properties[p] = newEnumProperty;
+                            break;
+
+
+                        case DataType.Color:
+                            var newColorProperty = CreateClientColorProperty(propertyMetadata);
+                            node.Properties[p] = newColorProperty;
+                            break;
+
+
+                        case DataType.DateTime:
+                            // Now Datetime cannot be just displayed as string property. Data types are checked internally, and an exception is thrown if when trying create a StringProperty with data type DateTime.
+                            break;
+
+                        case DataType.String:
+                            var newStringProperty = CreateClientStringProperty(propertyMetadata);
+                            node.Properties[p] = newStringProperty;
+                            break;
+
+                    }
+                }
+            }
         }
 
         #endregion

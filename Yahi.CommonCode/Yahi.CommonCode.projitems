@@ -15,6 +15,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.HomieColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PropertyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PropertyChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientDeviceMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientNodeMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientColorProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientEnumProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientBooleanProperty.cs" />

@@ -27,8 +27,8 @@ namespace TestApp {
             homieFecther.Initialize(brokerIp);
             homieFecther.FetchTopics(DeviceFactory.BaseTopic + "/#", out var topicDump2);
 
-            //var dynamicConsumer = new DynamicConsumer();
-            //dynamicConsumer.Initialize(brokerIp, topicDump2);
+            var dynamicConsumer = new DynamicConsumer();
+            dynamicConsumer.Initialize(brokerIp, topicDump2);
 
             Console.WriteLine("Hello World!");
             Console.ReadLine();
