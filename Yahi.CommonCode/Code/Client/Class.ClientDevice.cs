@@ -201,7 +201,10 @@ namespace DevBot9.Protocols.Homie {
 
 
                         case DataType.DateTime:
-                            // Now Datetime cannot be just displayed as string property. Data types are checked internally, and an exception is thrown if when trying create a StringProperty with data type DateTime.
+#warning cannot parse DateTime at this moment, because nF dosn't have parsing methods, and I kinda don't want to implement them myself... Yhus, converting this property into a string for now.
+                            propertyMetadata.DataType = DataType.String;
+                            var newDateTimeProperty = CreateClientStringProperty(propertyMetadata);
+                            node.Properties[p] = newDateTimeProperty;
                             break;
 
                         case DataType.String:
