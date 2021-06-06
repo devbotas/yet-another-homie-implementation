@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.0-preview.43] - 2021-06-06
+### Added
+- Adding an ability to parse entire ClientDevice object from ClientDeviceMetadata. This should help a lot for generic consumers like BHD which shows all the properties of all devices.
+- ClientDevice now also uses PropertyChanged events.
+
+
 ## [0.9.0-preview.38] - 2021-05-23
 ### Added
 - Companion Homie.Utilieties Nuget now has a ResilientHomieBroker class. It can be used to create a reconnecting Homie connection.
