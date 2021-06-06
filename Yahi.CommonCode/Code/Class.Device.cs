@@ -8,6 +8,11 @@ namespace DevBot9.Protocols.Homie {
         #region Public interface
 
         /// <summary>
+        /// Is raised when any of the Device properties (HomieVersion, Name, State) changes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        /// <summary>
         /// This delegate is used by YAHI to publish messages to the external MQTT broker.
         /// </summary>
         public delegate void PublishToTopicDelegate(string topic, string payload, byte qosLevel, bool isRetained);
@@ -109,6 +114,10 @@ namespace DevBot9.Protocols.Homie {
 
         internal bool GetIsInitializing() {
             return _isInitializing;
+        }
+
+        internal void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) {
+            PropertyChanged(sender, e);
         }
         #endregion
     }

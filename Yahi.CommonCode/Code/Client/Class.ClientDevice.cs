@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 
 namespace DevBot9.Protocols.Homie {
@@ -18,13 +18,19 @@ namespace DevBot9.Protocols.Homie {
 
             var homieTopic = $"{_baseTopic}/{_deviceId}/$homie";
             _topicHandlerMap.Add(homieTopic, new ArrayList());
-            ActionString handler = delegate (string value) { HomieVersion = value; };
+            ActionString handler = delegate (string value) {
+                HomieVersion = value;
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieVersion)));
+            };
             ((ArrayList)_topicHandlerMap[homieTopic]).Add(handler);
             _subscribeToTopicDelegate(homieTopic);
 
             var nameTopic = $"{_baseTopic}/{_deviceId}/$name";
             _topicHandlerMap.Add(nameTopic, new ArrayList());
-            ActionString handler2 = delegate (string value) { Name = value; };
+            ActionString handler2 = delegate (string value) {
+                Name = value;
+                RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
+            };
             ((ArrayList)_topicHandlerMap[nameTopic]).Add(handler);
             _subscribeToTopicDelegate(nameTopic);
 
@@ -33,6 +39,7 @@ namespace DevBot9.Protocols.Homie {
             ActionString handler3 = delegate (string value) {
                 if (Helpers.TryParseHomieState(value, out var parsedState)) {
                     State = parsedState;
+                    RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(State)));
                 };
             };
             ((ArrayList)_topicHandlerMap[stateTopic]).Add(handler);
