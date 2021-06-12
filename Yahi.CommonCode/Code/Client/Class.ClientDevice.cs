@@ -35,7 +35,7 @@ namespace DevBot9.Protocols.Homie {
                 Name = value;
                 RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
             };
-            ((ArrayList)_topicHandlerMap[nameTopic]).Add(handler);
+            ((ArrayList)_topicHandlerMap[nameTopic]).Add(handler2);
             _subscribeToTopicDelegate(nameTopic);
 
             var stateTopic = $"{_baseTopic}/{_deviceId}/$state";
@@ -46,7 +46,7 @@ namespace DevBot9.Protocols.Homie {
                     RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(State)));
                 };
             };
-            ((ArrayList)_topicHandlerMap[stateTopic]).Add(handler);
+            ((ArrayList)_topicHandlerMap[stateTopic]).Add(handler3);
             _subscribeToTopicDelegate(stateTopic);
         }
 
