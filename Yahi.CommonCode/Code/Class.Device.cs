@@ -29,9 +29,14 @@ namespace DevBot9.Protocols.Homie {
         public string HomieVersion { get; protected set; } = "4.0.0";
 
         /// <summary>
-        /// Name of the device. This becomes a parent topic for all the nodes and properties.
+        /// Friendly name of the device.
         /// </summary>
         public string Name { get; protected set; }
+
+        /// <summary>
+        /// This becomes a parent topic for all the nodes and properties.
+        /// </summary>
+        public string DeviceId { get; protected set; }
 
         /// <summary>
         /// State of the device. Homie convention defines these: init, ready, disconnected, sleeping, lost, alert.
@@ -63,7 +68,6 @@ namespace DevBot9.Protocols.Homie {
 
         #region Private stuff
         protected string _baseTopic = "temp";
-        protected string _deviceId = "some-device";
 
         protected ArrayList _properties = new ArrayList();
 
@@ -90,11 +94,11 @@ namespace DevBot9.Protocols.Homie {
         }
 
         internal void InternalPropertyPublish(string propertyTopic, string value) {
-            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{propertyTopic}", value);
+            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{propertyTopic}", value);
         }
 
         internal void InternalPropertySubscribe(string propertyTopic, ActionString actionToTakeOnReceivedMessage) {
-            var fullTopic = $"{_baseTopic}/{_deviceId}/{propertyTopic}";
+            var fullTopic = $"{_baseTopic}/{DeviceId}/{propertyTopic}";
 
             if (_topicHandlerMap.Contains(fullTopic) == false) {
                 _topicHandlerMap.Add(fullTopic, new ArrayList());

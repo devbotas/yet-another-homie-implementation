@@ -34,9 +34,9 @@ namespace DevBot9.Protocols.Homie {
             // Building node subtree.
             var nodesList = "";
             foreach (NodeInfo node in _nodes) {
-                InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{node.Id}/$name", node.Name);
-                InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{node.Id}/$type", node.Type);
-                InternalGeneralPublish($"{_baseTopic}/{_deviceId}/{node.Id}/$properties", node.Properties);
+                InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{node.Id}/$name", node.Name);
+                InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{node.Id}/$type", node.Type);
+                InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{node.Id}/$properties", node.Properties);
 
                 nodesList += "," + node.Id;
             }
@@ -45,9 +45,9 @@ namespace DevBot9.Protocols.Homie {
             // The order in which these master properties are published may be important for the property discovery implementation.
             // I have a feeling that OpenHAB, HomeAssistant and other do actually behave differently if I rearrange properties below,
             // but the exact order is not specified in the convention...
-            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$homie", HomieVersion);
-            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$name", Name);
-            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$nodes", nodesList);
+            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/$homie", HomieVersion);
+            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/$name", Name);
+            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/$nodes", nodesList);
 
             // imitating some initialization work.
             Thread.Sleep(1000);
@@ -61,7 +61,7 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public void SetState(HomieState stateToSet) {
             State = stateToSet;
-            InternalGeneralPublish($"{_baseTopic}/{_deviceId}/$state", State.ToHomiePayload());
+            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/$state", State.ToHomiePayload());
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace DevBot9.Protocols.Homie {
 
         internal HostDevice(string baseTopic, string id, string friendlyName = "") {
             _baseTopic = baseTopic;
-            _deviceId = id;
+            DeviceId = id;
             Name = friendlyName;
             State = HomieState.Init;
             WillTopic = $"{baseTopic}/{id}/$state";
