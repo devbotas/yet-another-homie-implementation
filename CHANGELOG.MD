@@ -1,53 +1,31 @@
 # Changelog
 
-## [0.9.0-preview.43] - 2021-06-06
+## [0.9.0] - 2021-06-28
 ### Added
 - Adding an ability to parse entire ClientDevice object from ClientDeviceMetadata. This should help a lot for generic consumers like BHD which shows all the properties of all devices.
 - ClientDevice now also uses PropertyChanged events.
-
-
-## [0.9.0-preview.38] - 2021-05-23
-### Added
-- Companion Homie.Utilieties Nuget now has a ResilientHomieBroker class. It can be used to create a reconnecting Homie connection.
-
-### Changed
-- HomieTopicTreeParser moved to a separate Homie.Utilities Nuget.
-
-
-## [0.9.0-preview.34] - 2021-05-14
-### Added
+- Companion Homie.Utilities Nuget now has a ResilientHomieBroker class. It can be used to create a reconnecting Homie connection.
 - Host Devices now expose Last Will topic and payload. Users can use those when connecting to broker.
-
-### Changed
-- Completely revamping HomieTopicTreeParser. It is now more robust and parses as much as possible and returns a perfectly valid Homie device tree.
-
-
-## [0.9.0-preview.28] - 2021-05-07
-### Added
 - Implemented ClientColorProperty and ClientEnumProperty.
 - Added alternative FetchDevices method to HomieTopicFetcher
 
 ### Changed
+- DeviceId is now a public device property available for everyone to consume.
+- HomieTopicTreeParser moved to a separate Homie.Utilities Nuget.
+- Completely revamping HomieTopicTreeParser. It is now more robust and parses as much as possible and returns a perfectly valid Homie device tree.
 - Client-side property creators now actually check if data is valid and throws exceptions if it is not.
 - HomieColor is now based on static methods.
-
-### Fixed
-- Commands will now not be executed during initialization if there a retained topic in MQTT broker.
-
-### Removed
-- Removing Percent data type because it is confusing and redundant.
-
-
-## [0.9.0-preview.13] - 2021-05-03
-### Added
-
-### Changed
 - Using "Fx" format for float properties instead of "0.0#".
 
 ### Fixed
+- ClientDevice had incorrectly working topic and state hooks.
+- Commands will now not be executed during initialization if there a retained topic in MQTT broker.
 - Command properties now do not publish to main topic on startup.
 - Moving TreeParser to proper namespace.
 - Fixed naming for Lightbulb property so it reflects being a parameter.
+
+### Removed
+- Removing Percent data type because it is confusing and redundant.
 
 
 ## [0.8.0] - 2021-04-24
