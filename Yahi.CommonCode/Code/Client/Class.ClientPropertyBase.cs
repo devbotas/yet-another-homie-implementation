@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>

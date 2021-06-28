@@ -15,7 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.HomieColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.HomieTopicTreeParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PropertyBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PropertyChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientDeviceMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientNodeMetadata.cs" />
@@ -41,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostIntegerProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostPropertyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostStringProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Delegate.ActionString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Interface.INotifyPropertyChanged.cs" />
   </ItemGroup>
 </Project>

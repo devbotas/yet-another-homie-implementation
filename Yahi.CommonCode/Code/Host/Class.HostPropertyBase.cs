@@ -1,4 +1,6 @@
-﻿namespace DevBot9.Protocols.Homie {
+﻿using System.ComponentModel;
+
+namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// A base class for the Host properties. Should not be consumed directly.
     /// </summary>
