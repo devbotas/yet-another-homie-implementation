@@ -107,13 +107,13 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a host float property.
         /// </summary>
-        public HostFloatProperty CreateHostFloatProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, float initialValue = 0.0f, string unit = "", int decimalPlaces = 2) {
+        public HostNumberProperty CreateHostNumberProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, float initialValue = 0.0f, string unit = "", int decimalPlaces = 2) {
             if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
             if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
 
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostFloatProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, decimalPlaces, unit);
+            var createdProperty = new HostNumberProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, decimalPlaces, unit);
 
             _properties.Add(createdProperty);
 
@@ -123,13 +123,13 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a host string property.
         /// </summary>
-        public HostStringProperty CreateHostStringProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, string initialValue = "", string unit = "") {
+        public HostTextProperty CreateHostTextProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, string initialValue = "", string unit = "") {
             if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
             if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
 
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostStringProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
+            var createdProperty = new HostTextProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
 
             _properties.Add(createdProperty);
 
@@ -171,13 +171,13 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a host enum property.
         /// </summary>
-        public HostEnumProperty CreateHostEnumProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, in string[] possibleValues, string initialValue = "") {
+        public HostChoiceProperty CreateHostChoiceProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, in string[] possibleValues, string initialValue = "") {
             if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
             if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
 
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostEnumProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, possibleValues, initialValue);
+            var createdProperty = new HostChoiceProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, possibleValues, initialValue);
 
             _properties.Add(createdProperty);
 

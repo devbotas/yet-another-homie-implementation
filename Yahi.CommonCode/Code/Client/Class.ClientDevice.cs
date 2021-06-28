@@ -54,12 +54,12 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a client string property.
         /// </summary>
-        public ClientStringProperty CreateClientStringProperty(ClientPropertyMetadata creationOptions) {
+        public ClientTextProperty CreateClientTextProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.String; }
-            else if (creationOptions.DataType != DataType.String) { throw new ArgumentException($"You're creating a {nameof(ClientStringProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+            else if (creationOptions.DataType != DataType.String) { throw new ArgumentException($"You're creating a {nameof(ClientTextProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
 
 
-            var createdProperty = new ClientStringProperty(creationOptions);
+            var createdProperty = new ClientTextProperty(creationOptions);
 
             _properties.Add(createdProperty);
 
@@ -84,12 +84,12 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a client float property.
         /// </summary>
-        public ClientFloatProperty CreateClientFloatProperty(ClientPropertyMetadata creationOptions) {
+        public ClientNumberProperty CreateClientNumberProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Float; }
-            else if (creationOptions.DataType != DataType.Float) { throw new ArgumentException($"You're creating a {nameof(CreateClientFloatProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+            else if (creationOptions.DataType != DataType.Float) { throw new ArgumentException($"You're creating a {nameof(CreateClientNumberProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
 
 
-            var createdProperty = new ClientFloatProperty(creationOptions);
+            var createdProperty = new ClientNumberProperty(creationOptions);
 
             _properties.Add(createdProperty);
 
@@ -113,11 +113,11 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a client enum property.
         /// </summary>
-        public ClientEnumProperty CreateClientEnumProperty(ClientPropertyMetadata creationOptions) {
+        public ClientChoiceProperty CreateClientChoiceProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Enum; }
-            else if (creationOptions.DataType != DataType.Enum) { throw new ArgumentException($"You're creating a {nameof(ClientEnumProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+            else if (creationOptions.DataType != DataType.Enum) { throw new ArgumentException($"You're creating a {nameof(ClientChoiceProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
 
-            var createdProperty = new ClientEnumProperty(creationOptions);
+            var createdProperty = new ClientChoiceProperty(creationOptions);
 
             _properties.Add(createdProperty);
 
@@ -180,7 +180,7 @@ namespace DevBot9.Protocols.Homie {
                             break;
 
                         case DataType.Float:
-                            var newFloatProperty = CreateClientFloatProperty(propertyMetadata);
+                            var newFloatProperty = CreateClientNumberProperty(propertyMetadata);
                             node.Properties[p] = newFloatProperty;
                             break;
 
@@ -190,7 +190,7 @@ namespace DevBot9.Protocols.Homie {
                             break;
 
                         case DataType.Enum:
-                            var newEnumProperty = CreateClientEnumProperty(propertyMetadata);
+                            var newEnumProperty = CreateClientChoiceProperty(propertyMetadata);
                             node.Properties[p] = newEnumProperty;
                             break;
 
@@ -204,12 +204,12 @@ namespace DevBot9.Protocols.Homie {
                         case DataType.DateTime:
 #warning cannot parse DateTime at this moment, because nF dosn't have parsing methods, and I kinda don't want to implement them myself... Yhus, converting this property into a string for now.
                             propertyMetadata.DataType = DataType.String;
-                            var newDateTimeProperty = CreateClientStringProperty(propertyMetadata);
+                            var newDateTimeProperty = CreateClientTextProperty(propertyMetadata);
                             node.Properties[p] = newDateTimeProperty;
                             break;
 
                         case DataType.String:
-                            var newStringProperty = CreateClientStringProperty(propertyMetadata);
+                            var newStringProperty = CreateClientTextProperty(propertyMetadata);
                             node.Properties[p] = newStringProperty;
                             break;
 

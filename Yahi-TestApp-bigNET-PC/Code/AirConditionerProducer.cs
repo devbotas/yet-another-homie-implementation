@@ -10,10 +10,10 @@ namespace TestApp {
         private ResilientHomieBroker _broker = new ResilientHomieBroker();
 
         private HostDevice _hostDevice;
-        private HostFloatProperty _targetAirTemperature;
-        private HostFloatProperty _actualAirTemperature;
-        private HostEnumProperty _onOffSwitch;
-        private HostEnumProperty _actualState;
+        private HostNumberProperty _targetAirTemperature;
+        private HostNumberProperty _actualAirTemperature;
+        private HostChoiceProperty _onOffSwitch;
+        private HostChoiceProperty _actualState;
         private HostIntegerProperty _ventilationLevel;
         private HostDateTimeProperty _previousServiceDate;
         private HostDateTimeProperty _nextServiceDate;
@@ -29,14 +29,14 @@ namespace TestApp {
             _hostDevice.UpdateNodeInfo("general", "General information and properties", "no-type");
 
             // Temperatures. These are pretty self-explanatory, right?
-            _actualAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "general", "actual-air-temperature", "Actual measured air temperature", 18, "°C");
-            _targetAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "general", "target-air-temperature", "Target air temperature", 23, "°C");
+            _actualAirTemperature = _hostDevice.CreateHostNumberProperty(PropertyType.State, "general", "actual-air-temperature", "Actual measured air temperature", 18, "°C");
+            _targetAirTemperature = _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "general", "target-air-temperature", "Target air temperature", 23, "°C");
 
             // Besides obvious ON and OFF states, there's a transient STARTING state. This simulated the non-instant startup of the device.
-            _actualState = _hostDevice.CreateHostEnumProperty(PropertyType.State, "general", "actual-state", "Actual power state", new[] { "ON", "OFF", "STARTING" }, "OFF");
+            _actualState = _hostDevice.CreateHostChoiceProperty(PropertyType.State, "general", "actual-state", "Actual power state", new[] { "ON", "OFF", "STARTING" }, "OFF");
 
             // Creating a switch. It also simulates startup sequence ON -> STARTING -> OFF. Shutdown sequence is instant ON -> OFF.
-            _onOffSwitch = _hostDevice.CreateHostEnumProperty(PropertyType.Command, "general", "turn-on-off", "Turn device on or off", new[] { "ON", "OFF" });
+            _onOffSwitch = _hostDevice.CreateHostChoiceProperty(PropertyType.Command, "general", "turn-on-off", "Turn device on or off", new[] { "ON", "OFF" });
             _onOffSwitch.PropertyChanged += (sender, e) => {
                 if ((_actualState.Value == "ON") && (_onOffSwitch.Value == "OFF")) {
                     // This is the shutdown sequence.

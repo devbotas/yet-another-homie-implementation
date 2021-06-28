@@ -8,9 +8,9 @@ namespace TestApp {
         private ResilientHomieBroker _broker = new ResilientHomieBroker();
 
         private ClientDevice _clientDevice;
-        private ClientFloatProperty _inletTemperature;
-        private ClientEnumProperty _turnOnOfProperty;
-        private ClientEnumProperty _actualState;
+        private ClientNumberProperty _inletTemperature;
+        private ClientChoiceProperty _turnOnOfProperty;
+        private ClientChoiceProperty _actualState;
 
         public AirConditionerConsumer() { }
 
@@ -19,13 +19,13 @@ namespace TestApp {
             _clientDevice = DeviceFactory.CreateClientDevice("air-conditioner");
 
             // Creating properties.          
-            _turnOnOfProperty = _clientDevice.CreateClientEnumProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Command, NodeId = "general", PropertyId = "turn-on-off", Format = "ON,OFF" });
-            _actualState = _clientDevice.CreateClientEnumProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-state", Format = "ON,OFF,STARTING" });
+            _turnOnOfProperty = _clientDevice.CreateClientChoiceProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Command, NodeId = "general", PropertyId = "turn-on-off", Format = "ON,OFF" });
+            _actualState = _clientDevice.CreateClientChoiceProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-state", Format = "ON,OFF,STARTING" });
             _actualState.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Actual state: {_actualState.Value}");
             };
 
-            _inletTemperature = _clientDevice.CreateClientFloatProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-air-temperature", DataType = DataType.Float, });
+            _inletTemperature = _clientDevice.CreateClientNumberProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-air-temperature", DataType = DataType.Float, });
             _inletTemperature.PropertyChanged += (sender, e) => {
                 // Simulating some overheated dude.
                 if (_inletTemperature.Value > 25) {

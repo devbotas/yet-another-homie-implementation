@@ -4,7 +4,7 @@ namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// A property of type Enum, as defined by the Homie convention.
     /// </summary>
-    public class HostEnumProperty : HostPropertyBase {
+    public class HostChoiceProperty : HostPropertyBase {
         /// <summary>
         /// Setting this property will invoke validator and if it passes then the value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
         /// </summary>
@@ -19,7 +19,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostEnumProperty(PropertyType propertyType, string propertyId, string friendlyName, in string[] possibleValues, string initialValue) : base(propertyType, propertyId, friendlyName, DataType.Enum, "option1,option2", "") {
+        internal HostChoiceProperty(PropertyType propertyType, string propertyId, string friendlyName, in string[] possibleValues, string initialValue) : base(propertyType, propertyId, friendlyName, DataType.Enum, "option1,option2", "") {
             if (possibleValues.Length == 0) { throw new ArgumentException("Please provide at least one correct value for this property", nameof(possibleValues)); }
             if (string.IsNullOrEmpty(initialValue) == false) {
                 var isMatchFound = false;

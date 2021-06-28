@@ -2,37 +2,45 @@
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
-    /// A property of type String, as defined by the Homie convention.
+    /// A property of type Float, as defined by the Homie convention.
     /// </summary>
-    public class HostStringProperty : HostPropertyBase {
+    public class HostNumberProperty : HostPropertyBase {
         /// <summary>
         /// Set value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
         /// </summary>
-        public string Value {
+        public float Value {
             get {
-                return _rawValue;
+                float returnValue;
+
+                returnValue = Helpers.ParseFloat(_rawValue);
+
+                return returnValue;
             }
             set {
                 SetValue(value);
             }
         }
 
-        internal HostStringProperty(PropertyType propertyType, string propertyId, string friendlyName, string initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, DataType.String, format, unit) {
-            _rawValue = initialValue;
+        internal HostNumberProperty(PropertyType propertyType, string propertyId, string friendlyName, float initialValue, int decimalPlaces, string unit) : base(propertyType, propertyId, friendlyName, DataType.Float, Helpers.GetFloatFormatString(decimalPlaces), unit) {
+            _rawValue = Helpers.FloatToString(initialValue, _formatAttribute);
         }
 
         internal override void Initialize(Device parentDevice) {
             base.Initialize(parentDevice);
         }
+
         protected override bool ValidatePayload(string payloadToValidate) {
-            return true;
+            var returnValue = Helpers.TryParseFloat(payloadToValidate, out _);
+
+            return returnValue;
         }
 
-        private void SetValue(string valueToSet) {
+        private void SetValue(float valueToSet) {
             switch (Type) {
                 case PropertyType.State:
                 case PropertyType.Parameter:
-                    _rawValue = valueToSet;
+
+                    _rawValue = Helpers.FloatToString(valueToSet, _formatAttribute);
 
                     _parentDevice.InternalPropertyPublish($"{_propertyId}", _rawValue);
                     break;

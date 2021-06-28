@@ -4,7 +4,7 @@ namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// A property of type Float, as defined by the Homie convention.
     /// </summary>
-    public class ClientFloatProperty : ClientPropertyBase {
+    public class ClientNumberProperty : ClientPropertyBase {
         /// <summary>
         /// Set value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
         /// </summary>
@@ -20,7 +20,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal ClientFloatProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
+        internal ClientNumberProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
             if (Helpers.TryParseFloat(_rawValue, out var _) == false) { _rawValue = "0.0"; }
         }
 
