@@ -21,6 +21,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Yahi.Utilities.CommonCode",
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Yahi.CommonCode\Yahi.CommonCode.projitems*{5d02513a-2022-481f-92be-4ef5192993f8}*SharedItemsImports = 13
 		Yahi.Utilities.CommonCode\Yahi.Utilities.CommonCode.projitems*{75611d2d-63e5-4e81-9b75-02522024ed0b}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
