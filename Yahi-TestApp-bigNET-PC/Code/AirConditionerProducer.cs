@@ -14,7 +14,7 @@ namespace TestApp {
         private HostNumberProperty _actualAirTemperature;
         private HostChoiceProperty _onOffSwitch;
         private HostChoiceProperty _actualState;
-        private HostIntegerProperty _ventilationLevel;
+        private HostNumberProperty _ventilationLevel;
         private HostDateTimeProperty _previousServiceDate;
         private HostDateTimeProperty _nextServiceDate;
         private HostChoiceProperty _performServiceCommand;
@@ -61,7 +61,7 @@ namespace TestApp {
             _hostDevice.UpdateNodeInfo("ventilation", "Ventilation information and properties", "no-type");
 
             // Allows user to set ventilation level (or power). This will actually be used in simulation loop.
-            _ventilationLevel = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "ventilation", "level", "Level of ventilation", 50, "%");
+            _ventilationLevel = _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "ventilation", "level", "Level of ventilation", 50, "%");
 
             #endregion
 

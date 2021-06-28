@@ -22,7 +22,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientChoiceProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientNumberProperty.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientIntegerProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientPropertyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientPropertyMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientTextProperty.cs" />
@@ -35,7 +34,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostChoiceProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostNumberProperty.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostIntegerProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostPropertyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostTextProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Delegate.ActionString.cs" />

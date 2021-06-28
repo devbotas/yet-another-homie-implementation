@@ -89,22 +89,6 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a host integer property.
-        /// </summary>
-        public HostIntegerProperty CreateHostIntegerProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, int initialValue = 0, string unit = "") {
-            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
-            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
-
-            UpdateNodePropertyMap(nodeId, propertyId);
-
-            var createdProperty = new HostIntegerProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
-
-            _properties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        /// <summary>
         /// Creates a host float property.
         /// </summary>
         public HostNumberProperty CreateHostNumberProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, float initialValue = 0.0f, string unit = "", int decimalPlaces = 2) {

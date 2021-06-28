@@ -67,21 +67,6 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a client integer property.
-        /// </summary>
-        public ClientIntegerProperty CreateClientIntegerProperty(ClientPropertyMetadata creationOptions) {
-            if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Integer; }
-            else if (creationOptions.DataType != DataType.Integer) { throw new ArgumentException($"You're creating a {nameof(ClientIntegerProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
-
-
-            var createdProperty = new ClientIntegerProperty(creationOptions);
-
-            _properties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        /// <summary>
         /// Creates a client float property.
         /// </summary>
         public ClientNumberProperty CreateClientNumberProperty(ClientPropertyMetadata creationOptions) {
@@ -161,7 +146,7 @@ namespace DevBot9.Protocols.Homie {
 
                     switch (propertyMetadata.DataType) {
                         case DataType.Integer:
-                            var newIntegerProperty = CreateClientIntegerProperty(propertyMetadata);
+                            var newIntegerProperty = CreateClientNumberProperty(propertyMetadata);
                             node.Properties[p] = newIntegerProperty;
                             break;
 

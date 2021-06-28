@@ -25,28 +25,6 @@ namespace YahiTests {
         }
 
         [Test]
-        public void CreateHostIntegerPropertyValidateNodeIdInput() {
-            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name"), Throws.ArgumentException);
-            }
-
-            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name"));
-            }
-        }
-
-        [Test]
-        public void CreateHostIntegerPropertyValidatePropertyIdInput() {
-            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "good-id", badTopicLevel, "Friendly name"), Throws.ArgumentException);
-            }
-
-            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "good-id", goodTopicLevel, "Friendly name"));
-            }
-        }
-
-        [Test]
         public void CreateHostFloatPropertyValidateNodeIdInput() {
             foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
                 Assert.That(() => _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name"), Throws.ArgumentException);

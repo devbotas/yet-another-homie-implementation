@@ -13,7 +13,7 @@ namespace TestApp {
         private HostDevice _hostDevice;
         private HostChoiceProperty _onOffSwitch;
         private HostColorProperty _color;
-        private HostIntegerProperty _intensity;
+        private HostNumberProperty _intensity;
 
         private double _cachedRed = 0;
         private double _cachedGreen = 0;
@@ -81,7 +81,7 @@ namespace TestApp {
                 UpdateLed();
             };
 
-            _intensity = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "general", "intensity", "Intensity", 0, "%");
+            _intensity = _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "general", "intensity", "Intensity", 0, "%");
             _intensity.PropertyChanged += (sender, e) => {
                 UpdateLed();
 

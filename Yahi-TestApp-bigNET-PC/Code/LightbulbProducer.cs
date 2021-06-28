@@ -9,7 +9,7 @@ namespace TestApp {
         private HostDevice _hostDevice;
         private HostChoiceProperty _onOffSwitch;
         private HostColorProperty _color;
-        private HostIntegerProperty _intensity;
+        private HostNumberProperty _intensity;
 
         public LightbulbProducer() { }
 
@@ -36,7 +36,7 @@ namespace TestApp {
                 }
             };
 
-            _intensity = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "general", "intensity", "Intensity", 0, "%");
+            _intensity = _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "general", "intensity", "Intensity", 0, "%");
 
             #endregion
 
