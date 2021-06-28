@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DevBot9.NanoFramework.Homie.Utilities")]
-[assembly: AssemblyDescription("Some optional utility classes to make your life with YAHI easier")]
+[assembly: AssemblyDescription("Some optional utility classes to make your life with YAHI easier.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("DevBot9.NanoFramework.Homie.Utilities")]

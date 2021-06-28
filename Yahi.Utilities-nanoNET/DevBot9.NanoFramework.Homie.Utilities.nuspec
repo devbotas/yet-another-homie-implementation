@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>DevBot9.NanoFramework.Homie</id>
+    <id>DevBot9.NanoFramework.Homie.Utilities</id>
     <version>$version$</version>
-    <title>DevBot9.NanoFramework.Homie</title>
+    <title>DevBot9.NanoFramework.Homie.Utilities</title>
     <authors>devbotas</authors>
     <owners>devbotas</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -20,13 +20,14 @@
       <dependency id="nanoFramework.System.Collections" version="1.2.0-preview.53" />
       <dependency id="nanoFramework.System.Text" version="1.1.1-preview.50" />
       <dependency id="nanoFramework.System.Text.RegularExpressions" version="1.0.0-preview.24" />
-      <dependency id="nanoFramework.System.Math" version="1.4.0-preview.7" />
+      <dependency id="nanoFramework.M2Mqtt" version="1.10.4-preview.11" />
+      <dependency id="DevBot9.Protocols.Homie" version="$version$"/>
     </dependencies>
   </metadata>
   <files>
-    <file src="DevBot9.NanoFramework.Homie.dll" target="lib\DevBot9.NanoFramework.Homie.dll" />
-    <file src="DevBot9.NanoFramework.Homie.pdb" target="lib\DevBot9.NanoFramework.Homie.pdb" />
-    <file src="DevBot9.NanoFramework.Homie.pdbx" target="lib\DevBot9.NanoFramework.Homie.pdbx" />
-    <file src="DevBot9.NanoFramework.Homie.pe" target="lib\DevBot9.NanoFramework.Homie.pe" />
+    <file src="DevBot9.NanoFramework.Homie.Utilities.dll" target="lib\DevBot9.NanoFramework.Homie.Utilities.dll" />
+    <file src="DevBot9.NanoFramework.Homie.Utilities.pdb" target="lib\DevBot9.NanoFramework.Homie.Utilities.pdb" />
+    <file src="DevBot9.NanoFramework.Homie.Utilities.pdbx" target="lib\DevBot9.NanoFramework.Homie.Utilities.pdbx" />
+    <file src="DevBot9.NanoFramework.Homie.Utilities.pe" target="lib\DevBot9.NanoFramework.Homie.Utilities.pe" />
   </files>
 </package>

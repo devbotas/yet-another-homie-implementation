@@ -3,12 +3,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DevBot9.Protocols.Homie;
-using uPLibrary.Networking.M2Mqtt;
+using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class AirConditionerProducer {
-        private MqttClient _mqttClient;
-        private string _mqttClientGuid = Guid.NewGuid().ToString();
+        private ResilientHomieBroker _broker = new ResilientHomieBroker();
 
         private HostDevice _hostDevice;
         private HostFloatProperty _targetAirTemperature;
@@ -23,10 +22,6 @@ namespace TestApp {
         public AirConditionerProducer() { }
 
         public void Initialize(string mqttBrokerIpAddress) {
-            _mqttClient = new MqttClient(mqttBrokerIpAddress);
-            _mqttClient.MqttMsgPublishReceived += HandlePublishReceived;
-            _mqttClient.Connect(_mqttClientGuid);
-
             _hostDevice = DeviceFactory.CreateHostDevice("air-conditioner", "Air conditioning unit");
 
             #region General node
@@ -92,14 +87,11 @@ namespace TestApp {
 
             #endregion
 
+            _broker.PublishReceived += _hostDevice.HandlePublishReceived;
+            _broker.Initialize(mqttBrokerIpAddress, _hostDevice.WillTopic, _hostDevice.WillPayload);
+
             // This builds topic trees and subscribes to everything.
-            _hostDevice.Initialize((topic, value, qosLevel, isRetained) => {
-                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), 1, true);
-
-            }, topic => {
-                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 1 });
-            });
-
+            _hostDevice.Initialize(_broker.PublishToTopic, _broker.SubscribeToTopic);
 
             // finally, running the simulation loop. We're good to go!
             Task.Run(async () => await RunSimulationLoopContinuously(new CancellationToken()));

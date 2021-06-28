@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>5d02513a-2022-481f-92be-4ef5192993f8</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CommonCode</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.Device.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.DeviceFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.Helpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.HomieColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.HomieTopicTreeParser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PropertyBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientDeviceMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientNodeMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientColorProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientEnumProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientBooleanProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientDevice.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientFloatProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientIntegerProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientPropertyBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientPropertyMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientStringProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Enum.ColorFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Enum.DataType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Enum.HomieState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Enum.PropertyType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostBooleanProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostColorProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostDateTimeProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostDevice.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostEnumProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostFloatProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostIntegerProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostPropertyBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostStringProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Delegate.ActionString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Interface.INotifyPropertyChanged.cs" />
+  </ItemGroup>
+</Project>

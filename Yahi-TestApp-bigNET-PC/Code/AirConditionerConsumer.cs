@@ -1,33 +1,26 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Text;
 using DevBot9.Protocols.Homie;
-using uPLibrary.Networking.M2Mqtt;
+using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class AirConditionerConsumer {
-        private MqttClient _mqttClient;
-        private string _mqttClientGuid = Guid.NewGuid().ToString();
+        private ResilientHomieBroker _broker = new ResilientHomieBroker();
 
         private ClientDevice _clientDevice;
         private ClientFloatProperty _inletTemperature;
-        private ClientStringProperty _turnOnOfProperty;
-        private ClientStringProperty _actualState;
+        private ClientEnumProperty _turnOnOfProperty;
+        private ClientEnumProperty _actualState;
 
         public AirConditionerConsumer() { }
 
         public void Initialize(string mqttBrokerIpAddress) {
-            // Initializing broker.
-            _mqttClient = new MqttClient(mqttBrokerIpAddress);
-            _mqttClient.MqttMsgPublishReceived += HandlePublishReceived;
-            _mqttClient.Connect(_mqttClientGuid);
-
             // Creating a air conditioner device.
             _clientDevice = DeviceFactory.CreateClientDevice("air-conditioner");
 
             // Creating properties.          
-            _turnOnOfProperty = _clientDevice.CreateClientStringProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Command, NodeId = "general", PropertyId = "turn-on-off", DataType = DataType.Enum, Format = "ON,OFF" });
-            _actualState = _clientDevice.CreateClientStringProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-state", DataType = DataType.Enum, Format = "ON,OFF,STARTING" });
+            _turnOnOfProperty = _clientDevice.CreateClientEnumProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Command, NodeId = "general", PropertyId = "turn-on-off", Format = "ON,OFF" });
+            _actualState = _clientDevice.CreateClientEnumProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-state", Format = "ON,OFF,STARTING" });
             _actualState.PropertyChanged += (sender, e) => {
                 Debug.WriteLine($"Actual state: {_actualState.Value}");
             };
@@ -44,15 +37,9 @@ namespace TestApp {
             };
 
             // Initializing all the Homie stuff.
-            _clientDevice.Initialize((topic, value, qosLevel, isRetained) => {
-                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), qosLevel, isRetained);
-            }, topic => {
-                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 1 });
-            });
-        }
-
-        private void HandlePublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e) {
-            _clientDevice.HandlePublishReceived(e.Topic, Encoding.UTF8.GetString(e.Message));
+            _broker.PublishReceived += _clientDevice.HandlePublishReceived;
+            _broker.Initialize(mqttBrokerIpAddress);
+            _clientDevice.Initialize(_broker.PublishToTopic, _broker.SubscribeToTopic);
         }
     }
 }

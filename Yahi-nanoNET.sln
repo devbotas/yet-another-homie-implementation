@@ -9,15 +9,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommonCode", "CommonCode\CommonCode.shproj", "{5D02513A-2022-481F-92BE-4EF5192993F8}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Yahi.CommonCode", "Yahi.CommonCode\Yahi.CommonCode.shproj", "{5D02513A-2022-481F-92BE-4EF5192993F8}"
 EndProject
 Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "Yahi-nanoNET", "Yahi-nanoNET\Yahi-nanoNET.nfproj", "{AE1B8007-F999-417C-A814-0830091346D4}"
 EndProject
-Project("{DE94C900-6EF5-46D5-9D89-208A30F32E29}") = "Yahi-TestApp-nanoNET-ESP32WroverKit", "Yahi-TestApp-nanoNET-ESP32WroverKit\Yahi-TestApp-nanoNET-ESP32WroverKit.nfproj", "{73BA3763-37FE-4468-B41A-D5A5CB214BDE}"
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "Yahi-TestApp-nanoNET-ESP32WroverKit", "Yahi-TestApp-nanoNET-ESP32WroverKit\Yahi-TestApp-nanoNET-ESP32WroverKit.nfproj", "{73BA3763-37FE-4468-B41A-D5A5CB214BDE}"
+EndProject
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "Yahi.Utilities-nanoNET", "Yahi.Utilities-nanoNET\Yahi.Utilities-nanoNET.nfproj", "{601BE773-36F2-406F-BC4B-53C27D6BD832}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Yahi.Utilities.CommonCode", "Yahi.Utilities.CommonCode\Yahi.Utilities.CommonCode.shproj", "{75611D2D-63E5-4E81-9B75-02522024ED0B}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		CommonCode\CommonCode.projitems*{5d02513a-2022-481f-92be-4ef5192993f8}*SharedItemsImports = 13
+		Yahi.CommonCode\Yahi.CommonCode.projitems*{5d02513a-2022-481f-92be-4ef5192993f8}*SharedItemsImports = 13
+		Yahi.Utilities.CommonCode\Yahi.Utilities.CommonCode.projitems*{75611d2d-63e5-4e81-9b75-02522024ed0b}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +41,12 @@ Global
 		{73BA3763-37FE-4468-B41A-D5A5CB214BDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73BA3763-37FE-4468-B41A-D5A5CB214BDE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{73BA3763-37FE-4468-B41A-D5A5CB214BDE}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{601BE773-36F2-406F-BC4B-53C27D6BD832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{601BE773-36F2-406F-BC4B-53C27D6BD832}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{601BE773-36F2-406F-BC4B-53C27D6BD832}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{601BE773-36F2-406F-BC4B-53C27D6BD832}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{601BE773-36F2-406F-BC4B-53C27D6BD832}.Release|Any CPU.Build.0 = Release|Any CPU
+		{601BE773-36F2-406F-BC4B-53C27D6BD832}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
