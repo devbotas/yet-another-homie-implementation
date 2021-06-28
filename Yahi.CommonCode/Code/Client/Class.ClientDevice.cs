@@ -20,7 +20,7 @@ namespace DevBot9.Protocols.Homie {
         public new void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
             base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
 
-            var homieTopic = $"{_baseTopic}/{_deviceId}/$homie";
+            var homieTopic = $"{_baseTopic}/{DeviceId}/$homie";
             _topicHandlerMap.Add(homieTopic, new ArrayList());
             ActionString handler = delegate (string value) {
                 HomieVersion = value;
@@ -29,16 +29,16 @@ namespace DevBot9.Protocols.Homie {
             ((ArrayList)_topicHandlerMap[homieTopic]).Add(handler);
             _subscribeToTopicDelegate(homieTopic);
 
-            var nameTopic = $"{_baseTopic}/{_deviceId}/$name";
+            var nameTopic = $"{_baseTopic}/{DeviceId}/$name";
             _topicHandlerMap.Add(nameTopic, new ArrayList());
             ActionString handler2 = delegate (string value) {
                 Name = value;
                 RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
             };
-            ((ArrayList)_topicHandlerMap[nameTopic]).Add(handler);
+            ((ArrayList)_topicHandlerMap[nameTopic]).Add(handler2);
             _subscribeToTopicDelegate(nameTopic);
 
-            var stateTopic = $"{_baseTopic}/{_deviceId}/$state";
+            var stateTopic = $"{_baseTopic}/{DeviceId}/$state";
             _topicHandlerMap.Add(stateTopic, new ArrayList());
             ActionString handler3 = delegate (string value) {
                 if (Helpers.TryParseHomieState(value, out var parsedState)) {
@@ -46,7 +46,7 @@ namespace DevBot9.Protocols.Homie {
                     RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(State)));
                 };
             };
-            ((ArrayList)_topicHandlerMap[stateTopic]).Add(handler);
+            ((ArrayList)_topicHandlerMap[stateTopic]).Add(handler3);
             _subscribeToTopicDelegate(stateTopic);
         }
 
@@ -142,12 +142,12 @@ namespace DevBot9.Protocols.Homie {
 
         internal ClientDevice(string baseTopic, string id) {
             _baseTopic = baseTopic;
-            _deviceId = id;
+            DeviceId = id;
         }
 
         internal ClientDevice(string baseTopic, ClientDeviceMetadata deviceMetadata) {
             _baseTopic = baseTopic;
-            _deviceId = deviceMetadata.Id;
+            DeviceId = deviceMetadata.Id;
             Name = deviceMetadata.NameAttribute;
 
             if (Helpers.TryParseHomieState(deviceMetadata.StateAttribute, out var parsedState)) {
