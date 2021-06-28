@@ -137,22 +137,6 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a host boolean property.
-        /// </summary>
-        public HostBooleanProperty CreateHostBooleanProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, bool initialValue = false) {
-            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
-            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
-
-            UpdateNodePropertyMap(nodeId, propertyId);
-
-            var createdProperty = new HostBooleanProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", "");
-
-            _properties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        /// <summary>
         /// Creates a host color property.
         /// </summary>
         public HostColorProperty CreateHostColorProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, ColorFormat colorFormat = ColorFormat.Rgb) {

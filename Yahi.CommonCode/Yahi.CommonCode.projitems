@@ -20,7 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientNodeMetadata.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientColorProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientChoiceProperty.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientBooleanProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientNumberProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Client\Class.ClientIntegerProperty.cs" />
@@ -31,7 +30,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Code\Enum.DataType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Enum.HomieState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Enum.PropertyType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostBooleanProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostColorProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostDateTimeProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostDevice.cs" />

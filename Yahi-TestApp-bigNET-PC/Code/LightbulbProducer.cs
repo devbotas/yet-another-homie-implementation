@@ -7,7 +7,7 @@ namespace TestApp {
         private ResilientHomieBroker _broker = new ResilientHomieBroker();
 
         private HostDevice _hostDevice;
-        private HostBooleanProperty _onOffSwitch;
+        private HostChoiceProperty _onOffSwitch;
         private HostColorProperty _color;
         private HostIntegerProperty _intensity;
 
@@ -25,10 +25,10 @@ namespace TestApp {
             _color.PropertyChanged += (sender, e) => {
                 Debug.Print($"Color changed to {_color.Value.ToRgbString()}");
             };
-            _onOffSwitch = _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, "general", "is-on", "Is on");
+            _onOffSwitch = _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, "general", "is-on", "Is on", new[] { "OFF,ON" });
             _onOffSwitch.PropertyChanged += (sender, e) => {
                 // Simulating some lamp behaviour.
-                if (_onOffSwitch.Value == true) {
+                if (_onOffSwitch.Value == "ON") {
                     _intensity.Value = 50;
                 }
                 else {

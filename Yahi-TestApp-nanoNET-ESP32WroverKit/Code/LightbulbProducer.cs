@@ -11,7 +11,7 @@ namespace TestApp {
         private readonly string _mqttClientGuid = Guid.NewGuid().ToString();
 
         private HostDevice _hostDevice;
-        private HostBooleanProperty _onOffSwitch;
+        private HostChoiceProperty _onOffSwitch;
         private HostColorProperty _color;
         private HostIntegerProperty _intensity;
 
@@ -69,10 +69,10 @@ namespace TestApp {
 
                 Debug.WriteLine($"Color changed to {_color.Value.ToRgbString()}");
             };
-            _onOffSwitch = _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, "general", "is-on", "Is on");
+            _onOffSwitch = _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, "general", "is-on", "Is on", new[] { "ON,OFF" });
             _onOffSwitch.PropertyChanged += (sender, e) => {
                 // Simulating some lamp behaviour.
-                if (_onOffSwitch.Value == true) {
+                if (_onOffSwitch.Value == "ON") {
                     _intensity.Value = 100;
                 }
                 else {

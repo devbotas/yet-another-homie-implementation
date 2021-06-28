@@ -91,28 +91,6 @@ namespace YahiTests {
         }
 
         [Test]
-        public void CreateHostBooleanPropertyValidateNodeIdInput() {
-            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name"), Throws.ArgumentException);
-            }
-
-            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name"));
-            }
-        }
-
-        [Test]
-        public void CreateHostBooleanPropertyValidatePropertyIdInput() {
-            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, "good-id", badTopicLevel, "Friendly name"), Throws.ArgumentException);
-            }
-
-            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, "good-id", goodTopicLevel, "Friendly name"));
-            }
-        }
-
-        [Test]
         public void CreateHostColorPropertyValidateNodeIdInput() {
             foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
                 Assert.That(() => _hostDevice.CreateHostColorProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name"), Throws.ArgumentException);

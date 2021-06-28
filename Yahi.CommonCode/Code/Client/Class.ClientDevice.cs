@@ -97,20 +97,6 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a client boolean property.
-        /// </summary>
-        public ClientBooleanProperty CreateClientBooleanProperty(ClientPropertyMetadata creationOptions) {
-            if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Boolean; }
-            else if (creationOptions.DataType != DataType.Boolean) { throw new ArgumentException($"You're creating a {nameof(ClientBooleanProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
-
-            var createdProperty = new ClientBooleanProperty(creationOptions);
-
-            _properties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        /// <summary>
         /// Creates a client enum property.
         /// </summary>
         public ClientChoiceProperty CreateClientChoiceProperty(ClientPropertyMetadata creationOptions) {
@@ -185,7 +171,8 @@ namespace DevBot9.Protocols.Homie {
                             break;
 
                         case DataType.Boolean:
-                            var newBooleanProperty = CreateClientBooleanProperty(propertyMetadata);
+                            propertyMetadata.Format = "false,true";
+                            var newBooleanProperty = CreateClientChoiceProperty(propertyMetadata);
                             node.Properties[p] = newBooleanProperty;
                             break;
 
