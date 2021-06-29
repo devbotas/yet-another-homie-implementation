@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
@@ -18,37 +17,31 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         /// <param name="publishToTopicDelegate">This is a mandatory publishing delegate. Wihout it, Client Device will not work.</param>
         /// <param name="subscribeToTopicDelegate">This is a mandatory subscription delegate. Wihout it, Client Device will not work.</param>
-        public new void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
-            base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
+        public new void Initialize(IMqttBroker broker, AddToLogDelegate loggingFunction = null) {
+            base.Initialize(broker, loggingFunction);
 
             var homieTopic = $"{_baseTopic}/{DeviceId}/$homie";
-            _topicHandlerMap.Add(homieTopic, new ArrayList());
-            ActionString handler = delegate (string value) {
+            ActionString handlerForTopicHomie = delegate (string value) {
                 HomieVersion = value;
                 RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieVersion)));
             };
-            ((ArrayList)_topicHandlerMap[homieTopic]).Add(handler);
-            _subscribeToTopicDelegate(homieTopic);
+            InternalGeneralSubscribe(homieTopic, handlerForTopicHomie);
 
             var nameTopic = $"{_baseTopic}/{DeviceId}/$name";
-            _topicHandlerMap.Add(nameTopic, new ArrayList());
-            ActionString handler2 = delegate (string value) {
+            ActionString handlerForTopicName = delegate (string value) {
                 Name = value;
                 RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
             };
-            ((ArrayList)_topicHandlerMap[nameTopic]).Add(handler2);
-            _subscribeToTopicDelegate(nameTopic);
+            InternalGeneralSubscribe(homieTopic, handlerForTopicName);
 
             var stateTopic = $"{_baseTopic}/{DeviceId}/$state";
-            _topicHandlerMap.Add(stateTopic, new ArrayList());
-            ActionString handler3 = delegate (string value) {
+            ActionString handlerForTopicState = delegate (string value) {
                 if (Helpers.TryParseHomieState(value, out var parsedState)) {
                     State = parsedState;
                     RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(State)));
                 };
             };
-            ((ArrayList)_topicHandlerMap[stateTopic]).Add(handler3);
-            _subscribeToTopicDelegate(stateTopic);
+            InternalGeneralSubscribe(homieTopic, handlerForTopicState);
         }
 
         /// <summary>

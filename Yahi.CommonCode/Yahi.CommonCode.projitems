@@ -9,6 +9,8 @@
     <Import_RootNamespace>CommonCode</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Abstractions\Delegate.AddToLogDelegate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Abstractions\Interface.IMqttBroker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.Device.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.DeviceFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.Helpers.cs" />
@@ -36,7 +38,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostNumberProperty.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostPropertyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Host\Class.HostTextProperty.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Delegate.ActionString.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Interface.INotifyPropertyChanged.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Abstractions\Delegate.ActionString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Abstractions\Interface.INotifyPropertyChanged.cs" />
   </ItemGroup>
 </Project>

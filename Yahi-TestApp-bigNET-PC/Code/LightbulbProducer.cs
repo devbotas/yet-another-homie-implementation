@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using DevBot9.Protocols.Homie;
 using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class LightbulbProducer {
-        private ResilientHomieBroker _broker = new ResilientHomieBroker();
+        private IMqttBroker _broker = new PahoBroker();
 
         private HostDevice _hostDevice;
         private HostChoiceProperty _onOffSwitch;
@@ -40,9 +41,8 @@ namespace TestApp {
 
             #endregion
 
-            _broker.PublishReceived += _hostDevice.HandlePublishReceived;
-            _broker.Initialize(mqttBrokerIpAddress, _hostDevice.WillTopic, _hostDevice.WillPayload);
-            _hostDevice.Initialize(_broker.PublishToTopic, _broker.SubscribeToTopic);
+            _broker.Initialize(mqttBrokerIpAddress);
+            _hostDevice.Initialize(_broker, (severity, message) => { Console.WriteLine($"{severity}:{message}"); });
         }
     }
 }

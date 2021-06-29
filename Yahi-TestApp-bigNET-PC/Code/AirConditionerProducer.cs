@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DevBot9.Protocols.Homie;
@@ -7,7 +6,7 @@ using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class AirConditionerProducer {
-        private ResilientHomieBroker _broker = new ResilientHomieBroker();
+        private IMqttBroker _broker = new PahoBroker();
 
         private HostDevice _hostDevice;
         private HostNumberProperty _targetAirTemperature;
@@ -55,7 +54,6 @@ namespace TestApp {
 
             #endregion
 
-
             #region Ventilation node
 
             _hostDevice.UpdateNodeInfo("ventilation", "Ventilation information and properties", "no-type");
@@ -64,7 +62,6 @@ namespace TestApp {
             _ventilationLevel = _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "ventilation", "level", "Level of ventilation", 50, "%");
 
             #endregion
-
 
             #region Service node
 
@@ -76,7 +73,7 @@ namespace TestApp {
 
             // This is a write-only property, that is — a command. It sets last service date to actual datetime, and also sets next service date to some time in the future.
             // Popular automation software have lots of problems with this kind of workflow, when there's a command that doesn't really have a state register.
-            // As of 2021-03-12, openHAB and HomeAssistant and HoDD can't really deal with it. Which is a bummer, as it a pretty common worklfow in real time! 
+            // As of 2021-03-12, openHAB and HomeAssistant and HoDD can't really deal with it. Which is a bummer, as it a pretty common workflow in real life! 
             _performServiceCommand = _hostDevice.CreateHostChoiceProperty(PropertyType.Command, "service", "perform-service", "Perform service", new[] { "STOP,START" });
             _performServiceCommand.PropertyChanged += (sender, e) => {
                 if (_performServiceCommand.Value == "START") {
@@ -87,18 +84,12 @@ namespace TestApp {
 
             #endregion
 
-            _broker.PublishReceived += _hostDevice.HandlePublishReceived;
-            _broker.Initialize(mqttBrokerIpAddress, _hostDevice.WillTopic, _hostDevice.WillPayload);
-
             // This builds topic trees and subscribes to everything.
-            _hostDevice.Initialize(_broker.PublishToTopic, _broker.SubscribeToTopic);
+            _broker.Initialize(mqttBrokerIpAddress);
+            _hostDevice.Initialize(_broker, (severity, message) => { Console.WriteLine($"{severity}:{message}"); });
 
-            // finally, running the simulation loop. We're good to go!
+            // Finally, running the simulation loop. We're good to go!
             Task.Run(async () => await RunSimulationLoopContinuously(new CancellationToken()));
-        }
-
-        private void HandlePublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e) {
-            _hostDevice.HandlePublishReceived(e.Topic, Encoding.UTF8.GetString(e.Message));
         }
 
         private async Task RunSimulationLoopContinuously(CancellationToken cancellationToken) {

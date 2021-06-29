@@ -10,23 +10,13 @@ namespace DevBot9.Protocols.Homie {
         #region Public interface
 
         /// <summary>
-        /// Last Will topic, to be broadcasted by broker if device disconnects abruptly. This will be set internally to {baseTopic}/{deviceid}/$state, as defined by Homie.
-        /// </summary>
-        public string WillTopic { get; private set; } = "";
-
-        /// <summary>
-        /// Last Will payload, to be broadcasted by broker if device disconnects abruptly. This will be set insternally to 'lost', as defined by Homie.
-        /// </summary>
-        public string WillPayload { get; private set; } = "lost";
-
-        /// <summary>
         /// Initializes the entire Host Device tree: actually creates internal property variables, publishes to topics and so on. This method must be called, or otherwise entire Host Device tree will not work.
         /// </summary>
         /// <param name="publishToTopicDelegate">This is a mandatory publishing delegate. Wihout it, Host Device will not work.</param>
         /// <param name="subscribeToTopicDelegate">This is a mandatory subscription delegate. Wihout it, Host Device will not work.</param>
-        public new void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
+        public new void Initialize(IMqttBroker broker, AddToLogDelegate loggingFunction = null) {
             // This will initialize all the properties.
-            base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
+            base.Initialize(broker, loggingFunction);
 
             // One can pretty much do anything while in "init" state.
             SetState(HomieState.Init);
@@ -176,10 +166,11 @@ namespace DevBot9.Protocols.Homie {
 
         internal HostDevice(string baseTopic, string id, string friendlyName = "") {
             _baseTopic = baseTopic;
+            _willTopic = $"{baseTopic}/{id}/$state";
+            _willPayload = "lost";
             DeviceId = id;
             Name = friendlyName;
             State = HomieState.Init;
-            WillTopic = $"{baseTopic}/{id}/$state";
         }
 
 

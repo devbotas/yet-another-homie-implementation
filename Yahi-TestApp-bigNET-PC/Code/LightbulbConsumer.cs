@@ -4,7 +4,7 @@ using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class LightbulbConsumer {
-        private ResilientHomieBroker _broker = new ResilientHomieBroker();
+        private IMqttBroker _broker = new PahoBroker();
 
         private ClientDevice _clientDevice;
         private ClientColorProperty _color;
@@ -25,9 +25,8 @@ namespace TestApp {
             };
 
             // Initializing all the Homie stuff.
-            _broker.PublishReceived += _clientDevice.HandlePublishReceived;
             _broker.Initialize(mqttBrokerIpAddress);
-            _clientDevice.Initialize(_broker.PublishToTopic, _broker.SubscribeToTopic);
+            _clientDevice.Initialize(_broker, (severity, message) => { Console.WriteLine($"{severity}:{message}"); });
         }
     }
 }
