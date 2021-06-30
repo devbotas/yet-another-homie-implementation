@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Yahi-nanoNET\Yahi-nanoNET.nfproj" />
+    <ProjectReference Include="..\Yahi.Utilities-nanoNET\Yahi.Utilities-nanoNET.nfproj" />
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>

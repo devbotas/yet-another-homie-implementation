@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.0-preview.5] - 2021-06-29
+### Added
+- Adding IMqttBroker interface. Every real-world broker client now needs a wrapper implementing it. 
+
+### Changed
+- Blending in broker functionality into Device class to simplify initialization.
+- Host/Client devices now require to be initialized with provided IMqttBroker instance.
+- Renaming Float|String|Enum|String properties to Number|Text|Choice|Text. This better reflects real life usage.
+
+### Removed
+- Removing Boolean properties. Enum (now Choice) property is superior.
+- Removing Integer properties. Float (now Number) property is superior.
+
+
 ## [0.9.0] - 2021-06-28
 ### Added
 - Adding an ability to parse entire ClientDevice object from ClientDeviceMetadata. This should help a lot for generic consumers like BHD which shows all the properties of all devices.

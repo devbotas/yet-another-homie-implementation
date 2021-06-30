@@ -33,7 +33,7 @@ namespace DevBot9.Protocols.Homie.Utilities {
         }
 
         private void HandlePublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e) {
-            PublishReceived(this, new PublishReceivedEventArgs(e.Topic, System.Text.Encoding.UTF8.GetString(e.Message)));
+            PublishReceived(this, new PublishReceivedEventArgs(e.Topic, System.Text.Encoding.UTF8.GetString(e.Message, 0, e.Message.Length)));
         }
 
         public void Disconnect() {

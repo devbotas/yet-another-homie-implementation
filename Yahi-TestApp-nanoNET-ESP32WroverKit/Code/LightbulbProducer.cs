@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Text;
 using DevBot9.Protocols.Homie;
-using uPLibrary.Networking.M2Mqtt;
+using DevBot9.Protocols.Homie.Utilities;
 using Windows.Devices.Pwm;
 
 namespace TestApp {
     internal class LightbulbProducer {
-        private MqttClient _mqttClient;
+        private IMqttBroker _broker;
         private readonly string _mqttClientGuid = Guid.NewGuid().ToString();
 
         private HostDevice _hostDevice;
@@ -48,9 +47,8 @@ namespace TestApp {
             _bluePin.Start();
 
             // Connecting to broker.
-            _mqttClient = new MqttClient(mqttBrokerIpAddress);
-            _mqttClient.MqttMsgPublishReceived += HandlePublishReceived;
-            _mqttClient.Connect(_mqttClientGuid);
+            _broker = new PahoBroker();
+            _broker.Initialize(mqttBrokerIpAddress);
 
             // Creating devices and properties.
             _hostDevice = DeviceFactory.CreateHostDevice("lightbulb", "Colorful lightbulb");
@@ -90,16 +88,7 @@ namespace TestApp {
 
             #endregion
 
-            _hostDevice.Initialize((topic, value, qosLevel, isRetained) => {
-                _mqttClient.Publish(topic, Encoding.UTF8.GetBytes(value), 1, true);
-
-            }, topic => {
-                _mqttClient.Subscribe(new string[] { topic }, new byte[] { 1 });
-            });
-        }
-
-        private void HandlePublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e) {
-            _hostDevice.HandlePublishReceived(e.Topic, Encoding.UTF8.GetString(e.Message, 0, e.Message.Length));
+            _hostDevice.Initialize(_broker);
         }
 
         private void UpdateLed() {
