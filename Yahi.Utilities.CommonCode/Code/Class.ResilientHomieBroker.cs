@@ -40,7 +40,8 @@ namespace DevBot9.Protocols.Homie.Utilities {
                     try {
                         // Setting LWT stuff on connect, if available.
                         if ((_lwtTopic != "") && (_lwtPayload != "")) {
-#warning need to figure out what some of those arguments do. It is not clear now. Like, cleanSession and keepAlivePeriod. 
+                            // More information of how those connection parameters work:
+                            // http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf
                             LogInfo($"Connecting to broker with Last Will \"{_lwtTopic}:{_lwtPayload}\".");
                             _mqttClient.Connect(_mqttClientGuid, "", "", true, 1, true, _lwtTopic, _lwtPayload, true, 10);
                         }
