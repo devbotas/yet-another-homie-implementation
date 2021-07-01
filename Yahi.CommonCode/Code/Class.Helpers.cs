@@ -212,7 +212,7 @@ namespace DevBot9.Protocols.Homie {
 
         public static string GetFloatFormatString(int decimalPlaces) {
             if (decimalPlaces > 7) { decimalPlaces = 7; }
-            if (decimalPlaces < 1) { decimalPlaces = 1; }
+            if (decimalPlaces < 0) { decimalPlaces = 0; }
 
             var returnFormat = $"F{decimalPlaces}";
 
