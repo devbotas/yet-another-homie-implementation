@@ -17,6 +17,7 @@ namespace TestApp {
         private HostDateTimeProperty _previousServiceDate;
         private HostDateTimeProperty _nextServiceDate;
         private HostChoiceProperty _performServiceCommand;
+        private HostNumberProperty _systemUptime;
 
         public AirConditionerProducer() { }
 
@@ -82,6 +83,9 @@ namespace TestApp {
                 }
             };
 
+            // Knowing system uptime is always useful.
+            _systemUptime = _hostDevice.CreateHostNumberProperty(PropertyType.State, "service", "system-uptime", "Uptime", 0, "h", 3);
+
             #endregion
 
             // This builds topic trees and subscribes to everything.
@@ -93,10 +97,11 @@ namespace TestApp {
         }
 
         private async Task RunSimulationLoopContinuously(CancellationToken cancellationToken) {
-            var _simulatedTransientTargetTemperature = 23.0;
+            var simulatedTransientTargetTemperature = 23.0;
+            var startTime = DateTime.Now;
 
             while (cancellationToken.IsCancellationRequested == false) {
-                var _simulatedAirTemperature = _simulatedTransientTargetTemperature + 0.3 * Math.Sin(DateTime.Now.Second);
+                var simulatedAirTemperature = simulatedTransientTargetTemperature + 0.3 * Math.Sin(DateTime.Now.Second);
 
                 float localTargetTemperature;
                 if (_actualState.Value == "ON") {
@@ -106,16 +111,18 @@ namespace TestApp {
                     localTargetTemperature = 25;
                 }
 
-                if (localTargetTemperature - _simulatedTransientTargetTemperature > 0.1) {
-                    _simulatedTransientTargetTemperature += 0.1 * _ventilationLevel.Value / 100;
+                if (localTargetTemperature - simulatedTransientTargetTemperature > 0.1) {
+                    simulatedTransientTargetTemperature += 0.1 * _ventilationLevel.Value / 100;
                 }
-                if (localTargetTemperature - _simulatedTransientTargetTemperature < -0.1) {
-                    _simulatedTransientTargetTemperature -= 0.1 * _ventilationLevel.Value / 100;
+                if (localTargetTemperature - simulatedTransientTargetTemperature < -0.1) {
+                    simulatedTransientTargetTemperature -= 0.1 * _ventilationLevel.Value / 100;
                 }
 
                 await Task.Delay(1000);
 
-                _actualAirTemperature.Value = (float)_simulatedAirTemperature;
+                _actualAirTemperature.Value = (float)simulatedAirTemperature;
+
+                _systemUptime.Value = (float)(DateTime.Now - startTime).TotalHours;
             }
         }
     }
