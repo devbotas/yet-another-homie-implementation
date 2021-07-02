@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.10.0-preview.13] - 2021-07-02
+### Fixed
+- Publishing Device state on reconnect to clear "lost" state.
+
+
 ## [0.10.0-preview.5] - 2021-06-29
 ### Added
 - Adding IMqttBroker interface. Every real-world broker client now needs a wrapper implementing it. 
