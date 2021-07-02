@@ -167,13 +167,16 @@ namespace DevBot9.Protocols.Homie {
                         LogInfo($"Connecting to broker without Last Will topic.");
                     }
                     if (_broker.TryConnect(_willTopic, _willPayload)) {
+                        IsConnected = true;
+
                         // All subscribtions were dropped during disconnect event. Resubscribing.
                         LogInfo($"(Re)subscribing to {_subscriptionList.Count} topic(s).");
                         foreach (string topic in _subscriptionList) {
                             _broker.TrySubscribe(topic/*, new byte[] { 1 }*/);
                         }
 
-                        IsConnected = true;
+                        LogInfo($"Restoring {DeviceId} state to {State}.");
+                        InternalGeneralPublish($"{_baseTopic}/{DeviceId}/$state", State.ToHomiePayload());
                     }
                     else {
                         LogError($"{nameof(MonitorMqttConnectionContinuously)} tried to connect to broker, but that did not work.");
