@@ -17,7 +17,7 @@ Of course, if developing new devices, you need some better debugging tools. To w
 YAHI is fully-Homie compliant, however, it is a *slightly more strict subset*. 
 
 ## States, Commands, Parameters
-YAHI defines three distinct types of properties: ```States```, ```Commands``` and ```Parameters```. Homie allows a fourth type, which I found redundant and very weakly defined, so it has not made it into YAHI. But rest assured, you don't need it at all. More on that later.
+YAHI defines three distinct types of properties: ```States``` (non-settable, retained), ```Commands``` (settable, non-retained) and ```Parameters``` (settable and retained). Homie allows a fourth type (non-settable, non-retained), which I found redundant and very weakly defined, so it has not made it into YAHI. But rest assured, you don't need it at all.
 
 **States** have read-only access, and is something that user cannot change directly. It is usually a measured or calculated value, like, for example, an ambient temperature. Reading a state multiple times may result in different values.
 
@@ -34,7 +34,7 @@ In short: ```integer```, ```percent``` and ```boolean``` data types aren't suppo
 - ```$datatype=float```, ```$unit="%"```
 - ```$datatype=integer```, ```$unit="%"```
 
-So because of that, support for ```percent``` data type was dropped, because the same can be achieved using casual number data types.
+So, support for ```percent``` data type was dropped, because the same can be achieved using casual number data types.
 
 Support for ```boolean``` was dropped because it is just a subset of ```enum``` data type with possible values being ```true``` and ```false```. Also, usage of ```boolean``` type feels very unnatural. Homie IOT Convention is quite a humanly one, but humans do not speak in ```true``` and ```false```. If there's a question "is the light switch turned on?", nobody answers "false"; natural answers would be "no", "nope", "it is not" and similar. 
 
@@ -42,7 +42,11 @@ This is also problematic for frontends and GUIs. Systems like OpenHAB are generi
 
 So for these reasons, ```boolean``` had to go.
 
+This brings us to ```integer``` and ```float``` data types. These, just as ```boolean```, comes from computer science and is meant for computers, not humans. Humans do not use integers of floats, they use decimal numbers. Having to choose between an ```integer``` or ```float``` again present confusion to Homie implementers and consumers: so which one to pick? It is not always obvious. Temperatures usually benefit from having a decimal place or two, as change of 1°C is pretty significant even for humans (although there are plenty of sensors that return temperature in whole numbers, too). How about relative humidity? It is a positive number, with meaningful values below 100. Does it need decimal places, or is it fine to go with whole numbers? 1% change in relative humidity certainly doesn't matter much for humans, but are there any use cases needing to measure humidity more precisely? What if a sensor only returns whole numbers (which is pretty common), and implementer creates a ```integer``` Homie property, but later sensor is upgraded to more precise one? Precision is then lost because switching to ```float``` data type would result in serious breaking changes?
 
+It is actually hard to think of any real world application for ```integer``` data type that is not imposed by computer science. Besides, Homie Iot defines ```float``` data type as double precision, and doubles can represent _exact_ integers from −2⁵³ to 2⁵³, which is more than enough for the application that Homie is targeting. 
+
+Due to these considerations, support for ```integer``` was dropped and any number property created by YAHI will have data type set to ```float```.
 
 
 *readme unfinished*
