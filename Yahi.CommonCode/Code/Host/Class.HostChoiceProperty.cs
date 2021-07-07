@@ -38,10 +38,6 @@ namespace DevBot9.Protocols.Homie {
             _rawValue = initialValue;
         }
 
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
-        }
-
         protected override bool ValidatePayload(string payloadToValidate) {
             var isPayloadGood = false;
             var enumParts = _formatAttribute.Split(',');

@@ -25,10 +25,6 @@ namespace DevBot9.Protocols.Homie {
             _possibleValues = creationProperties.Format.Split(',');
         }
 
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
-        }
-
         protected override bool ValidatePayload(string payloadToValidate) {
             var returnValue = false;
 
@@ -47,7 +43,7 @@ namespace DevBot9.Protocols.Homie {
                 case PropertyType.Command:
                     if (ValidatePayload(valueToSet)) {
                         _rawValue = valueToSet;
-                        _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
+                        _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                     }
                     else {
                         throw new ArgumentOutOfRangeException($"Parameter value \"{valueToSet}\" is not permitted.");

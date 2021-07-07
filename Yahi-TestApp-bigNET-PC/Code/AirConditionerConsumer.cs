@@ -5,7 +5,7 @@ using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class AirConditionerConsumer {
-        private IMqttBroker _broker = new PahoBroker();
+        private PahoClientDeviceConnection _broker = new PahoClientDeviceConnection();
 
         private ClientDevice _clientDevice;
         private ClientNumberProperty _inletTemperature;
@@ -37,7 +37,7 @@ namespace TestApp {
             };
 
             // Initializing all the Homie stuff.
-            _broker.Initialize(mqttBrokerIpAddress);
+            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => { Console.WriteLine($"{severity}:{message}"); });
             _clientDevice.Initialize(_broker, (severity, message) => { Console.WriteLine($"{severity}:{message}"); });
         }
     }

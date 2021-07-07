@@ -31,10 +31,6 @@ namespace DevBot9.Protocols.Homie {
             var alwaysTrue = Helpers.TryParseHomieColorFormat(Format, out _colorFormat);
         }
 
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
-        }
-
         protected override bool ValidatePayload(string payloadToValidate) {
             var areNumbersGood = HomieColor.ValidatePayload(payloadToValidate, _colorFormat);
 
@@ -48,7 +44,7 @@ namespace DevBot9.Protocols.Homie {
                     if (_colorFormat == ColorFormat.Rgb) { _rawValue = valueToSet.ToRgbString(); }
                     else { _rawValue = valueToSet.ToHsvString(); }
 
-                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
+                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                     break;
 
                 case PropertyType.State:

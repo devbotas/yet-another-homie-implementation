@@ -5,7 +5,7 @@ using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class LightbulbProducer {
-        private IMqttBroker _broker = new PahoBroker();
+        private PahoHostDeviceConnection _broker = new PahoHostDeviceConnection();
 
         private HostDevice _hostDevice;
         private HostChoiceProperty _onOffSwitch;

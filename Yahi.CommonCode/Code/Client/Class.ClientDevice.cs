@@ -15,37 +15,40 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Initializes the entire Client Device tree: actually creates internal property variables, subscribes to topics and so on. This method must be called, or otherwise entire Client Device tree will not work.
         /// </summary>
-        /// <param name="publishToTopicDelegate">This is a mandatory publishing delegate. Wihout it, Client Device will not work.</param>
-        /// <param name="subscribeToTopicDelegate">This is a mandatory subscription delegate. Wihout it, Client Device will not work.</param>
-        public new void Initialize(IMqttBroker broker, AddToLogDelegate loggingFunction = null) {
+        public void Initialize(IClientDeviceConnection broker, AddToLogDelegate loggingFunction = null) {
             base.Initialize(broker, loggingFunction);
 
+            // Initializing properties. They will start using broker immediatelly.
+            foreach (ClientPropertyBase property in _properties) {
+                property.Initialize(this);
+            }
+
             var homieTopic = $"{_baseTopic}/{DeviceId}/$homie";
-            ActionString handlerForTopicHomie = delegate (string value) {
+            ActionStringDelegate handlerForTopicHomie = delegate (string value) {
                 HomieVersion = value;
                 RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieVersion)));
             };
             InternalGeneralSubscribe(homieTopic, handlerForTopicHomie);
 
             var nameTopic = $"{_baseTopic}/{DeviceId}/$name";
-            ActionString handlerForTopicName = delegate (string value) {
+            ActionStringDelegate handlerForTopicName = delegate (string value) {
                 Name = value;
                 RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
             };
-            InternalGeneralSubscribe(homieTopic, handlerForTopicName);
+            InternalGeneralSubscribe(nameTopic, handlerForTopicName);
 
             var stateTopic = $"{_baseTopic}/{DeviceId}/$state";
-            ActionString handlerForTopicState = delegate (string value) {
+            ActionStringDelegate handlerForTopicState = delegate (string value) {
                 if (Helpers.TryParseHomieState(value, out var parsedState)) {
                     State = parsedState;
                     RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(State)));
                 };
             };
-            InternalGeneralSubscribe(homieTopic, handlerForTopicState);
+            InternalGeneralSubscribe(stateTopic, handlerForTopicState);
         }
 
         /// <summary>
-        /// Creates a client string property.
+        /// Creates a client text property.
         /// </summary>
         public ClientTextProperty CreateClientTextProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.String; }
@@ -60,7 +63,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a client float property.
+        /// Creates a client number property.
         /// </summary>
         public ClientNumberProperty CreateClientNumberProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Float; }
@@ -75,7 +78,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a client enum property.
+        /// Creates a client choice property.
         /// </summary>
         public ClientChoiceProperty CreateClientChoiceProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Enum; }

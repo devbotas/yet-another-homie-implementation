@@ -5,7 +5,7 @@ using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class DynamicConsumer {
-        private IMqttBroker _broker = new PahoBroker();
+        private PahoClientDeviceConnection _broker = new PahoClientDeviceConnection();
 
         private ClientDevice _clientDevice;
 

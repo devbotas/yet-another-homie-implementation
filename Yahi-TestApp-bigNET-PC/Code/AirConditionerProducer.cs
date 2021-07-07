@@ -6,7 +6,7 @@ using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class AirConditionerProducer {
-        private IMqttBroker _broker = new PahoBroker();
+        private PahoHostDeviceConnection _broker = new PahoHostDeviceConnection();
 
         private HostDevice _hostDevice;
         private HostNumberProperty _targetAirTemperature;

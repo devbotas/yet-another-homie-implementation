@@ -20,10 +20,6 @@ namespace DevBot9.Protocols.Homie {
         public ClientTextProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
         }
 
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
-        }
-
         protected override bool ValidatePayload(string payloadToValidate) {
             return true;
         }
@@ -33,7 +29,7 @@ namespace DevBot9.Protocols.Homie {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
                     _rawValue = valueToSet;
-                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
+                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                     break;
 
                 case PropertyType.State:

@@ -5,7 +5,18 @@ namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// A base class for the Client properties. Should not be consumed directly.
     /// </summary>
-    public class ClientPropertyBase : PropertyBase {
+    public class ClientPropertyBase : INotifyPropertyChanged {
+        /// <summary>
+        /// Event is raised when the property is changed externally, that is, when an update is received from the MQTT broker.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        protected string _propertyId;
+        protected ClientDevice _parentDevice;
+        internal void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) {
+            PropertyChanged(sender, e);
+        }
+
         /// <summary>
         /// Logical type of the property. This is NOT defined by Homie convention, but rather and additional constrain added by YAHI. However, it is fully Homie-compliant.
         /// </summary>
@@ -136,7 +147,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal override void Initialize(Device parentDevice) {
+        internal void Initialize(ClientDevice parentDevice) {
             _parentDevice = parentDevice;
 
             if (Type == PropertyType.State) {

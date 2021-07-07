@@ -25,10 +25,6 @@ namespace DevBot9.Protocols.Homie {
             _rawValue = Helpers.FloatToString(initialValue, _formatAttribute);
         }
 
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
-        }
-
         protected override bool ValidatePayload(string payloadToValidate) {
             var returnValue = Helpers.TryParseFloat(payloadToValidate, out _);
 

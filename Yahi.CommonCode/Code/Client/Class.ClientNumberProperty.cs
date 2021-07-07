@@ -24,10 +24,6 @@ namespace DevBot9.Protocols.Homie {
             if (Helpers.TryParseFloat(_rawValue, out var _) == false) { _rawValue = "0.0"; }
         }
 
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
-        }
-
         protected override bool ValidatePayload(string payloadToValidate) {
             var returnValue = Helpers.TryParseFloat(payloadToValidate, out _);
 
@@ -39,7 +35,7 @@ namespace DevBot9.Protocols.Homie {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
                     _rawValue = Helpers.FloatToString(valueToSet, Format);
-                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
+                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                     break;
 
                 case PropertyType.State:

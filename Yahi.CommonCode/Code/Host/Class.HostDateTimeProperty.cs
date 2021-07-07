@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -24,10 +24,6 @@ namespace DevBot9.Protocols.Homie {
 
         internal HostDateTimeProperty(PropertyType propertyType, string propertyId, string friendlyName, DateTime initialValue) : base(propertyType, propertyId, friendlyName, DataType.DateTime, "", "") {
             _rawValue = initialValue.ToString(_isoFormatString);
-        }
-
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
