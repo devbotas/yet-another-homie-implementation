@@ -1,13 +1,11 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using DevBot9.Protocols.Homie;
 using DevBot9.Protocols.Homie.Utilities;
 using Windows.Devices.Pwm;
 
 namespace TestApp {
     internal class LightbulbProducer {
-        private IMqttBroker _broker;
-        private readonly string _mqttClientGuid = Guid.NewGuid().ToString();
+        private PahoHostDeviceConnection _broker;
 
         private HostDevice _hostDevice;
         private HostChoiceProperty _onOffSwitch;
@@ -47,7 +45,7 @@ namespace TestApp {
             _bluePin.Start();
 
             // Connecting to broker.
-            _broker = new PahoBroker();
+            _broker = new PahoHostDeviceConnection();
             _broker.Initialize(mqttBrokerIpAddress);
 
             // Creating devices and properties.
