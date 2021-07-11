@@ -113,7 +113,10 @@ namespace DevBot9.Protocols.Homie {
                         else {
                             var isMatchFound = false;
                             foreach (var value in possibleValues) {
-                                if (value == creationOptions.InitialValue) { isMatchFound = true; }
+                                if (value == creationOptions.InitialValue) {
+                                    _rawValue = value;
+                                    isMatchFound = true;
+                                }
                             }
 
                             if (isMatchFound == false) { throw new ArgumentException("Initial value is not one of the possible values", nameof(creationOptions.InitialValue)); }
