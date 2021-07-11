@@ -1,11 +1,12 @@
-﻿using System.Collections;
+using System;
+using System.Collections;
 using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// This is a base class for the Host and Client Device class implementation. One should never use it directly (not really even possible since the constructor is not public).
     /// </summary>
-    public class Device : INotifyPropertyChanged {
+    public class Device : INotifyPropertyChanged, IDisposable {
         #region Public interface
 
         /// <summary>
@@ -54,28 +55,40 @@ namespace DevBot9.Protocols.Homie {
 
         protected void Initialize(IBasicDeviceConnection broker, AddToLogDelegate loggingFunction = null) {
             _broker = broker;
-            _broker.PublishReceived += (sender, e) => {
-                if (_topicHandlerMap.Contains(e.Topic)) {
-                    var zeList = (ArrayList)_topicHandlerMap[e.Topic];
-                    foreach (ActionStringDelegate handler in zeList) {
-                        handler(e.Payload);
-                    }
-                }
-            };
+            _broker.PublishReceived += HandleBrokerPublishReceived;
 
-            _broker.PropertyChanged += (sender, e) => {
-                if ((e.PropertyName == nameof(_broker.IsConnected)) && _broker.IsConnected) {
-                    // All subscribtions were dropped during disconnect event. Resubscribing.
-                    var clonedSubsribtionTable = (ArrayList)_subscriptionList.Clone();
-                    LogInfo($"(Re)subscribing to {clonedSubsribtionTable.Count} topic(s).");
-                    foreach (string topic in clonedSubsribtionTable) {
-                        _broker.TrySubscribe(topic);
-                    }
-                }
-            };
+            _broker.PropertyChanged += HandleBrokerPropertyChanged;
 
             if (loggingFunction != null) { _log = loggingFunction; }
         }
+
+        public void Dispose() {
+            if (_broker == null) { return; }
+
+            _broker.PublishReceived -= HandleBrokerPublishReceived;
+            _broker.PropertyChanged -= HandleBrokerPropertyChanged;
+        }
+
+        private void HandleBrokerPublishReceived(object sender, PublishReceivedEventArgs e) {
+            if (_topicHandlerMap.Contains(e.Topic)) {
+                var zeList = (ArrayList)_topicHandlerMap[e.Topic];
+                foreach (ActionStringDelegate handler in zeList) {
+                    handler(e.Payload);
+                }
+            }
+        }
+
+        private void HandleBrokerPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if ((e.PropertyName == nameof(_broker.IsConnected)) && _broker.IsConnected) {
+                // All subscribtions were dropped during disconnect event. Resubscribing.
+                var clonedSubsribtionTable = (ArrayList)_subscriptionList.Clone();
+                LogInfo($"(Re)subscribing to {clonedSubsribtionTable.Count} topic(s).");
+                foreach (string topic in clonedSubsribtionTable) {
+                    _broker.TrySubscribe(topic);
+                }
+            }
+        }
+
 
         internal virtual void InternalPropertyPublish(string propertyTopic, string value, bool isRetained = true) {
             InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{propertyTopic}", value, isRetained);
