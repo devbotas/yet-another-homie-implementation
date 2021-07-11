@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.10.0-preview.20] - 2021-07-11
+### Fixed
+- Fixing node topic paths.
+
+## [0.10.0-preview.18] - 2021-07-08
+### Changed
+- Reworked connection logic again. Client and Host sides now have different connection to broker types. May be easier to handle client-only applications which may now have a single connection for all client devices. Host devices are still one connection per device.
+### Fixed
+- "SET" messages are now sent as non-retained.
+
+
 ## [0.10.0-preview.13] - 2021-07-02
 ### Fixed
 - Publishing Device state on reconnect to clear "lost" state.
