@@ -43,9 +43,9 @@ namespace DevBot9.Protocols.Homie {
             // Building node subtree.
             var nodesList = "";
             foreach (NodeInfo node in _nodes) {
-                InternalPropertyPublish("$name", node.Name);
-                InternalPropertyPublish("$type", node.Type);
-                InternalPropertyPublish("$properties", node.Properties);
+                InternalPropertyPublish($"{node.Id}/$name", node.Name);
+                InternalPropertyPublish($"{node.Id}/$type", node.Type);
+                InternalPropertyPublish($"{node.Id}/$properties", node.Properties);
 
                 nodesList += "," + node.Id;
             }
