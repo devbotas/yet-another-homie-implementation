@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using DevBot9.Protocols.Homie;
+﻿using DevBot9.Protocols.Homie;
 using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
@@ -14,7 +12,7 @@ namespace TestApp {
 
         public AirConditionerConsumer() { }
 
-        public void Initialize(string mqttBrokerIpAddress) {
+        public void Initialize(string mqttBrokerIpAddress, AddToLogDelegate addToLog) {
             // Creating a air conditioner device.
             _clientDevice = DeviceFactory.CreateClientDevice("air-conditioner");
 
@@ -22,14 +20,14 @@ namespace TestApp {
             _turnOnOfProperty = _clientDevice.CreateClientChoiceProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Command, NodeId = "general", PropertyId = "turn-on-off", Format = "ON,OFF" });
             _actualState = _clientDevice.CreateClientChoiceProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-state", Format = "ON,OFF,STARTING" });
             _actualState.PropertyChanged += (sender, e) => {
-                Debug.WriteLine($"Actual state: {_actualState.Value}");
+                addToLog($"Info:", $"{_clientDevice.DeviceId}: property {_actualState.PropertyId} changed to {_actualState.Value}.");
             };
 
             _inletTemperature = _clientDevice.CreateClientNumberProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-air-temperature", DataType = DataType.Float, });
             _inletTemperature.PropertyChanged += (sender, e) => {
                 // Simulating some overheated dude.
                 if (_inletTemperature.Value > 25) {
-                    Console.WriteLine("Getting hot in here, huh?.. Let's try turning air conditioner on.");
+                    addToLog($"Info", $"{_clientDevice.Name}: getting hot in here, huh?.. Let's try turning air conditioner on.");
                     if (_actualState.Value != "ON") {
                         _turnOnOfProperty.Value = "ON";
                     }
@@ -37,8 +35,8 @@ namespace TestApp {
             };
 
             // Initializing all the Homie stuff.
-            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => { Console.WriteLine($"{severity}:{message}"); });
-            _clientDevice.Initialize(_broker, (severity, message) => { Console.WriteLine($"{severity}:{message}"); });
+            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => addToLog(severity, "Broker:" + message));
+            _clientDevice.Initialize(_broker, (severity, message) => addToLog(severity, "ClientDevice:" + message));
         }
     }
 }

@@ -21,7 +21,7 @@ namespace TestApp {
 
         public AirConditionerProducer() { }
 
-        public void Initialize(string mqttBrokerIpAddress) {
+        public void Initialize(string mqttBrokerIpAddress, AddToLogDelegate addToLog) {
             _hostDevice = DeviceFactory.CreateHostDevice("air-conditioner", "Air conditioning unit");
 
             #region General node
@@ -89,8 +89,8 @@ namespace TestApp {
             #endregion
 
             // This builds topic trees and subscribes to everything.
-            _broker.Initialize(mqttBrokerIpAddress);
-            _hostDevice.Initialize(_broker, (severity, message) => { Console.WriteLine($"{severity}:{message}"); });
+            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => addToLog(severity, "Broker:" + message));
+            _hostDevice.Initialize(_broker, (severity, message) => addToLog(severity, "ClientDevice:" + message));
 
             // Finally, running the simulation loop. We're good to go!
             Task.Run(async () => await RunSimulationLoopContinuously(new CancellationToken()));

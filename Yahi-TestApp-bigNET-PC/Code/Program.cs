@@ -1,36 +1,87 @@
 ﻿using System;
+using System.Threading;
 using DevBot9.Protocols.Homie;
 
 namespace TestApp {
     internal class Program {
 
         private static void Main(string[] args) {
+            void AddToLog(string severity, string message) {
+                Console.WriteLine($"{severity}:{message}");
+            }
+
             var brokerIp = "172.16.0.2";
 
             DeviceFactory.Initialize("homie");
 
+            AddToLog("Info", "");
+            AddToLog("Info", "====================================================================");
+            AddToLog("Info", "========= Creating AirConditionerConsumer ==========================");
+            AddToLog("Info", "====================================================================");
             var airConditionerConsumer = new AirConditionerConsumer();
-            airConditionerConsumer.Initialize(brokerIp);
+            airConditionerConsumer.Initialize(brokerIp, (severity, message) => AddToLog(severity, "AirConditionerConsumer:" + message));
 
+            Thread.Sleep(2000);
+            AddToLog("Info", "");
+            AddToLog("Info", "====================================================================");
+            AddToLog("Info", "========= Creating AirConditionerProducer ==========================");
+            AddToLog("Info", "====================================================================");
             var airConditionerProducer = new AirConditionerProducer();
-            airConditionerProducer.Initialize(brokerIp);
+            airConditionerProducer.Initialize(brokerIp, (severity, message) => AddToLog(severity, "AirConditionerProducer:" + message));
 
+            Thread.Sleep(2000);
+            AddToLog("Info", "");
+            AddToLog("Info", "====================================================================");
+            AddToLog("Info", "========= Creating LightbulbConsumer ===============================");
+            AddToLog("Info", "====================================================================");
             var lightbulbConsumer = new LightbulbConsumer();
-            lightbulbConsumer.Initialize(brokerIp);
+            lightbulbConsumer.Initialize(brokerIp, (severity, message) => AddToLog(severity, "LightbulbConsumer:" + message));
 
+            Thread.Sleep(2000);
+            AddToLog("Info", "");
+            AddToLog("Info", "====================================================================");
+            AddToLog("Info", "========= Creating LightbulbProducer ===============================");
+            AddToLog("Info", "====================================================================");
             var lightbulbProducer = new LightbulbProducer();
-            lightbulbProducer.Initialize(brokerIp);
+            lightbulbProducer.Initialize(brokerIp, (severity, message) => AddToLog(severity, "LightbulbProducer:" + message));
 
+            Thread.Sleep(2000);
+            AddToLog("Info", "");
+            AddToLog("Info", "====================================================================");
+            AddToLog("Info", "========= Parsing Homie tree for problems ==========================");
+            AddToLog("Info", "====================================================================");
             // Note that Eclipse Mosquitto broker can transmit ~100 retained messages by default. Set max_queue_messages to 0 in mosquito.conf to remove this limit,
             // or otherwise parser will have a lot of problems.
             var homieFecther = new HomieTopicFetcher();
             homieFecther.Initialize(brokerIp);
             homieFecther.FetchTopics(DeviceFactory.BaseTopic + "/#", out var topicDump2);
+            var homieTree = HomieTopicTreeParser.Parse(topicDump2, DeviceFactory.BaseTopic, out var problemList);
+            if (problemList.Length == 0) {
+                AddToLog("Info", "TreeParser:tree looks ok.");
+            }
+            else {
+                foreach (var problem in problemList) {
+                    AddToLog("Error", "TreeParser:" + problem);
+                }
+            }
 
-            var dynamicConsumer = new DynamicConsumer();
-            dynamicConsumer.Initialize(brokerIp, topicDump2);
+            Thread.Sleep(2000);
+            AddToLog("Info", "");
+            AddToLog("Info", "====================================================================");
+            AddToLog("Info", "========= Creating DynamicConsumer =================================");
+            AddToLog("Info", "====================================================================");
+            if (homieTree.Length == 0) {
+                AddToLog("Error", "DynamicConsumer:no devices in the tree :(");
+            }
+            else {
+                var dynamicConsumer = new DynamicConsumer();
+                dynamicConsumer.Initialize(brokerIp, homieTree[0], (severity, message) => AddToLog(severity, "DynamicConsumer:" + message));
+            }
 
-            Console.WriteLine("Hello World!");
+            AddToLog("Info", "");
+            AddToLog("Info", "====================================================================");
+            AddToLog("Info", "========= Initialization complete ==================================");
+            AddToLog("Info", "====================================================================");
             Console.ReadLine();
         }
     }

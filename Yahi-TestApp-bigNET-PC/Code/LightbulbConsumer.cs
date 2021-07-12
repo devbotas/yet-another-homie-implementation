@@ -11,7 +11,7 @@ namespace TestApp {
 
         public LightbulbConsumer() { }
 
-        public void Initialize(string mqttBrokerIpAddress) {
+        public void Initialize(string mqttBrokerIpAddress, AddToLogDelegate addToLog) {
             // Creating a air conditioner device.
             _clientDevice = DeviceFactory.CreateClientDevice("lightbulb");
 
@@ -25,8 +25,8 @@ namespace TestApp {
             };
 
             // Initializing all the Homie stuff.
-            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => { Console.WriteLine($"{severity}:{message}"); });
-            _clientDevice.Initialize(_broker, (severity, message) => { Console.WriteLine($"{severity}:{message}"); });
+            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => addToLog(severity, "Broker:" + message));
+            _clientDevice.Initialize(_broker, (severity, message) => addToLog(severity, "ClientDevice:" + message));
         }
     }
 }
