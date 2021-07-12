@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using uPLibrary.Networking.M2Mqtt;
 
@@ -83,11 +84,17 @@ namespace DevBot9.Protocols.Homie.Utilities {
         public PahoClientDeviceConnection() { }
 
         private void MonitorMqttConnectionContinuously() {
+            var isReadyForConnection = false;
+
             while (true) {
-                if ((IsConnected == false) && _isIpSet) {
-                    if (_isHostDeviceConnector && _isWillSet) {
-                        LogInfo($"Connecting to broker with Last Will \"{_willTopic}:{_willMessage}\".");
-                        try {
+                isReadyForConnection = (IsConnected == false) && _isIpSet;
+                if (_isHostDeviceConnector) { isReadyForConnection &= _isWillSet; }
+
+                if (isReadyForConnection) {
+                    try {
+                        if (_isHostDeviceConnector) {
+                            LogInfo($"Connecting to broker with Last Will \"{_willTopic}:{_willMessage}\".");
+
                             // More information of how those connection parameters work:
                             // http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.pdf
                             _realClient.Connect(
@@ -102,31 +109,22 @@ namespace DevBot9.Protocols.Homie.Utilities {
                                 cleanSession: true, /* It is possible to get missed messages if setting session to dirty. Might be useful in the future?.. */
                                 keepAlivePeriod: 10  /* Maximum time in seconds a silence between broker and a client may last. After that, broker will disconnect the client. Note that this is not for user traffic; client sends periodic ping messages regardless of user traffic. */);
 
-                            IsConnected = true;
-                            PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsConnected)));
                         }
-                        catch (Exception) {
-                            // Swallowing.
-                        }
-                    }
-
-                    if (_isHostDeviceConnector == false) {
-                        LogInfo($"Connecting to broker without Last Will topic.");
-                        try {
+                        else {
+                            LogInfo($"Connecting to broker without Last Will topic.");
                             _realClient.Connect(_mqttClientGuid);
-
-                            Thread.Sleep(100);
-
-                            IsConnected = true;
-                            PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsConnected)));
                         }
-                        catch (Exception) {
-                            // Swallowing.
-                        }
+
+                        Thread.Sleep(100);
+
+                        IsConnected = true;
+                        PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsConnected)));
+                    }
+                    catch (Exception ex) {
+                        Debug.Print($"Problem in {nameof(MonitorMqttConnectionContinuously)}: {ex.Message}");
                     }
 
                     if (IsConnected == false) { LogError($"{nameof(MonitorMqttConnectionContinuously)} tried to connect to broker, but that did not work."); }
-
                 }
 
                 Thread.Sleep(1000);
