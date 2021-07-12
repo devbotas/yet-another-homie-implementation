@@ -17,6 +17,12 @@ namespace DevBot9.Protocols.Homie {
             PropertyChanged(sender, e);
         }
 
+        public string PropertyId {
+            get {
+                return _propertyId;
+            }
+        }
+
         /// <summary>
         /// Logical type of the property. This is NOT defined by Homie convention, but rather and additional constrain added by YAHI. However, it is fully Homie-compliant.
         /// </summary>
