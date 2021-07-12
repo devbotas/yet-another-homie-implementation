@@ -156,7 +156,10 @@ namespace DevBot9.Protocols.Homie {
                     var candidateProperty = new ClientPropertyMetadata() { NodeId = Nodes[n].Id, PropertyId = candidatePropertyIds[p] };
 
                     // Parsing property attributes and value.
-                    var propertySubtreeRegex = new Regex($@"^({_baseTopic})\/({Id})\/({Nodes[n].Id})\/({candidateProperty.PropertyId})(\/\$?[a-z0-9][a-z0-9-]+)?(:|\/)(.+)$");
+                    var attributeRegex = new Regex($@"^({_baseTopic})\/({Id})\/({Nodes[n].Id})\/({candidateProperty.PropertyId})(\/\$[a-z0-9][a-z0-9-]+)?(:)(.+)$");
+                    var setRegex = new Regex($@"^({_baseTopic})\/({Id})\/({Nodes[n].Id})\/({candidateProperty.PropertyId})(\/set)(:)(.+)$");
+                    var valueRegex = new Regex($@"^({_baseTopic})\/({Id})\/({Nodes[n].Id})\/({candidateProperty.PropertyId})()(:)(.+)$");
+
                     var isSettable = false;
                     var isRetained = false;
                     var isNameReceived = false;
@@ -165,10 +168,10 @@ namespace DevBot9.Protocols.Homie {
                     var isRetainedReceived = false;
 
                     foreach (string inputString in topicList) {
-                        var regexMatch = propertySubtreeRegex.Match(inputString);
-                        if (regexMatch.Success) {
-                            var key = regexMatch.Groups[5].Value;
-                            var value = regexMatch.Groups[7].Value;
+                        var attributeMatch = attributeRegex.Match(inputString);
+                        if (attributeMatch.Success) {
+                            var key = attributeMatch.Groups[5].Value;
+                            var value = attributeMatch.Groups[7].Value;
 
                             if (key == "/$name") {
                                 candidateProperty.Name = value;
@@ -190,11 +193,22 @@ namespace DevBot9.Protocols.Homie {
                                 isRetainedReceived = true;
                             }
 
-                            if (key == "/$unit") { candidateProperty.Unit = value; }
+                            if (key == "/$unit") {
+                                candidateProperty.Unit = value;
+                            }
+                        }
 
-                            if (key == "/set") { /* Discarding this one. This is a historically cached command, and these should not execute during initialization.*/ }
+                        var setMatch = setRegex.Match(inputString);
+                        if (setMatch.Success) {
+                            // Discarding this one. This is a historically cached command, and these should not execute during initialization. Besides, it shouldn't be retained,
+                            // so the fact that we're here means something is wrong with the host side.
+                            problemList.Add($"Device '{Id}', property {candidateProperty} has /set topic assigned, which means /set message is published as retained. This is against Homie convention.");
+                        }
 
-                            if (key == "") { candidateProperty.InitialValue = value; }
+                        var valueMatch = valueRegex.Match(inputString);
+                        if (valueMatch.Success) {
+                            var value = attributeMatch.Groups[7].Value;
+                            candidateProperty.InitialValue = value;
                         }
                     }
 
