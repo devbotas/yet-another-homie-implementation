@@ -1,8 +1,21 @@
 # Changelog
 
+## [0.10.0-preview.30] - 2021-07-12
+### Added
+- Device base class is now disposable.
+### Changed
+- Restructuring TestApp initialization routine and logging more stuff for error detection.
+### Fixed
+- Initial value was not set for client properties when checking possible enum values.
+- ClientDeviceMetadata will not not parse topics with empty payload.
+- Fixed Lightbulb producer is-on property initialization.
+- Exposing client property ID for read-only usage.
+
+
 ## [0.10.0-preview.20] - 2021-07-11
 ### Fixed
 - Fixing node topic paths.
+
 
 ## [0.10.0-preview.18] - 2021-07-08
 ### Changed

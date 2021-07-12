@@ -121,7 +121,7 @@ namespace DevBot9.Protocols.Homie.Utilities {
                         PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsConnected)));
                     }
                     catch (Exception ex) {
-                        Debug.Print($"Problem in {nameof(MonitorMqttConnectionContinuously)}: {ex.Message}");
+                        Debug.WriteLine($"Problem in {nameof(MonitorMqttConnectionContinuously)}: {ex.Message}");
                     }
 
                     if (IsConnected == false) { LogError($"{nameof(MonitorMqttConnectionContinuously)} tried to connect to broker, but that did not work."); }
