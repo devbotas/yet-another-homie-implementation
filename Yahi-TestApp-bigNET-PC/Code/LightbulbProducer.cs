@@ -26,7 +26,7 @@ namespace TestApp {
             _color.PropertyChanged += (sender, e) => {
                 Debug.Print($"Color changed to {_color.Value.ToRgbString()}");
             };
-            _onOffSwitch = _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, "general", "is-on", "Is on", new[] { "OFF,ON" });
+            _onOffSwitch = _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, "general", "is-on", "Is on", new[] { "OFF", "ON" }, "OFF");
             _onOffSwitch.PropertyChanged += (sender, e) => {
                 // Simulating some lamp behaviour.
                 if (_onOffSwitch.Value == "ON") {
