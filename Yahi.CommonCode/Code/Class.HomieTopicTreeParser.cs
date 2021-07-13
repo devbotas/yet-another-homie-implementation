@@ -38,9 +38,8 @@ namespace DevBot9.Protocols.Homie {
             for (var d = 0; d < foundDeviceIds.Count; d++) {
                 var candidateId = (string)foundDeviceIds[d];
                 var candidateTopics = (ArrayList)sortedTopics[candidateId];
-                var candidateDevice = new ClientDeviceMetadata(candidateId);
 
-                if (candidateDevice.TryParse(candidateTopics, ref tempProblemList)) { goodDevices.Add(candidateDevice); }
+                if (ClientDeviceMetadata.TryParse(candidateTopics, baseTopic, candidateId, out var candidateDevice, ref tempProblemList)) { goodDevices.Add(candidateDevice); }
             }
 
             // Converting local temporary lists to final arrays and returning.
