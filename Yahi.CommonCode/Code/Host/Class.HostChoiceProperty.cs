@@ -29,6 +29,9 @@ namespace DevBot9.Protocols.Homie {
 
                 if (isMatchFound == false) { throw new ArgumentException("Initial value is not one of the possible values", nameof(initialValue)); }
             }
+            else {
+                initialValue = possibleValues[0];
+            }
 
             var localFormat = possibleValues[0];
             for (var i = 1; i < possibleValues.Length; i++) {
