@@ -75,7 +75,7 @@ namespace TestApp {
             // This is a write-only property, that is — a command. It sets last service date to actual datetime, and also sets next service date to some time in the future.
             // Popular automation software have lots of problems with this kind of workflow, when there's a command that doesn't really have a state register.
             // As of 2021-03-12, openHAB and HomeAssistant and HoDD can't really deal with it. Which is a bummer, as it a pretty common workflow in real life! 
-            _performServiceCommand = _hostDevice.CreateHostChoiceProperty(PropertyType.Command, "service", "perform-service", "Perform service", new[] { "STOP,START" });
+            _performServiceCommand = _hostDevice.CreateHostChoiceProperty(PropertyType.Command, "service", "perform-service", "Perform service", new[] { "STOP", "START" });
             _performServiceCommand.PropertyChanged += (sender, e) => {
                 if (_performServiceCommand.Value == "START") {
                     _previousServiceDate.Value = _nextServiceDate.Value;
