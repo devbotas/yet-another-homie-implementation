@@ -26,6 +26,7 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public static bool TryParse(ArrayList topicList, string baseTopic, string deviceId, out ClientDeviceMetadata parsedClientDeviceMetadata, ref ArrayList problemList) {
             var isParsedWell = false;
+            var isValidated = false;
             var candidateDevice = new ClientDeviceMetadata(deviceId, baseTopic);
             var parsedTopicList = new ArrayList();
 
@@ -205,14 +206,18 @@ namespace DevBot9.Protocols.Homie {
                                     isDataTypeReceived = true;
                                 };
                             }
-                            if (key == "/$format") { candidateProperty.Format = value; }
+                            if (key == "/$format") {
+                                candidateProperty.Format = value;
+                            }
                             if (key == "/$settable") {
-                                isSettable = Helpers.ParseBool(value);
-                                isSettableReceived = true;
+                                if (Helpers.TryParseBool(value, out isSettable)) {
+                                    isSettableReceived = true;
+                                }
                             }
                             if (key == "/$retained") {
-                                isRetained = Helpers.ParseBool(value);
-                                isRetainedReceived = true;
+                                if (Helpers.TryParseBool(value, out isRetained)) {
+                                    isRetainedReceived = true;
+                                };
                             }
 
                             if (key == "/$unit") {
@@ -240,31 +245,125 @@ namespace DevBot9.Protocols.Homie {
                         unparsedTopicList.Remove(parsedTopic);
                     }
 
-                    var minimumSetReceived = isNameReceived & isDataTypeReceived & isSettableReceived & isRetainedReceived;
-
-                    if (minimumSetReceived) {
+                    // Basic data extraction is done. Now we'll validate if values of the fields are compatible with each other and also YAHI itself.
+                    var isOk = isNameReceived & isDataTypeReceived & isSettableReceived & isRetainedReceived;
+                    if (isOk) {
                         // Setting property type.
                         if ((isSettable == false) && (isRetained == true)) {
                             candidateProperty.PropertyType = PropertyType.State;
-                            goodProperties.Add(candidateProperty);
                         }
                         if ((isSettable == true) && (isRetained == false)) {
                             candidateProperty.PropertyType = PropertyType.Command;
-                            goodProperties.Add(candidateProperty);
                         }
                         if ((isSettable == true) && (isRetained == true)) {
                             candidateProperty.PropertyType = PropertyType.Parameter;
-                            goodProperties.Add(candidateProperty);
                         }
                         if ((isSettable == false) && (isRetained == false)) {
-                            problemList.Add($"Property '{candidateProperty.PropertyId}' of node '{candidateProperty.NodeId}' of device '{candidateDevice.Id}' is has all mandatory fields set, but this retainability and settability configuration is not supported by YAHI. This property will be skipped.");
+                            problemList.Add($"Property '{candidateProperty.PropertyId}' of node '{candidateProperty.NodeId}' of device '{candidateDevice.Id}' is has all mandatory fields set, but this retainability and settability configuration is not supported by YAHI. Skipping this property entirely.");
+                            isOk = false;
                         }
 
                     }
                     else {
                         // Some of the mandatory topic were not received. Can't let this property through.
                         problemList.Add($"Property '{candidateProperty.PropertyId}' of node '{candidateProperty.NodeId}' of device '{candidateDevice.Id}' is defined, but mandatory attributes are missing. Entire property subtree will be skipped.");
+                        isOk = false;
                     }
+
+                    // Validating by property data type, because rules are very different for each of those.
+                    if (isOk) {
+                        var isNotCommand = candidateProperty.PropertyType != PropertyType.Command;
+                        switch (candidateProperty.DataType) {
+                            case DataType.String:
+                                // String type has pretty much no restriction to attributes content.
+                                break;
+
+                            case DataType.Integer:
+                                if (isNotCommand && (Helpers.IsInteger(candidateProperty.InitialValue) == false)) {
+                                    problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not a valid initial value for integer data type. Skipping this property entirely.");
+                                    isOk = false;
+                                }
+                                break;
+
+                            case DataType.Float:
+                                if (isNotCommand && (Helpers.IsFloat(candidateProperty.InitialValue) == false)) {
+                                    problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not a valid initial value for float data type. Skipping this property entirely.");
+                                    isOk = false;
+                                }
+                                break;
+
+                            case DataType.Boolean:
+                                if (isNotCommand && (Helpers.TryParseBool(candidateProperty.InitialValue, out _) == false)) {
+                                    problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not a valid initial value for boolean data type. Skipping this property entirely.");
+                                    isOk = false;
+                                }
+
+                                if (isOk) {
+                                    if (candidateProperty.Format != "") {
+                                        problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is {candidateProperty.Format}. Should be empty for boolean data type. Clearing it.");
+                                        candidateProperty.Format = "";
+                                    }
+                                    if (candidateProperty.Unit != "") {
+                                        problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$unit attribute is {candidateProperty.Unit}. Should be empty for boolean data type. Clearing it.");
+                                        candidateProperty.Unit = "";
+                                    }
+                                }
+                                break;
+
+                            case DataType.Enum:
+                                if (candidateProperty.Format == "") {
+                                    problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is empty, which is not valid for enum data type. Skipping this property entirely.");
+                                    isOk = false;
+                                }
+                                var options = candidateProperty.Format.Split(',');
+
+                                if (isOk) {
+                                    var isInitialValueCorrect = false;
+                                    foreach (var option in options) {
+                                        if (candidateProperty.InitialValue == option) {
+                                            isInitialValueCorrect = true;
+                                        }
+                                    }
+
+                                    if (isNotCommand && (isInitialValueCorrect == false)) {
+                                        problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, while it should be one of {candidateProperty.Format}. Skipping this property entirely.");
+                                        isOk = false;
+                                    }
+                                }
+                                break;
+
+                            case DataType.Color:
+                                if (candidateProperty.Format == "") {
+                                    problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is empty, which is not valid for color data type. Skipping this property entirely.");
+                                    isOk = false;
+                                }
+
+                                if (isOk) {
+                                    if (Helpers.TryParseHomieColorFormat(candidateProperty.Format, out var colorFormat) == false) {
+                                        problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is {candidateProperty.Format}, which is not valid for color data type. Skipping this property entirely.");
+                                        isOk = false;
+                                    }
+                                    else if (isNotCommand) {
+                                        if (HomieColor.ValidatePayload(candidateProperty.InitialValue, colorFormat) == false) {
+                                            problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not valid for color format {colorFormat}. Skipping this property entirely.");
+                                            isOk = false;
+                                        }
+                                    }
+                                }
+                                break;
+
+                            case DataType.DateTime:
+                            case DataType.Duration:
+                                problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is of type {candidateProperty.DataType}, but this is not currently supported by YAHI. Skipping this property entirely.");
+                                isOk = false;
+                                break;
+                        }
+                    }
+
+                    if (isOk) {
+                        goodProperties.Add(candidateProperty);
+                    }
+
                 }
 
                 // Converting local temporary property lists to final arrays.
@@ -288,6 +387,8 @@ namespace DevBot9.Protocols.Homie {
             var newNodesValue = "";
             var updateNeeded = false;
 
+            // Nodes have $properties attribute, where all the properties are listed. This list must be synchronized with actual properties.
+            // The count may differ because some properties may have been rejected if there's some crucial data missing.
             foreach (var node in candidateDevice.Nodes) {
                 if (node.Properties.Length > 0) {
                     goodNodes.Add(node);
@@ -307,6 +408,7 @@ namespace DevBot9.Protocols.Homie {
                 }
             }
 
+            // Same with device, it has $nodes synced with actual node count.
             if (goodNodes.Count > 0) {
                 var shouldBeThatManyNodes = ((string)candidateDevice.AllAttributes["$nodes"]).Split(',').Length;
                 if (goodNodes.Count != shouldBeThatManyNodes) {
@@ -321,6 +423,7 @@ namespace DevBot9.Protocols.Homie {
                 throw new InvalidOperationException("There should be at least a single good property at this point. Something is internally wrong with parser.");
             }
 
+            // If needed, trimming the actual structures.
             if (updateNeeded) {
                 candidateDevice.AllAttributes["$nodes"] = newNodesValue;
                 candidateDevice.Nodes = new ClientNodeMetadata[goodNodes.Count];
