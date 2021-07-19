@@ -11,7 +11,13 @@ namespace DevBot9.Protocols.Homie {
         public float Value {
             get {
                 float returnValue;
-                returnValue = Helpers.ParseFloat(_rawValue);
+
+                if (_isLegacyInteger) {
+                    returnValue = int.Parse(_rawValue);
+                }
+                else {
+                    returnValue = Helpers.ParseFloat(_rawValue);
+                }
 
                 return returnValue;
             }
@@ -20,21 +26,36 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal ClientNumberProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
-            if (Helpers.TryParseFloat(_rawValue, out var _) == false) { _rawValue = "0.0"; }
+        bool _isLegacyInteger = false;
+
+        internal ClientNumberProperty(ClientPropertyMetadata creationOptions, bool isLegacyInteger = false) : base(creationOptions) {
+            _isLegacyInteger = isLegacyInteger;
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
-            var returnValue = Helpers.TryParseFloat(payloadToValidate, out _);
+            bool isPayloadValid;
 
-            return returnValue;
+            if (_isLegacyInteger) {
+                isPayloadValid = Helpers.TryParseInt(payloadToValidate, out _);
+            }
+            else {
+                isPayloadValid = Helpers.TryParseFloat(payloadToValidate, out _);
+            }
+
+            return isPayloadValid;
         }
 
         private void SetValue(float valueToSet) {
             switch (Type) {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
-                    _rawValue = Helpers.FloatToString(valueToSet, Format);
+                    if (_isLegacyInteger) {
+                        _rawValue = valueToSet.ToString();
+                    }
+                    else {
+                        _rawValue = Helpers.FloatToString(valueToSet, Format);
+                    }
+
                     _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                     break;
 

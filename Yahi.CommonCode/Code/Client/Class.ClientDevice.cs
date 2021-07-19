@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
@@ -52,11 +53,11 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public ClientTextProperty CreateClientTextProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.String; }
-            else if (creationOptions.DataType != DataType.String) { throw new ArgumentException($"You're creating a {nameof(ClientTextProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+            if (creationOptions.DataType != DataType.String) { throw new ArgumentException($"You're creating a {nameof(ClientTextProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
 
+            CheckForValidityAndThrowIfSomethingIsWrong(creationOptions);
 
             var createdProperty = new ClientTextProperty(creationOptions);
-
             _properties.Add(createdProperty);
 
             return createdProperty;
@@ -67,11 +68,17 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public ClientNumberProperty CreateClientNumberProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Float; }
-            else if (creationOptions.DataType != DataType.Float) { throw new ArgumentException($"You're creating a {nameof(CreateClientNumberProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
 
+            var isLegacyInteger = false;
+            if (creationOptions.DataType == DataType.Integer) {
+                // Generally YAHI dropped support for host integer properties, but client side can still be consumed without sacrificing a lot.
+                isLegacyInteger = true;
+            }
+            else if (creationOptions.DataType != DataType.Float) {
+                throw new ArgumentException($"You're creating a {nameof(CreateClientNumberProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all).");
+            }
 
-            var createdProperty = new ClientNumberProperty(creationOptions);
-
+            var createdProperty = new ClientNumberProperty(creationOptions, isLegacyInteger);
             _properties.Add(createdProperty);
 
             return createdProperty;
@@ -82,10 +89,11 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public ClientChoiceProperty CreateClientChoiceProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Enum; }
-            else if (creationOptions.DataType != DataType.Enum) { throw new ArgumentException($"You're creating a {nameof(ClientChoiceProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+            if (creationOptions.DataType != DataType.Enum) { throw new ArgumentException($"You're creating a {nameof(ClientChoiceProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+
+            CheckForValidityAndThrowIfSomethingIsWrong(creationOptions);
 
             var createdProperty = new ClientChoiceProperty(creationOptions);
-
             _properties.Add(createdProperty);
 
             return createdProperty;
@@ -96,10 +104,11 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public ClientColorProperty CreateClientColorProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Color; }
-            else if (creationOptions.DataType != DataType.Color) { throw new ArgumentException($"You're creating a {nameof(ClientColorProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+            if (creationOptions.DataType != DataType.Color) { throw new ArgumentException($"You're creating a {nameof(ClientColorProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+
+            CheckForValidityAndThrowIfSomethingIsWrong(creationOptions);
 
             var createdProperty = new ClientColorProperty(creationOptions);
-
             _properties.Add(createdProperty);
 
             return createdProperty;
@@ -142,32 +151,21 @@ namespace DevBot9.Protocols.Homie {
 
                     switch (propertyMetadata.DataType) {
                         case DataType.Integer:
-                            var newIntegerProperty = CreateClientNumberProperty(propertyMetadata);
-                            node.Properties[p] = newIntegerProperty;
-                            break;
-
                         case DataType.Float:
-                            var newFloatProperty = CreateClientNumberProperty(propertyMetadata);
-                            node.Properties[p] = newFloatProperty;
+                            var newNumberProperty = CreateClientNumberProperty(propertyMetadata);
+                            node.Properties[p] = newNumberProperty;
                             break;
 
                         case DataType.Boolean:
-                            propertyMetadata.Format = "false,true";
-                            var newBooleanProperty = CreateClientChoiceProperty(propertyMetadata);
-                            node.Properties[p] = newBooleanProperty;
-                            break;
-
                         case DataType.Enum:
                             var newEnumProperty = CreateClientChoiceProperty(propertyMetadata);
                             node.Properties[p] = newEnumProperty;
                             break;
 
-
                         case DataType.Color:
                             var newColorProperty = CreateClientColorProperty(propertyMetadata);
                             node.Properties[p] = newColorProperty;
                             break;
-
 
                         case DataType.DateTime:
 #warning cannot parse DateTime at this moment, because nF dosn't have parsing methods, and I kinda don't want to implement them myself... Yhus, converting this property into a string for now.
@@ -186,6 +184,18 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
+        private void CheckForValidityAndThrowIfSomethingIsWrong(ClientPropertyMetadata creationOptions) {
+            var problemList = new ArrayList();
+            var isMetadataOk = creationOptions.ValidateAndFix(ref problemList);
+
+            if (isMetadataOk == false) {
+                var errorMessage = $"Provided metadata is incorrect. Problems: ";
+                foreach (var problem in problemList) {
+                    errorMessage += problem + " ";
+                }
+                throw new ArgumentException(errorMessage);
+            }
+        }
         #endregion
     }
 }

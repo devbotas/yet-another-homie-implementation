@@ -272,92 +272,108 @@ namespace DevBot9.Protocols.Homie {
 
                     // Validating by property data type, because rules are very different for each of those.
                     if (isOk) {
-                        var isNotCommand = candidateProperty.PropertyType != PropertyType.Command;
-                        switch (candidateProperty.DataType) {
-                            case DataType.String:
-                                // String type has pretty much no restriction to attributes content.
-                                break;
 
-                            case DataType.Integer:
-                                if (isNotCommand && (Helpers.IsInteger(candidateProperty.InitialValue) == false)) {
-                                    problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not a valid initial value for integer data type. Skipping this property entirely.");
-                                    isOk = false;
-                                }
-                                break;
+                        isOk = candidateProperty.ValidateAndFix(ref problemList);
 
-                            case DataType.Float:
-                                if (isNotCommand && (Helpers.IsFloat(candidateProperty.InitialValue) == false)) {
-                                    problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not a valid initial value for float data type. Skipping this property entirely.");
-                                    isOk = false;
-                                }
-                                break;
+                        //var isNotCommand = candidateProperty.PropertyType != PropertyType.Command;
+                        //switch (candidateProperty.DataType) {
+                        //    case DataType.String:
+                        //        // String type has pretty much no restriction to attributes content.
+                        //        break;
 
-                            case DataType.Boolean:
-                                if (isNotCommand && (Helpers.TryParseBool(candidateProperty.InitialValue, out _) == false)) {
-                                    problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not a valid initial value for boolean data type. Skipping this property entirely.");
-                                    isOk = false;
-                                }
+                        //    case DataType.Integer:
+                        //        if (isNotCommand && (Helpers.IsInteger(candidateProperty.InitialValue) == false)) {
+                        //            problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not a valid initial value for integer data type. Skipping this property entirely.");
+                        //            isOk = false;
+                        //        }
+                        //        break;
 
-                                if (isOk) {
-                                    if (candidateProperty.Format != "") {
-                                        problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is {candidateProperty.Format}. Should be empty for boolean data type. Clearing it.");
-                                        candidateProperty.Format = "";
-                                    }
-                                    if (candidateProperty.Unit != "") {
-                                        problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$unit attribute is {candidateProperty.Unit}. Should be empty for boolean data type. Clearing it.");
-                                        candidateProperty.Unit = "";
-                                    }
-                                }
-                                break;
+                        //    case DataType.Float:
+                        //        if (isNotCommand && (Helpers.IsFloat(candidateProperty.InitialValue) == false)) {
+                        //            problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not a valid initial value for float data type. Skipping this property entirely.");
+                        //            isOk = false;
+                        //        }
+                        //        break;
 
-                            case DataType.Enum:
-                                if (candidateProperty.Format == "") {
-                                    problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is empty, which is not valid for enum data type. Skipping this property entirely.");
-                                    isOk = false;
-                                }
-                                var options = candidateProperty.Format.Split(',');
+                        //    case DataType.Boolean:
+                        //    case DataType.Enum:
+                        //        // Trying to convert boolean type to enum. Later, enum validation will simply run on this converted property.
+                        //        if (candidateProperty.DataType == DataType.Boolean) {
+                        //            if (isNotCommand && (Helpers.TryParseBool(candidateProperty.InitialValue, out _) == false)) {
+                        //                problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not a valid initial value for boolean data type. Skipping this property entirely.");
+                        //                isOk = false;
+                        //            }
 
-                                if (isOk) {
-                                    var isInitialValueCorrect = false;
-                                    foreach (var option in options) {
-                                        if (candidateProperty.InitialValue == option) {
-                                            isInitialValueCorrect = true;
-                                        }
-                                    }
+                        //            if (isOk) {
+                        //                problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is originally of type boolean, but it will now be converted to enum.");
 
-                                    if (isNotCommand && (isInitialValueCorrect == false)) {
-                                        problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, while it should be one of {candidateProperty.Format}. Skipping this property entirely.");
-                                        isOk = false;
-                                    }
-                                }
-                                break;
+                        //                candidateProperty.Format = "false,true";
+                        //                candidateProperty.DataType = DataType.Enum;
 
-                            case DataType.Color:
-                                if (candidateProperty.Format == "") {
-                                    problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is empty, which is not valid for color data type. Skipping this property entirely.");
-                                    isOk = false;
-                                }
+                        //                if (candidateProperty.Unit != "") {
+                        //                    problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$unit attribute is {candidateProperty.Unit}. Should be empty for boolean data type. Clearing it.");
+                        //                    candidateProperty.Unit = "";
+                        //                }
+                        //            }
 
-                                if (isOk) {
-                                    if (Helpers.TryParseHomieColorFormat(candidateProperty.Format, out var colorFormat) == false) {
-                                        problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is {candidateProperty.Format}, which is not valid for color data type. Skipping this property entirely.");
-                                        isOk = false;
-                                    }
-                                    else if (isNotCommand) {
-                                        if (HomieColor.ValidatePayload(candidateProperty.InitialValue, colorFormat) == false) {
-                                            problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not valid for color format {colorFormat}. Skipping this property entirely.");
-                                            isOk = false;
-                                        }
-                                    }
-                                }
-                                break;
+                        //        }
 
-                            case DataType.DateTime:
-                            case DataType.Duration:
-                                problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is of type {candidateProperty.DataType}, but this is not currently supported by YAHI. Skipping this property entirely.");
-                                isOk = false;
-                                break;
-                        }
+                        //        // From here, the save procedure will run on both enum and (former) boolean properties.
+                        //        if (candidateProperty.Format == "") {
+                        //            problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is empty, which is not valid for enum data type. Skipping this property entirely.");
+                        //            isOk = false;
+                        //        }
+
+                        //        var options = candidateProperty.Format.Split(',');
+
+                        //        if (isOk) {
+                        //            if (options.Length < 2) {
+                        //                problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute contains less than two option. Skipping this property entirely.");
+                        //                isOk = false;
+                        //            }
+                        //        }
+
+                        //        if (isOk) {
+                        //            var isInitialValueCorrect = false;
+                        //            foreach (var option in options) {
+                        //                if (candidateProperty.InitialValue == option) {
+                        //                    isInitialValueCorrect = true;
+                        //                }
+                        //            }
+
+                        //            if (isNotCommand && (isInitialValueCorrect == false)) {
+                        //                problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, while it should be one of {candidateProperty.Format}. Skipping this property entirely.");
+                        //                isOk = false;
+                        //            }
+                        //        }
+                        //        break;
+
+                        //    case DataType.Color:
+                        //        if (candidateProperty.Format == "") {
+                        //            problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is empty, which is not valid for color data type. Skipping this property entirely.");
+                        //            isOk = false;
+                        //        }
+
+                        //        if (isOk) {
+                        //            if (Helpers.TryParseHomieColorFormat(candidateProperty.Format, out var colorFormat) == false) {
+                        //                problemList.Add($"Warning:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId}.$format attribute is {candidateProperty.Format}, which is not valid for color data type. Skipping this property entirely.");
+                        //                isOk = false;
+                        //            }
+                        //            else if (isNotCommand) {
+                        //                if (HomieColor.ValidatePayload(candidateProperty.InitialValue, colorFormat) == false) {
+                        //                    problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is set to {candidateProperty.InitialValue}, which is not valid for color format {colorFormat}. Skipping this property entirely.");
+                        //                    isOk = false;
+                        //                }
+                        //            }
+                        //        }
+                        //        break;
+
+                        //    case DataType.DateTime:
+                        //    case DataType.Duration:
+                        //        problemList.Add($"Error:{candidateDevice.Id}.{candidateProperty.NodeId}.{candidateProperty.PropertyId} is of type {candidateProperty.DataType}, but this is not currently supported by YAHI. Skipping this property entirely.");
+                        //        isOk = false;
+                        //        break;
+                        //}
                     }
 
                     if (isOk) {
