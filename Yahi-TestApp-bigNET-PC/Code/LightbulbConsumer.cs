@@ -16,7 +16,7 @@ namespace TestApp {
             _clientDevice = DeviceFactory.CreateClientDevice("lightbulb");
 
             // Creating properties.          
-            _color = _clientDevice.CreateClientColorProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Parameter, NodeId = "general", PropertyId = "color", Format = "rgb" });
+            _color = _clientDevice.CreateClientColorProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Parameter, NodeId = "general", PropertyId = "color", Format = "rgb", InitialValue = "0,0,0" });
             _color.PropertyChanged += (sender, e) => {
                 if (_color.Value.RedValue > 0) {
                     Console.WriteLine("Me no like red!");

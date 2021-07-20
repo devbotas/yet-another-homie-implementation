@@ -18,12 +18,12 @@ namespace TestApp {
 
             // Creating properties.          
             _turnOnOfProperty = _clientDevice.CreateClientChoiceProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Command, NodeId = "general", PropertyId = "turn-on-off", Format = "ON,OFF" });
-            _actualState = _clientDevice.CreateClientChoiceProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-state", Format = "ON,OFF,STARTING" });
+            _actualState = _clientDevice.CreateClientChoiceProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-state", Format = "ON,OFF,STARTING", InitialValue = "OFF" });
             _actualState.PropertyChanged += (sender, e) => {
                 addToLog($"Info:", $"{_clientDevice.DeviceId}: property {_actualState.PropertyId} changed to {_actualState.Value}.");
             };
 
-            _inletTemperature = _clientDevice.CreateClientNumberProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-air-temperature", DataType = DataType.Float, });
+            _inletTemperature = _clientDevice.CreateClientNumberProperty(new ClientPropertyMetadata { PropertyType = PropertyType.State, NodeId = "general", PropertyId = "actual-air-temperature", DataType = DataType.Float, InitialValue = "0" });
             _inletTemperature.PropertyChanged += (sender, e) => {
                 // Simulating some overheated dude.
                 if (_inletTemperature.Value > 25) {
