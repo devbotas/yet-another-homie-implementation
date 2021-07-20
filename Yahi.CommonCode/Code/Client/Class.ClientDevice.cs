@@ -68,17 +68,11 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public ClientNumberProperty CreateClientNumberProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Float; }
+            if (creationOptions.DataType != DataType.Float) { throw new ArgumentException($"You're creating a {nameof(CreateClientNumberProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
 
-            var isLegacyInteger = false;
-            if (creationOptions.DataType == DataType.Integer) {
-                // Generally YAHI dropped support for host integer properties, but client side can still be consumed without sacrificing a lot.
-                isLegacyInteger = true;
-            }
-            else if (creationOptions.DataType != DataType.Float) {
-                throw new ArgumentException($"You're creating a {nameof(CreateClientNumberProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all).");
-            }
+            CheckForValidityAndThrowIfSomethingIsWrong(creationOptions);
 
-            var createdProperty = new ClientNumberProperty(creationOptions, isLegacyInteger);
+            var createdProperty = new ClientNumberProperty(creationOptions);
             _properties.Add(createdProperty);
 
             return createdProperty;

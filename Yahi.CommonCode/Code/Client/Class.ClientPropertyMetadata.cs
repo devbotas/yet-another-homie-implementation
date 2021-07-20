@@ -31,13 +31,22 @@ namespace DevBot9.Protocols.Homie {
                     break;
 
                 case DataType.Integer:
-                    if (isNotCommand && (Helpers.IsInteger(InitialValue) == false)) {
-                        problemList.Add($"Error:{NodeId}.{PropertyId} is set to {InitialValue}, which is not a valid initial value for integer data type. Skipping this property entirely.");
-                        isOk = false;
-                    }
-                    break;
-
                 case DataType.Float:
+                    // Trying to convert integer to float. Later, float validation will simply run on this converted property.
+                    if (DataType == DataType.Integer) {
+                        if (isNotCommand && (Helpers.IsInteger(InitialValue) == false)) {
+                            problemList.Add($"Error:{NodeId}.{PropertyId} is set to {InitialValue}, which is not a valid initial value for integer data type. Skipping this property entirely.");
+                            isOk = false;
+                        }
+
+                        if (isOk) {
+                            problemList.Add($"Warning:{NodeId}.{PropertyId} is originally of type integer, but it will now be converted to float.");
+
+                            Format = "F0";
+                            DataType = DataType.Float;
+                        }
+                    }
+
                     if (isNotCommand && (Helpers.IsFloat(InitialValue) == false)) {
                         problemList.Add($"Error:{NodeId}.{PropertyId} is set to {InitialValue}, which is not a valid initial value for float data type. Skipping this property entirely.");
                         isOk = false;

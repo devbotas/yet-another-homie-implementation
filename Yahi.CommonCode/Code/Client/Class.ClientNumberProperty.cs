@@ -12,12 +12,7 @@ namespace DevBot9.Protocols.Homie {
             get {
                 float returnValue;
 
-                if (_isLegacyInteger) {
-                    returnValue = int.Parse(_rawValue);
-                }
-                else {
-                    returnValue = Helpers.ParseFloat(_rawValue);
-                }
+                returnValue = Helpers.ParseFloat(_rawValue);
 
                 return returnValue;
             }
@@ -26,21 +21,13 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        bool _isLegacyInteger = false;
-
-        internal ClientNumberProperty(ClientPropertyMetadata creationOptions, bool isLegacyInteger = false) : base(creationOptions) {
-            _isLegacyInteger = isLegacyInteger;
+        internal ClientNumberProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
             bool isPayloadValid;
 
-            if (_isLegacyInteger) {
-                isPayloadValid = Helpers.TryParseInt(payloadToValidate, out _);
-            }
-            else {
-                isPayloadValid = Helpers.TryParseFloat(payloadToValidate, out _);
-            }
+            isPayloadValid = Helpers.TryParseFloat(payloadToValidate, out _);
 
             return isPayloadValid;
         }
@@ -49,13 +36,7 @@ namespace DevBot9.Protocols.Homie {
             switch (Type) {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
-                    if (_isLegacyInteger) {
-                        _rawValue = valueToSet.ToString();
-                    }
-                    else {
-                        _rawValue = Helpers.FloatToString(valueToSet, Format);
-                    }
-
+                    _rawValue = Helpers.FloatToString(valueToSet, Format);
                     _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                     break;
 
