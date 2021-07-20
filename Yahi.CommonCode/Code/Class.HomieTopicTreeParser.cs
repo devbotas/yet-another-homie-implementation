@@ -7,8 +7,9 @@ namespace DevBot9.Protocols.Homie {
         /// Parses Homie tree from provided topic and value dump.
         /// </summary>
         /// <param name="input">Each line should follow this format: {topic}:{value}. For example, homie/lightbulb/$homie:4.0.0</param>       
-        public static ClientDeviceMetadata[] Parse(string[] input, string baseTopic, out string[] problemList) {
-            var tempProblemList = new ArrayList();
+        public static ClientDeviceMetadata[] Parse(string[] input, string baseTopic, out string[] errorList, out string[] warningList) {
+            var tempErrorList = new ArrayList();
+            var tempWarningList = new ArrayList();
 
             // First, need to figure out ho many devices are in the input dump. Looking for $homie attributes.
             var foundDeviceIds = new ArrayList();
@@ -39,13 +40,18 @@ namespace DevBot9.Protocols.Homie {
                 var candidateId = (string)foundDeviceIds[d];
                 var candidateTopics = (ArrayList)sortedTopics[candidateId];
 
-                if (ClientDeviceMetadata.TryParse(candidateTopics, baseTopic, candidateId, out var candidateDevice, ref tempProblemList)) { goodDevices.Add(candidateDevice); }
+                if (ClientDeviceMetadata.TryParse(candidateTopics, baseTopic, candidateId, out var candidateDevice, ref tempErrorList, ref tempWarningList)) { goodDevices.Add(candidateDevice); }
             }
 
             // Converting local temporary lists to final arrays and returning.
-            problemList = new string[tempProblemList.Count];
-            for (var i = 0; i < tempProblemList.Count; i++) {
-                problemList[i] = (string)tempProblemList[i];
+            errorList = new string[tempErrorList.Count];
+            for (var i = 0; i < tempErrorList.Count; i++) {
+                errorList[i] = (string)tempErrorList[i];
+            }
+
+            warningList = new string[tempWarningList.Count];
+            for (var i = 0; i < tempWarningList.Count; i++) {
+                warningList[i] = (string)tempWarningList[i];
             }
 
             var deviceTree = new ClientDeviceMetadata[goodDevices.Count];

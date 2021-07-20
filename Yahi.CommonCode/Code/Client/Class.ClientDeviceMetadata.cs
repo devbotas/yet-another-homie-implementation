@@ -24,7 +24,7 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Tries parsing a whole tree of a single device.
         /// </summary>
-        public static bool TryParse(ArrayList topicList, string baseTopic, string deviceId, out ClientDeviceMetadata parsedClientDeviceMetadata, ref ArrayList problemList) {
+        public static bool TryParse(ArrayList topicList, string baseTopic, string deviceId, out ClientDeviceMetadata parsedClientDeviceMetadata, ref ArrayList errorList, ref ArrayList warningList) {
             var isParsedWell = false;
             var isValidated = false;
             var candidateDevice = new ClientDeviceMetadata(deviceId, baseTopic);
@@ -33,32 +33,32 @@ namespace DevBot9.Protocols.Homie {
             // It will be reassigned on successful parsing.
             parsedClientDeviceMetadata = null;
 
-            var attributesGood = TryParseAttributes(ref topicList, ref parsedTopicList, baseTopic, ref candidateDevice, ref problemList);
+            var attributesGood = TryParseAttributes(ref topicList, ref parsedTopicList, baseTopic, ref candidateDevice, ref errorList, ref warningList);
             if (attributesGood) {
-                var nodesGood = TryParseNodes(ref topicList, ref parsedTopicList, baseTopic, ref candidateDevice, ref problemList);
+                var nodesGood = TryParseNodes(ref topicList, ref parsedTopicList, baseTopic, ref candidateDevice, ref errorList, ref warningList);
                 if (nodesGood) {
-                    var propertiesGood = TryParseProperties(ref topicList, ref parsedTopicList, baseTopic, ref candidateDevice, ref problemList);
+                    var propertiesGood = TryParseProperties(ref topicList, ref parsedTopicList, baseTopic, ref candidateDevice, ref errorList, ref warningList);
                     if (propertiesGood) {
-                        TrimRottenBranches(ref candidateDevice, ref problemList);
+                        TrimRottenBranches(ref candidateDevice, ref errorList, ref warningList);
                         isParsedWell = true;
                         parsedClientDeviceMetadata = candidateDevice;
                     }
                     else {
-                        problemList.Add($"Device '{candidateDevice.Id}' was detected, but it does not have a single valid property. This device subtree will be skipped.");
+                        errorList.Add($"Device '{candidateDevice.Id}' was detected, but it does not have a single valid property. This device subtree will be skipped.");
                     }
                 }
                 else {
-                    problemList.Add($"Device '{candidateDevice.Id}' was detected, but it does not have a single valid node. This device subtree will be skipped.");
+                    errorList.Add($"Device '{candidateDevice.Id}' was detected, but it does not have a single valid node. This device subtree will be skipped.");
                 }
             }
             else {
-                problemList.Add($"Device '{candidateDevice.Id}' was detected, but it is missing important attributes. This device subtree will be skipped.");
+                errorList.Add($"Device '{candidateDevice.Id}' was detected, but it is missing important attributes. This device subtree will be skipped.");
             }
 
             return isParsedWell;
         }
 
-        private static bool TryParseAttributes(ref ArrayList unparsedTopicList, ref ArrayList parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref ArrayList problemList) {
+        private static bool TryParseAttributes(ref ArrayList unparsedTopicList, ref ArrayList parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref ArrayList errorList, ref ArrayList warningList) {
             var isParseSuccessful = false;
 
             // Filtering out device attributes. We'll get nodes from them.
@@ -106,15 +106,15 @@ namespace DevBot9.Protocols.Homie {
             }
             else {
                 isParseSuccessful = false;
-                if (isHomieReceived == false) { problemList.Add($"Device '{candidateDevice.Id}': mandatory attribute $homie was not found, parsing cannot continue."); }
-                if (isDeviceNameReceived == false) { problemList.Add($"Device '{candidateDevice.Id}': mandatory attribute $name was not found, parsing cannot continue."); }
-                if (isNodesReceived == false) { problemList.Add($"Device '{candidateDevice.Id}': mandatory attribute $nodes was not found, parsing cannot continue."); }
-                if (isStateReceived == false) { problemList.Add($"Device '{candidateDevice.Id}': mandatory attribute $state was not found, parsing cannot continue."); }
+                if (isHomieReceived == false) { errorList.Add($"Device '{candidateDevice.Id}': mandatory attribute $homie was not found, parsing cannot continue."); }
+                if (isDeviceNameReceived == false) { errorList.Add($"Device '{candidateDevice.Id}': mandatory attribute $name was not found, parsing cannot continue."); }
+                if (isNodesReceived == false) { errorList.Add($"Device '{candidateDevice.Id}': mandatory attribute $nodes was not found, parsing cannot continue."); }
+                if (isStateReceived == false) { errorList.Add($"Device '{candidateDevice.Id}': mandatory attribute $state was not found, parsing cannot continue."); }
             }
 
             return isParseSuccessful;
         }
-        private static bool TryParseNodes(ref ArrayList unparsedTopicList, ref ArrayList parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref ArrayList problemList) {
+        private static bool TryParseNodes(ref ArrayList unparsedTopicList, ref ArrayList parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref ArrayList errorList, ref ArrayList warningList) {
             var isParseSuccessful = true;
 
             var candidateNodeIds = ((string)candidateDevice.AllAttributes["$nodes"]).Split(',');
@@ -153,7 +153,7 @@ namespace DevBot9.Protocols.Homie {
                 }
                 else {
                     // Something is wrong, an essential topic is missing.
-                    problemList.Add($"Node '{candidateNode.Id}' of device '{candidateDevice.Id}' is defined, but $properties attribute is missing. This node subtree will be skipped entirely.");
+                    errorList.Add($"{candidateDevice.Id}/{candidateNode.Id} is defined, but $properties attribute is missing. This node subtree will be skipped entirely.");
                 }
             }
 
@@ -168,7 +168,7 @@ namespace DevBot9.Protocols.Homie {
 
             return isParseSuccessful;
         }
-        private static bool TryParseProperties(ref ArrayList unparsedTopicList, ref ArrayList parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref ArrayList problemList) {
+        private static bool TryParseProperties(ref ArrayList unparsedTopicList, ref ArrayList parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref ArrayList errorList, ref ArrayList warningList) {
             var isParseSuccessful = false;
 
             for (var n = 0; n < candidateDevice.Nodes.Length; n++) {
@@ -231,7 +231,7 @@ namespace DevBot9.Protocols.Homie {
                         if (setMatch.Success) {
                             // Discarding this one. This is a historically cached command, and these should not execute during initialization. Besides, it shouldn't be retained,
                             // so the fact that we're here means something is wrong with the host side.
-                            problemList.Add($"Device '{candidateDevice.Id}', property {candidateProperty} has /set topic assigned, which means /set message is published as retained. This is against Homie convention.");
+                            warningList.Add($"{candidateDevice.Id}/{candidateProperty} has /set topic assigned, which means /set message is published as retained. This is against Homie convention.");
                         }
 
                         var valueMatch = valueRegex.Match(inputString);
@@ -259,20 +259,31 @@ namespace DevBot9.Protocols.Homie {
                             candidateProperty.PropertyType = PropertyType.Parameter;
                         }
                         if ((isSettable == false) && (isRetained == false)) {
-                            problemList.Add($"Property '{candidateProperty.PropertyId}' of node '{candidateProperty.NodeId}' of device '{candidateDevice.Id}' is has all mandatory fields set, but this retainability and settability configuration is not supported by YAHI. Skipping this property entirely.");
+                            errorList.Add($"{candidateDevice.Id}/{candidateProperty.NodeId}/{candidateProperty.PropertyId} has all mandatory fields set, but this retainability and settability configuration is not supported by YAHI. Skipping this property entirely.");
                             isOk = false;
                         }
 
                     }
                     else {
                         // Some of the mandatory topic were not received. Can't let this property through.
-                        problemList.Add($"Property '{candidateProperty.PropertyId}' of node '{candidateProperty.NodeId}' of device '{candidateDevice.Id}' is defined, but mandatory attributes are missing. Entire property subtree will be skipped.");
+                        errorList.Add($"{candidateDevice.Id}/{candidateProperty.NodeId}/{candidateProperty.PropertyId} is defined, but mandatory attributes are missing. Skipping this property entirely.");
                         isOk = false;
                     }
 
                     // Validating by property data type, because rules are very different for each of those.
                     if (isOk) {
-                        isOk = candidateProperty.ValidateAndFix(ref problemList);
+                        var tempErrorList = new ArrayList();
+                        var tempWarningList = new ArrayList();
+
+                        // ValidateAndFix method does not know anythin about device it is parsing, thus doing some wrapping around error and warning lists (because I want device info in those).
+                        isOk = candidateProperty.ValidateAndFix(ref tempErrorList, ref tempWarningList);
+
+                        foreach (var error in tempErrorList) {
+                            errorList.Add($"{candidateDevice.Id}/{error}");
+                        }
+                        foreach (var warning in tempWarningList) {
+                            warningList.Add($"{candidateDevice.Id}/{warning}");
+                        }
                     }
 
                     if (isOk) {
@@ -297,7 +308,7 @@ namespace DevBot9.Protocols.Homie {
 
             return isParseSuccessful;
         }
-        private static void TrimRottenBranches(ref ClientDeviceMetadata candidateDevice, ref ArrayList problemList) {
+        private static void TrimRottenBranches(ref ClientDeviceMetadata candidateDevice, ref ArrayList problemList, ref ArrayList warningList) {
             var goodNodes = new ArrayList();
             var newNodesValue = "";
             var updateNeeded = false;
@@ -346,7 +357,7 @@ namespace DevBot9.Protocols.Homie {
                     candidateDevice.Nodes[i] = (ClientNodeMetadata)goodNodes[i];
                 }
 
-                problemList.Add($"Device {candidateDevice.Id} has been trimmed. Values of the fields will not be identical to what's on the broker topics!");
+                warningList.Add($"Device {candidateDevice.Id} has been trimmed. Values of the fields will not be identical to what's on the broker topics!");
             }
         }
 

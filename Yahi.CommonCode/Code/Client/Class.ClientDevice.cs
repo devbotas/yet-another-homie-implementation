@@ -179,12 +179,14 @@ namespace DevBot9.Protocols.Homie {
         }
 
         private void CheckForValidityAndThrowIfSomethingIsWrong(ClientPropertyMetadata creationOptions) {
-            var problemList = new ArrayList();
-            var isMetadataOk = creationOptions.ValidateAndFix(ref problemList);
+            var errorList = new ArrayList();
+            var warningList = new ArrayList();
+
+            var isMetadataOk = creationOptions.ValidateAndFix(ref errorList, ref warningList);
 
             if (isMetadataOk == false) {
-                var errorMessage = $"Provided metadata is incorrect. Problems: ";
-                foreach (var problem in problemList) {
+                var errorMessage = $"Provided metadata is incorrect. Errors: ";
+                foreach (var problem in errorList) {
                     errorMessage += problem + " ";
                 }
                 throw new ArgumentException(errorMessage);

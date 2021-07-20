@@ -55,15 +55,19 @@ namespace TestApp {
             var homieFecther = new HomieTopicFetcher();
             homieFecther.Initialize(brokerIp);
             homieFecther.FetchTopics(DeviceFactory.BaseTopic + "/#", out var topicDump2);
-            var homieTree = HomieTopicTreeParser.Parse(topicDump2, DeviceFactory.BaseTopic, out var problemList);
-            if (problemList.Length == 0) {
+            var homieTree = HomieTopicTreeParser.Parse(topicDump2, DeviceFactory.BaseTopic, out var errorList, out var warningList);
+            if (errorList.Length + warningList.Length == 0) {
                 AddToLog("Info", "TreeParser:tree looks ok.");
             }
             else {
-                foreach (var problem in problemList) {
+                foreach (var problem in errorList) {
                     AddToLog("Error", "TreeParser:" + problem);
                 }
+                foreach (var problem in warningList) {
+                    AddToLog("Warning", "TreeParser:" + problem);
+                }
             }
+
 
             Thread.Sleep(2000);
             AddToLog("Info", "");
