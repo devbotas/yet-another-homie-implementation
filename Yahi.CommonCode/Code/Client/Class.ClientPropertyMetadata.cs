@@ -108,13 +108,13 @@ namespace DevBot9.Protocols.Homie {
 
                 case DataType.Color:
                     if (Format == "") {
-                        warningList.Add($"{NodeId}/{PropertyId}/$format attribute is empty, which is not valid for color data type. Skipping this property entirely.");
+                        errorList.Add($"{NodeId}/{PropertyId}/$format attribute is empty, which is not valid for color data type. Skipping this property entirely.");
                         isOk = false;
                     }
 
                     if (isOk) {
                         if (Helpers.TryParseHomieColorFormat(Format, out var colorFormat) == false) {
-                            warningList.Add($"{NodeId}/{PropertyId}/$format attribute is {Format}, which is not valid for color data type. Skipping this property entirely.");
+                            errorList.Add($"{NodeId}/{PropertyId}/$format attribute is {Format}, which is not valid for color data type. Skipping this property entirely.");
                             isOk = false;
                         }
                         else if (isNotCommand) {

@@ -353,33 +353,6 @@ namespace DevBot9.Protocols.Homie {
 
         #region regex helpers
 
-        // Some samples to test number to test regexes against:
-        //1
-        //-1
-        //0
-        //-0
-        //+0
-        //12
-        //-12
-        //12.4
-        //12,3
-        //-10.454
-        //-12f.45
-        //0000.3
-        //3.000
-        //1.
-        //.6
-        //-.67
-        //0.0
-        //0.
-        //.0
-        //00.0
-        //1.0e12
-        //-1.00E-12
-        //1.e3
-        //1.001e4
-        //-.5E5
-
         public static bool IsInteger(string value) {
             var integerRegex = new Regex("^[+-]?([0]|[1-9]+[0-9]*)$");
 
@@ -390,7 +363,7 @@ namespace DevBot9.Protocols.Homie {
 
         public static bool IsFloat(string value) {
             var simpleDecimalRegex = new Regex("^[+-]?([0]|[1-9]+[0-9]*)([.][0-9]+)?$");
-            var standardNotationRegex = new Regex("^[-+]?[0-9]+[.][0-9]+([eE][-+]?[0-9]+)$");
+            var standardNotationRegex = new Regex("^[-+]?[0-9][.][0-9]+([eE][-+]?[0-9]+)$");
 
             var isFloat = simpleDecimalRegex.IsMatch(value) || standardNotationRegex.IsMatch(value);
 
