@@ -161,5 +161,20 @@ namespace YahiTests {
             Assert.AreEqual(_property.DataType, DataType.Enum);
             Assert.AreEqual(_property.Format, "false,true");
         }
+
+        [Test]
+        public void CheckBadDateTimeInitialValue() {
+            _property.DataType = DataType.Integer;
+
+            foreach (var value in CommonStuff.BadDateTimeValues) {
+                _property.InitialValue = value;
+
+                var errorList = new ArrayList();
+                var warningList = new ArrayList();
+                var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
+                Assert.IsFalse(validationResult, $"Ooops, for initial value of {value} this test should fail!");
+                Assert.NotZero(errorList.Count);
+            }
+        }
     }
 }

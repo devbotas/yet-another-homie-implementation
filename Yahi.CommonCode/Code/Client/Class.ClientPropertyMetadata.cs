@@ -127,6 +127,20 @@ namespace DevBot9.Protocols.Homie {
                     break;
 
                 case DataType.DateTime:
+                    if (isNotCommand && (Helpers.TryParseDateTime(InitialValue, out var _) == false)) {
+                        errorList.Add($"{NodeId}/{PropertyId} is set to {InitialValue}, which is not a valid initial value for datetime data type. Skipping this property entirely.");
+                        isOk = false;
+                    }
+                    if (Unit != "") {
+                        warningList.Add($"{NodeId}/{PropertyId}/$unit attribute is {Unit}. Should be empty for datetime data type. Clearing it.");
+                        Unit = "";
+                    }
+                    if (Format != "") {
+                        warningList.Add($"{NodeId}/{PropertyId}/$format attribute is {Unit}. Should be empty for datetime data type. Clearing it.");
+                        Format = "";
+                    }
+                    break;
+
                 case DataType.Duration:
                     errorList.Add($"{NodeId}/{PropertyId} is of type {DataType}, but this is not currently supported by YAHI. Skipping this property entirely.");
                     isOk = false;

@@ -107,6 +107,21 @@ namespace DevBot9.Protocols.Homie {
 
             return createdProperty;
         }
+
+        /// <summary>
+        /// Creates a client date and time.
+        /// </summary>
+        public ClientDateTimeProperty CreateClientDateTimeProperty(ClientPropertyMetadata creationOptions) {
+            if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.DateTime; }
+            if (creationOptions.DataType != DataType.DateTime) { throw new ArgumentException($"You're creating a {nameof(CreateClientNumberProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+
+            CheckForValidityAndThrowIfSomethingIsWrong(creationOptions);
+
+            var createdProperty = new ClientDateTimeProperty(creationOptions);
+            _properties.Add(createdProperty);
+
+            return createdProperty;
+        }
         #endregion
 
         #region Private stuff
@@ -144,6 +159,11 @@ namespace DevBot9.Protocols.Homie {
 
 
                     switch (propertyMetadata.DataType) {
+                        case DataType.String:
+                            var newStringProperty = CreateClientTextProperty(propertyMetadata);
+                            node.Properties[p] = newStringProperty;
+                            break;
+
                         case DataType.Integer:
                         case DataType.Float:
                             var newNumberProperty = CreateClientNumberProperty(propertyMetadata);
@@ -162,15 +182,14 @@ namespace DevBot9.Protocols.Homie {
                             break;
 
                         case DataType.DateTime:
-#warning cannot parse DateTime at this moment, because nF dosn't have parsing methods, and I kinda don't want to implement them myself... Yhus, converting this property into a string for now.
-                            propertyMetadata.DataType = DataType.String;
-                            var newDateTimeProperty = CreateClientTextProperty(propertyMetadata);
+                            var newDateTimeProperty = CreateClientDateTimeProperty(propertyMetadata);
                             node.Properties[p] = newDateTimeProperty;
                             break;
 
-                        case DataType.String:
-                            var newStringProperty = CreateClientTextProperty(propertyMetadata);
-                            node.Properties[p] = newStringProperty;
+                        case DataType.Duration:
+#warning cannot parse DateTime at this moment, because nF dosn't have parsing methods, and I kinda don't want to implement them myself... Yhus, converting this property into a string for now.
+                            // var newDateTimeProperty = CreateClientDateTimeProperty(propertyMetadata);
+                            // node.Properties[p] = newDateTimeProperty;
                             break;
 
                     }
