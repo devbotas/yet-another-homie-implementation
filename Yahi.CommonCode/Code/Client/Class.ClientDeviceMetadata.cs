@@ -7,8 +7,6 @@ namespace DevBot9.Protocols.Homie {
     /// This class is useful when parsing MQTT topics trying to figure out if those topics are actually correct. If they are, then this class is later used to create a <see cref="ClientDevice"/>.
     /// </summary>
     public class ClientDeviceMetadata {
-        private string _baseTopic;
-
         public string Id { get; internal set; } = "";
         public string HomieAttribute { get; internal set; } = "";
         public string NameAttribute { get; internal set; } = "";
@@ -16,9 +14,8 @@ namespace DevBot9.Protocols.Homie {
         public ClientNodeMetadata[] Nodes { get; internal set; }
         public Hashtable AllAttributes { get; internal set; } = new Hashtable();
 
-        public ClientDeviceMetadata(string id, string baseTopic = "homie") {
-            Id = id;
-            _baseTopic = baseTopic;
+        internal ClientDeviceMetadata() {
+            // Making the constructor inaccessible for public use.
         }
 
         /// <summary>
@@ -26,8 +23,7 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public static bool TryParse(ArrayList topicList, string baseTopic, string deviceId, out ClientDeviceMetadata parsedClientDeviceMetadata, ref ArrayList errorList, ref ArrayList warningList) {
             var isParsedWell = false;
-            var isValidated = false;
-            var candidateDevice = new ClientDeviceMetadata(deviceId, baseTopic);
+            var candidateDevice = new ClientDeviceMetadata() { Id = deviceId };
             var parsedTopicList = new ArrayList();
 
             // It will be reassigned on successful parsing.

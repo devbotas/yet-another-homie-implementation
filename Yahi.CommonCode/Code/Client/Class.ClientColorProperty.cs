@@ -25,6 +25,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         internal ClientColorProperty(ClientPropertyMetadata creationProperties) : base(creationProperties) {
+
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {

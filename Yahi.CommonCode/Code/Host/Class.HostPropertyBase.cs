@@ -10,17 +10,13 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        protected string _propertyId;
-        protected HostDevice _parentDevice;
-        internal void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) {
-            PropertyChanged(sender, e);
-        }
-
         /// <summary>
         /// Logical type of the property. This is NOT defined by Homie convention, but rather and additional constrain added by YAHI. However, it is fully Homie-compliant.
         /// </summary>
         public PropertyType Type { get; protected set; } = PropertyType.State;
 
+        protected string _propertyId;
+        protected HostDevice _parentDevice;
         protected string _rawValue = "";
         protected readonly string _nameAttribute;
         protected readonly DataType _dataTypeAttribute;
@@ -97,6 +93,10 @@ namespace DevBot9.Protocols.Homie {
                     }
                 });
             }
+        }
+
+        internal void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) {
+            PropertyChanged(sender, e);
         }
 
         protected virtual bool ValidatePayload(string payloadToValidate) {

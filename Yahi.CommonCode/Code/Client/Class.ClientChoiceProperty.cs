@@ -48,7 +48,6 @@ namespace DevBot9.Protocols.Homie {
                     else {
                         throw new ArgumentOutOfRangeException($"Parameter value \"{valueToSet}\" is not permitted.");
                     }
-
                     break;
 
                 case PropertyType.State:

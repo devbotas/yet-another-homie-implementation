@@ -18,6 +18,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         public ClientTextProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
+
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {

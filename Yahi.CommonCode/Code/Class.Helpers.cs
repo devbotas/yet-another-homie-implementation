@@ -351,7 +351,7 @@ namespace DevBot9.Protocols.Homie {
 
         #endregion
 
-        #region regex helpers
+        #region RegEx helpers
 
         public static bool IsInteger(string value) {
             var integerRegex = new Regex("^[+-]?([0]|[1-9]+[0-9]*)$");

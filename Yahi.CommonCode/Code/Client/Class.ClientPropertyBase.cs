@@ -10,12 +10,9 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        protected string _propertyId;
-        protected ClientDevice _parentDevice;
-        internal void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) {
-            PropertyChanged(sender, e);
-        }
-
+        /// <summary>
+        /// ID of the property.
+        /// </summary>
         public string PropertyId {
             get {
                 return _propertyId;
@@ -76,6 +73,8 @@ namespace DevBot9.Protocols.Homie {
         private string _format = "";
         private string _unit = "";
         protected string _rawValue = "";
+        protected string _propertyId;
+        protected ClientDevice _parentDevice;
 
         protected ClientPropertyBase(ClientPropertyMetadata creationOptions) {
             Name = creationOptions.Name;
@@ -110,6 +109,11 @@ namespace DevBot9.Protocols.Homie {
                 });
             }
         }
+
+        internal void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) {
+            PropertyChanged(sender, e);
+        }
+
         protected virtual bool ValidatePayload(string payloadToValidate) {
             return false;
         }
