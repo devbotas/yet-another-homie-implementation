@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.0-preview.44] - 2021-07-22
+### Added
+- Brought back support for client side integers and booleans. They are silently converted to float and enum counterparts.
+- Added support for client side DateTime properties.
+### Fixed
+- Consolidating all the property metadata validation under a single umbrella. Also making validation much more strict and robust.
+
+
 ## [0.10.0-preview.30] - 2021-07-12
 ### Added
 - Device base class is now disposable.
