@@ -153,6 +153,7 @@ namespace DevBot9.Protocols.Homie {
                 node.Name = nodeMetaData.NameAttribute;
                 node.Type = nodeMetaData.TypeAttribute;
                 node.Properties = new ClientPropertyBase[nodeMetaData.Properties.Length];
+                node.NodeId = nodeMetaData.Id;
 
                 for (var p = 0; p < nodeMetaData.Properties.Length; p++) {
                     var propertyMetadata = nodeMetaData.Properties[p];

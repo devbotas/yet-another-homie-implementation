@@ -4,6 +4,11 @@
     /// </summary>
     public class ClientNode {
         /// <summary>
+        /// ID of the node.
+        /// </summary>
+        public string NodeId { get; internal set; } = "";
+
+        /// <summary>
         /// Name of the node, as defined by Homie convention.
         /// </summary>
         public string Name { get; internal set; } = "";
