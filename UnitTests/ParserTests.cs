@@ -123,7 +123,6 @@ namespace YahiTests {
             var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
             Assert.IsTrue(validationResult);
             Assert.AreEqual(_property.DataType, DataType.Float);
-            Assert.AreEqual(_property.Format, "F0");
         }
 
         [Test]
