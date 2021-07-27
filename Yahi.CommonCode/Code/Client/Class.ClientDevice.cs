@@ -188,11 +188,8 @@ namespace DevBot9.Protocols.Homie {
                             break;
 
                         case DataType.Duration:
-#warning cannot parse DateTime at this moment, because nF dosn't have parsing methods, and I kinda don't want to implement them myself... Yhus, converting this property into a string for now.
-                            // var newDateTimeProperty = CreateClientDateTimeProperty(propertyMetadata);
-                            // node.Properties[p] = newDateTimeProperty;
+                            // Duration is not supported by design. It's too complicated to support and provides no real value.
                             break;
-
                     }
                 }
             }
