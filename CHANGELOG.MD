@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.10.0-preview.54] - 2021-07-27
+### Added
+- Adding Tags Hashtable to client and host properties. It will keep off-Homie parameters like decimal places for float numbers.
+- Exposing NodeId field for the ClientNode.
+- Exposing ClientPropertyBaser.RawValue for read-only usage.
+### Changed
+- NumberProperty is now a true double precision one.
+
+
 ## [0.10.0-preview.44] - 2021-07-22
 ### Added
 - Brought back support for client side integers and booleans. They are silently converted to float and enum counterparts.
