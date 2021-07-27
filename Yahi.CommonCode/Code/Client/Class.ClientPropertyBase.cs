@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -68,6 +69,11 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
+        /// <summary>
+        /// Can be anything that help developer to work with Homie properties. It is not defined by Homie convention at all.
+        /// </summary>
+        public Hashtable Tags { get; protected set; } = new Hashtable();
+
         private string _name = "";
         private DataType _dataType = DataType.String;
         private string _format = "";
@@ -84,6 +90,10 @@ namespace DevBot9.Protocols.Homie {
             Format = creationOptions.Format;
             Unit = creationOptions.Unit;
             _rawValue = creationOptions.InitialValue;
+
+            foreach (var key in creationOptions.Tags.Keys) {
+                Tags.Add(key, creationOptions.Tags[key]);
+            }
         }
 
         internal void Initialize(ClientDevice parentDevice) {

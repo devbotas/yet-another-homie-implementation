@@ -8,6 +8,7 @@ namespace DevBot9.Protocols.Homie {
         public string Name { get; set; } = "no-name";
         public DataType DataType { get; set; } = DataType.Blank;
         public string Format { get; set; } = "";
+        public Hashtable Tags { get; } = new Hashtable();
         public string Unit { get; set; } = "";
         public string InitialValue { get; set; } = "";
 
@@ -42,7 +43,7 @@ namespace DevBot9.Protocols.Homie {
                         if (isOk) {
                             warningList.Add($"{NodeId}/{PropertyId} is originally of type integer, but it will now be converted to float.");
 
-                            Format = "F0";
+                            Tags.Add("Precision", "0");
                             DataType = DataType.Float;
                         }
                     }

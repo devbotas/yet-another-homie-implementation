@@ -21,8 +21,9 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostNumberProperty(PropertyType propertyType, string propertyId, string friendlyName, float initialValue, int decimalPlaces, string unit) : base(propertyType, propertyId, friendlyName, DataType.Float, Helpers.GetFloatFormatString(decimalPlaces), unit) {
-            _rawValue = Helpers.FloatToString(initialValue, _formatAttribute);
+        internal HostNumberProperty(PropertyType propertyType, string propertyId, string friendlyName, float initialValue, int decimalPlaces, string unit) : base(propertyType, propertyId, friendlyName, DataType.Float, "", unit) {
+            _tags.Add("Precision", decimalPlaces.ToString());
+            _rawValue = Helpers.FloatToString(initialValue, "F" + decimalPlaces);
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
@@ -35,8 +36,10 @@ namespace DevBot9.Protocols.Homie {
             switch (Type) {
                 case PropertyType.State:
                 case PropertyType.Parameter:
+                    var formatString = "";
+                    if (_tags.ContainsKey("Precision")) { formatString = "F" + (string)_tags["Precision"]; }
 
-                    _rawValue = Helpers.FloatToString(valueToSet, _formatAttribute);
+                    _rawValue = Helpers.FloatToString(valueToSet, formatString);
 
                     _parentDevice.InternalPropertyPublish($"{_propertyId}", _rawValue);
                     break;

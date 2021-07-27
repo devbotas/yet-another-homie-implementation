@@ -37,7 +37,11 @@ namespace DevBot9.Protocols.Homie {
             switch (Type) {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
-                    _rawValue = Helpers.FloatToString(valueToSet, Format);
+                    var formatString = "";
+                    if (Tags.ContainsKey("Precision")) { formatString = "F" + (string)Tags["Precision"]; }
+
+                    _rawValue = Helpers.FloatToString(valueToSet, formatString);
+
                     _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                     break;
 

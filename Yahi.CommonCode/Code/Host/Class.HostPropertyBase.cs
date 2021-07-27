@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -24,6 +25,8 @@ namespace DevBot9.Protocols.Homie {
         protected readonly bool _isSettableAttribute;
         protected readonly bool _isRetainedAttribute;
         protected readonly string _unitAttribute;
+        protected readonly Hashtable _tags = new Hashtable(); // <-- Can be anything that help developer to work with Homie properties. It is not defined by Homie convention at all.
+
 
         protected HostPropertyBase(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) {
             Type = propertyType;
