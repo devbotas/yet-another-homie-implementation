@@ -70,6 +70,13 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
+        /// String representation of the value, for read-only consumation. Maybe useful for dumping and debugging.
+        /// </summary>
+        public string RawValue {
+            get { return _rawValue; }
+        }
+
+        /// <summary>
         /// Can be anything that help developer to work with Homie properties. It is not defined by Homie convention at all.
         /// </summary>
         public Hashtable Tags { get; protected set; } = new Hashtable();
