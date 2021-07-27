@@ -220,11 +220,12 @@ namespace DevBot9.Protocols.Homie {
             return returnFormat;
         }
 
-        public static string FloatToString(float numberToConvert, string format) {
+        public static string FloatToString(float numberToConvert, string format = "") {
             string returnValue;
 
 #if !NANOFRAMEWORK_1_0
-            returnValue = numberToConvert.ToString(format, CultureInfo.InvariantCulture);
+            if (format != "") { returnValue = numberToConvert.ToString(format, CultureInfo.InvariantCulture); }
+            else { returnValue = numberToConvert.ToString(CultureInfo.InvariantCulture); }
 #else
             returnValue = numberToConvert.ToString(format);
 #endif
