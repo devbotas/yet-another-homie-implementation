@@ -37,7 +37,7 @@ namespace DevBot9.Protocols.Homie {
                 case PropertyType.State:
                 case PropertyType.Parameter:
                     var formatString = "";
-                    if (_tags.ContainsKey("Precision")) { formatString = "F" + (string)_tags["Precision"]; }
+                    if (_tags.Contains("Precision")) { formatString = "F" + (string)_tags["Precision"]; }
 
                     _rawValue = Helpers.DoubleToString(valueToSet, formatString);
 
