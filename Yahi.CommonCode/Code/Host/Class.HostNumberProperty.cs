@@ -8,11 +8,11 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Set value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
         /// </summary>
-        public float Value {
+        public double Value {
             get {
-                float returnValue;
+                double returnValue;
 
-                returnValue = Helpers.ParseFloat(_rawValue);
+                returnValue = Helpers.ParseDouble(_rawValue);
 
                 return returnValue;
             }
@@ -21,25 +21,25 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostNumberProperty(PropertyType propertyType, string propertyId, string friendlyName, float initialValue, int decimalPlaces, string unit) : base(propertyType, propertyId, friendlyName, DataType.Float, "", unit) {
+        internal HostNumberProperty(PropertyType propertyType, string propertyId, string friendlyName, double initialValue, int decimalPlaces, string unit) : base(propertyType, propertyId, friendlyName, DataType.Float, "", unit) {
             _tags.Add("Precision", decimalPlaces.ToString());
-            _rawValue = Helpers.FloatToString(initialValue, "F" + decimalPlaces);
+            _rawValue = Helpers.DoubleToString(initialValue, "F" + decimalPlaces);
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
-            var returnValue = Helpers.TryParseFloat(payloadToValidate, out _);
+            var returnValue = Helpers.TryParseDouble(payloadToValidate, out _);
 
             return returnValue;
         }
 
-        private void SetValue(float valueToSet) {
+        private void SetValue(double valueToSet) {
             switch (Type) {
                 case PropertyType.State:
                 case PropertyType.Parameter:
                     var formatString = "";
                     if (_tags.ContainsKey("Precision")) { formatString = "F" + (string)_tags["Precision"]; }
 
-                    _rawValue = Helpers.FloatToString(valueToSet, formatString);
+                    _rawValue = Helpers.DoubleToString(valueToSet, formatString);
 
                     _parentDevice.InternalPropertyPublish($"{_propertyId}", _rawValue);
                     break;

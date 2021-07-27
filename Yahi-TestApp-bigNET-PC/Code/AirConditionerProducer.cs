@@ -103,7 +103,7 @@ namespace TestApp {
             while (cancellationToken.IsCancellationRequested == false) {
                 var simulatedAirTemperature = simulatedTransientTargetTemperature + 0.3 * Math.Sin(DateTime.Now.Second);
 
-                float localTargetTemperature;
+                double localTargetTemperature;
                 if (_actualState.Value == "ON") {
                     localTargetTemperature = _targetAirTemperature.Value;
                 }
@@ -120,9 +120,9 @@ namespace TestApp {
 
                 await Task.Delay(1000);
 
-                _actualAirTemperature.Value = (float)simulatedAirTemperature;
+                _actualAirTemperature.Value = simulatedAirTemperature;
 
-                _systemUptime.Value = (float)(DateTime.Now - startTime).TotalHours;
+                _systemUptime.Value = (DateTime.Now - startTime).TotalHours;
             }
         }
     }

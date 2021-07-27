@@ -97,7 +97,7 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Creates a host number property.
         /// </summary>
-        public HostNumberProperty CreateHostNumberProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, float initialValue = 0.0f, string unit = "", int decimalPlaces = 2) {
+        public HostNumberProperty CreateHostNumberProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, double initialValue = 0.0, string unit = "", int decimalPlaces = 2) {
             if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
             if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
 
