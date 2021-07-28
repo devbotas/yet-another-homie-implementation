@@ -56,4 +56,14 @@ Given that Homie 4.0.0 defines duration only as hours+minutes+seconds, it is arg
 
 So for those reasons, and also because ```duration``` data type is pretty rare (I haven't encountered it in any of my 30+ devices that I own), YAHI does not support ```duration``` neither on host, nor on client side. It might support client side in the future, though.
 
-*readme unfinished*
+# Implementing homie properties
+
+So you've got a new device and want to make it talk to Homie broker. Here are some best practices of how to do that.
+
+## Measurables go into states
+
+Anything that is measured becomes a state, no exceptions. For example: temperature, humidity, illuminance, wind speed, power consumption, etc.
+
+## Actual-target pair
+
+## Avoid multi-parameter interaction
