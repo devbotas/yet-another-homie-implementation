@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.10.0-preview.57] - 2021-07-28
+### Fixed
+- Client properties should not react to /set commands.
+
 ## [0.10.0-preview.54] - 2021-07-27
 ### Added
 - Adding Tags Hashtable to client and host properties. It will keep off-Homie parameters like decimal places for float numbers.
