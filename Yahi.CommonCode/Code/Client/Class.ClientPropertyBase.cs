@@ -106,18 +106,8 @@ namespace DevBot9.Protocols.Homie {
         internal void Initialize(ClientDevice parentDevice) {
             _parentDevice = parentDevice;
 
-            if (Type == PropertyType.State) {
+            if ((Type == PropertyType.State) && (Type == PropertyType.Parameter)) {
                 _parentDevice.InternalPropertySubscribe($"{_propertyId}", (payload) => {
-                    if (ValidatePayload(payload) == true) {
-                        _rawValue = payload;
-
-                        RaisePropertyChanged(this, new PropertyChangedEventArgs("Value"));
-                    }
-                });
-            }
-
-            if (Type == PropertyType.Parameter) {
-                _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {
                     if (ValidatePayload(payload) == true) {
                         _rawValue = payload;
 
