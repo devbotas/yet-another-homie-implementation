@@ -28,7 +28,7 @@
       <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="nanoFramework.M2Mqtt, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\packages\nanoFramework.M2Mqtt.4.6.1\lib\nanoFramework.M2Mqtt.dll</HintPath>
+      <HintPath>..\packages\DevBot9.NanoFramework.M2Mqtt.4.6.1\lib\nanoFramework.M2Mqtt.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
