@@ -3,30 +3,31 @@ using System.Globalization;
 #endif
 
 using System;
+using System.Text.RegularExpressions;
 
 namespace DevBot9.Protocols.Homie {
     public static class Helpers {
 
         #region Parsers
 
-        public static float ParseFloat(string stringToParse) {
-            float returnValue;
+        public static double ParseDouble(string stringToParse) {
+            double returnValue;
 
 #if !NANOFRAMEWORK_1_0
-            returnValue = float.Parse(stringToParse, CultureInfo.InvariantCulture);
+            returnValue = double.Parse(stringToParse, CultureInfo.InvariantCulture);
 #else
-            returnValue = float.Parse(stringToParse);
+            returnValue = double.Parse(stringToParse);
 #endif
             return returnValue;
         }
 
-        public static bool TryParseFloat(string stringToParse, out float result) {
+        public static bool TryParseDouble(string stringToParse, out double result) {
             var returnValue = false;
 
 #if !NANOFRAMEWORK_1_0
-            returnValue = float.TryParse(stringToParse, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
+            returnValue = double.TryParse(stringToParse, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
 #else
-            returnValue = float.TryParse(stringToParse, out result);
+            returnValue = double.TryParse(stringToParse, out result);
 #endif
             return returnValue;
         }
@@ -210,20 +211,21 @@ namespace DevBot9.Protocols.Homie {
 
         #region String helpers
 
-        public static string GetFloatFormatString(int decimalPlaces) {
+        public static string GetDoubleFormatString(int decimalPlaces) {
             if (decimalPlaces > 7) { decimalPlaces = 7; }
-            if (decimalPlaces < 1) { decimalPlaces = 1; }
+            if (decimalPlaces < 0) { decimalPlaces = 0; }
 
             var returnFormat = $"F{decimalPlaces}";
 
             return returnFormat;
         }
 
-        public static string FloatToString(float numberToConvert, string format) {
+        public static string DoubleToString(double numberToConvert, string format = "") {
             string returnValue;
 
 #if !NANOFRAMEWORK_1_0
-            returnValue = numberToConvert.ToString(format, CultureInfo.InvariantCulture);
+            if (format != "") { returnValue = numberToConvert.ToString(format, CultureInfo.InvariantCulture); }
+            else { returnValue = numberToConvert.ToString(CultureInfo.InvariantCulture); }
 #else
             returnValue = numberToConvert.ToString(format);
 #endif
@@ -346,6 +348,27 @@ namespace DevBot9.Protocols.Homie {
             var returnValue = intValue.ToString();
 
             return returnValue;
+        }
+
+        #endregion
+
+        #region RegEx helpers
+
+        public static bool IsInteger(string value) {
+            var integerRegex = new Regex("^[+-]?([0]|[1-9]+[0-9]*)$");
+
+            var isInteger = integerRegex.IsMatch(value);
+
+            return isInteger;
+        }
+
+        public static bool IsFloat(string value) {
+            var simpleDecimalRegex = new Regex("^[+-]?([0]|[1-9]+[0-9]*)([.][0-9]+)?$");
+            var standardNotationRegex = new Regex("^[-+]?[0-9][.][0-9]+([eE][-+]?[0-9]+)$");
+
+            var isFloat = simpleDecimalRegex.IsMatch(value) || standardNotationRegex.IsMatch(value);
+
+            return isFloat;
         }
 
         #endregion

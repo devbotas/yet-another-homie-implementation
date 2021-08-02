@@ -4,16 +4,16 @@ using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class LightbulbProducer {
-        private ResilientHomieBroker _broker = new ResilientHomieBroker();
+        private PahoHostDeviceConnection _broker = new PahoHostDeviceConnection();
 
         private HostDevice _hostDevice;
-        private HostBooleanProperty _onOffSwitch;
+        private HostChoiceProperty _onOffSwitch;
         private HostColorProperty _color;
-        private HostIntegerProperty _intensity;
+        private HostNumberProperty _intensity;
 
         public LightbulbProducer() { }
 
-        public void Initialize(string mqttBrokerIpAddress) {
+        public void Initialize(string mqttBrokerIpAddress, AddToLogDelegate addToLog) {
             _hostDevice = DeviceFactory.CreateHostDevice("lightbulb", "Colorful lightbulb");
 
             #region General node
@@ -25,10 +25,10 @@ namespace TestApp {
             _color.PropertyChanged += (sender, e) => {
                 Debug.Print($"Color changed to {_color.Value.ToRgbString()}");
             };
-            _onOffSwitch = _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, "general", "is-on", "Is on");
+            _onOffSwitch = _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, "general", "is-on", "Is on", new[] { "OFF", "ON" }, "OFF");
             _onOffSwitch.PropertyChanged += (sender, e) => {
                 // Simulating some lamp behaviour.
-                if (_onOffSwitch.Value == true) {
+                if (_onOffSwitch.Value == "ON") {
                     _intensity.Value = 50;
                 }
                 else {
@@ -36,13 +36,12 @@ namespace TestApp {
                 }
             };
 
-            _intensity = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "general", "intensity", "Intensity", 0, "%");
+            _intensity = _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "general", "intensity", "Intensity", 0, "%");
 
             #endregion
 
-            _broker.PublishReceived += _hostDevice.HandlePublishReceived;
-            _broker.Initialize(mqttBrokerIpAddress, _hostDevice.WillTopic, _hostDevice.WillPayload);
-            _hostDevice.Initialize(_broker.PublishToTopic, _broker.SubscribeToTopic);
+            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => addToLog(severity, "Broker:" + message));
+            _hostDevice.Initialize(_broker, (severity, message) => addToLog(severity, "HostDevice:" + message));
         }
     }
 }

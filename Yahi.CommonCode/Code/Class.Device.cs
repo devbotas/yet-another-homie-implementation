@@ -1,28 +1,13 @@
-﻿using System.Collections;
+using System;
+using System.Collections;
 using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// This is a base class for the Host and Client Device class implementation. One should never use it directly (not really even possible since the constructor is not public).
     /// </summary>
-    public class Device {
+    public class Device : INotifyPropertyChanged, IDisposable {
         #region Public interface
-
-        /// <summary>
-        /// Is raised when any of the Device properties (HomieVersion, Name, State) changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        /// <summary>
-        /// This delegate is used by YAHI to publish messages to the external MQTT broker.
-        /// </summary>
-        public delegate void PublishToTopicDelegate(string topic, string payload, byte qosLevel, bool isRetained);
-
-        /// <summary>
-        /// This delegate is used by YAHI to subscribe to MQTT topics.
-        /// </summary>
-        /// <param name="topic"></param>
-        public delegate void SubscribeToTopicDelegate(string topic);
 
         /// <summary>
         /// Homie convention version that YAHI complies to.
@@ -45,84 +30,121 @@ namespace DevBot9.Protocols.Homie {
         public HomieState State { get; protected set; }
 
         /// <summary>
-        /// Call this function to pass incoming publish events from the external MQTT broker. YAHI will then handle the payload and raise events, if needed.
+        /// Shows if this device is actually connected to broker.
         /// </summary>
-        public void HandlePublishReceived(string fullTopic, string payload) {
-            if (_topicHandlerMap.Contains(fullTopic)) {
-                var zeList = (ArrayList)_topicHandlerMap[fullTopic];
-                foreach (ActionString handler in zeList) {
-                    handler(payload);
-                }
-            }
-        }
+        public bool IsConnected { get { return _broker.IsConnected; } }
 
         /// <summary>
-        /// Returns an array of all topics that this device instance has published to. This is more for debugging. Function may be removed in 1.x release.
+        /// Is raised when any of the Device properties (HomieVersion, Name, State) changes.
         /// </summary>
-        public string[] GetAllPublishedTopics() {
-            var returnArray = (string[])_publishedTopics.ToArray(typeof(string));
-
-            return returnArray;
-        }
-
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
         #endregion
 
-        #region Private stuff
-        protected string _baseTopic = "temp";
+        #region Internal Homie guts 
 
+        protected AddToLogDelegate _log = delegate { };
+        protected string _baseTopic = "no-base-topic";
         protected ArrayList _properties = new ArrayList();
-
-        protected PublishToTopicDelegate _publishToTopicDelegate;
-        protected SubscribeToTopicDelegate _subscribeToTopicDelegate;
         protected Hashtable _topicHandlerMap = new Hashtable();
-
-
-        protected ArrayList _publishedTopics = new ArrayList();
-
-        protected bool _isInitializing = true;
+        protected IBasicDeviceConnection _broker;
+        private ArrayList _subscriptionList = new ArrayList();
 
         protected Device() {
             // Just making public constructor unavailable to user, as this class should not be consumed directly.
         }
 
-        protected void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
-            _publishToTopicDelegate = publishToTopicDelegate;
-            _subscribeToTopicDelegate = subscribeToTopicDelegate;
+        protected void Initialize(IBasicDeviceConnection broker, AddToLogDelegate loggingFunction = null) {
+            _broker = broker;
+            _broker.PublishReceived += HandleBrokerPublishReceived;
 
-            foreach (PropertyBase property in _properties) {
-                property.Initialize(this);
+            _broker.PropertyChanged += HandleBrokerPropertyChanged;
+
+            if (loggingFunction != null) { _log = loggingFunction; }
+        }
+
+        public void Dispose() {
+            if (_broker == null) { return; }
+
+            _broker.PublishReceived -= HandleBrokerPublishReceived;
+            _broker.PropertyChanged -= HandleBrokerPropertyChanged;
+        }
+
+        private void HandleBrokerPublishReceived(object sender, PublishReceivedEventArgs e) {
+            if (_topicHandlerMap.Contains(e.Topic)) {
+                var zeList = (ArrayList)_topicHandlerMap[e.Topic];
+                foreach (ActionStringDelegate handler in zeList) {
+                    handler(e.Payload);
+                }
             }
         }
 
-        internal void InternalPropertyPublish(string propertyTopic, string value) {
-            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{propertyTopic}", value);
+        private void HandleBrokerPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if ((e.PropertyName == nameof(_broker.IsConnected)) && _broker.IsConnected) {
+                // All subscribtions were dropped during disconnect event. Resubscribing.
+                var clonedSubsribtionTable = (ArrayList)_subscriptionList.Clone();
+                LogInfo($"(Re)subscribing to {clonedSubsribtionTable.Count} topic(s).");
+                foreach (string topic in clonedSubsribtionTable) {
+                    _broker.TrySubscribe(topic);
+                }
+            }
         }
 
-        internal void InternalPropertySubscribe(string propertyTopic, ActionString actionToTakeOnReceivedMessage) {
-            var fullTopic = $"{_baseTopic}/{DeviceId}/{propertyTopic}";
 
+        internal virtual void InternalPropertyPublish(string propertyTopic, string value, bool isRetained = true) {
+            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{propertyTopic}", value, isRetained);
+        }
+
+        internal void InternalPropertySubscribe(string propertyTopic, ActionStringDelegate actionToTakeOnReceivedMessage) {
+            InternalGeneralSubscribe($"{_baseTopic}/{DeviceId}/{propertyTopic}", actionToTakeOnReceivedMessage);
+        }
+
+        internal void InternalGeneralPublish(string topicId, string value, bool isRetained = true) {
+            if (IsConnected) { _broker.TryPublish(topicId, value, 1, isRetained); }
+
+
+
+            //var retryCount = 0;
+            //var isPublishSuccessful = false;
+            //while ((retryCount < 3) && (isPublishSuccessful == false)) {
+            //    if (_broker.TryPublish(topicId, value, 1, true)) {
+            //        isPublishSuccessful = true;
+            //    }
+            //    else {
+            //        retryCount++;
+            //        LogError($"Could not publish topic {topicId} to broker, attempt {retryCount}.");
+            //    }
+            //}
+
+            //if (isPublishSuccessful == false) {
+            //    LogError($"Too many fails at publishing, going to disconnected state.");
+            //    IsConnected = false;
+            //}
+        }
+
+        internal void InternalGeneralSubscribe(string topicId, ActionStringDelegate actionToTakeOnReceivedMessage) {
+            var fullTopic = topicId;
+
+            // Keeping a subscribtion topic list, because it is needed when (re)connecting to broker.
             if (_topicHandlerMap.Contains(fullTopic) == false) {
                 _topicHandlerMap.Add(fullTopic, new ArrayList());
             }
 
-           ((ArrayList)_topicHandlerMap[fullTopic]).Add(actionToTakeOnReceivedMessage);
+            ((ArrayList)_topicHandlerMap[fullTopic]).Add(actionToTakeOnReceivedMessage);
 
-            _subscribeToTopicDelegate(fullTopic);
-        }
-
-        internal void InternalGeneralPublish(string topicId, string value) {
-            if (_publishedTopics.Contains(topicId) == false) {
-                _publishedTopics.Add(topicId);
-            }
-            _publishToTopicDelegate(topicId, value, 1, true);
-        }
-
-        internal bool GetIsInitializing() {
-            return _isInitializing;
+            _broker.TrySubscribe(fullTopic);
+            _subscriptionList.Add(fullTopic);
         }
 
         internal void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) {
             PropertyChanged(sender, e);
+        }
+
+        internal void LogInfo(string message) {
+            _log("Info", message);
+        }
+
+        internal void LogError(string message) {
+            _log("Error", message);
         }
         #endregion
     }

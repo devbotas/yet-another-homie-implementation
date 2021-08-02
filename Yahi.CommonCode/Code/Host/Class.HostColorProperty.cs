@@ -29,10 +29,6 @@ namespace DevBot9.Protocols.Homie {
             _format = format;
         }
 
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
-        }
-
         protected override bool ValidatePayload(string payloadToValidate) {
             var areNumbersGood = HomieColor.ValidatePayload(payloadToValidate, _format);
 

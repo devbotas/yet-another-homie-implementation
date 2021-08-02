@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DevBot9.Protocols.Homie;
@@ -7,21 +6,22 @@ using DevBot9.Protocols.Homie.Utilities;
 
 namespace TestApp {
     internal class AirConditionerProducer {
-        private ResilientHomieBroker _broker = new ResilientHomieBroker();
+        private PahoHostDeviceConnection _broker = new PahoHostDeviceConnection();
 
         private HostDevice _hostDevice;
-        private HostFloatProperty _targetAirTemperature;
-        private HostFloatProperty _actualAirTemperature;
-        private HostEnumProperty _onOffSwitch;
-        private HostEnumProperty _actualState;
-        private HostIntegerProperty _ventilationLevel;
+        private HostNumberProperty _targetAirTemperature;
+        private HostNumberProperty _actualAirTemperature;
+        private HostChoiceProperty _onOffSwitch;
+        private HostChoiceProperty _actualState;
+        private HostNumberProperty _ventilationLevel;
         private HostDateTimeProperty _previousServiceDate;
         private HostDateTimeProperty _nextServiceDate;
-        private HostBooleanProperty _performServiceCommand;
+        private HostChoiceProperty _performServiceCommand;
+        private HostNumberProperty _systemUptime;
 
         public AirConditionerProducer() { }
 
-        public void Initialize(string mqttBrokerIpAddress) {
+        public void Initialize(string mqttBrokerIpAddress, AddToLogDelegate addToLog) {
             _hostDevice = DeviceFactory.CreateHostDevice("air-conditioner", "Air conditioning unit");
 
             #region General node
@@ -29,14 +29,14 @@ namespace TestApp {
             _hostDevice.UpdateNodeInfo("general", "General information and properties", "no-type");
 
             // Temperatures. These are pretty self-explanatory, right?
-            _actualAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.State, "general", "actual-air-temperature", "Actual measured air temperature", 18, "°C");
-            _targetAirTemperature = _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "general", "target-air-temperature", "Target air temperature", 23, "°C");
+            _actualAirTemperature = _hostDevice.CreateHostNumberProperty(PropertyType.State, "general", "actual-air-temperature", "Actual measured air temperature", 18, "°C");
+            _targetAirTemperature = _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "general", "target-air-temperature", "Target air temperature", 23, "°C");
 
             // Besides obvious ON and OFF states, there's a transient STARTING state. This simulated the non-instant startup of the device.
-            _actualState = _hostDevice.CreateHostEnumProperty(PropertyType.State, "general", "actual-state", "Actual power state", new[] { "ON", "OFF", "STARTING" }, "OFF");
+            _actualState = _hostDevice.CreateHostChoiceProperty(PropertyType.State, "general", "actual-state", "Actual power state", new[] { "ON", "OFF", "STARTING" }, "OFF");
 
             // Creating a switch. It also simulates startup sequence ON -> STARTING -> OFF. Shutdown sequence is instant ON -> OFF.
-            _onOffSwitch = _hostDevice.CreateHostEnumProperty(PropertyType.Command, "general", "turn-on-off", "Turn device on or off", new[] { "ON", "OFF" });
+            _onOffSwitch = _hostDevice.CreateHostChoiceProperty(PropertyType.Command, "general", "turn-on-off", "Turn device on or off", new[] { "ON", "OFF" });
             _onOffSwitch.PropertyChanged += (sender, e) => {
                 if ((_actualState.Value == "ON") && (_onOffSwitch.Value == "OFF")) {
                     // This is the shutdown sequence.
@@ -55,16 +55,14 @@ namespace TestApp {
 
             #endregion
 
-
             #region Ventilation node
 
             _hostDevice.UpdateNodeInfo("ventilation", "Ventilation information and properties", "no-type");
 
             // Allows user to set ventilation level (or power). This will actually be used in simulation loop.
-            _ventilationLevel = _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "ventilation", "level", "Level of ventilation", 50, "%");
+            _ventilationLevel = _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "ventilation", "level", "Level of ventilation", 50, "%");
 
             #endregion
-
 
             #region Service node
 
@@ -76,38 +74,36 @@ namespace TestApp {
 
             // This is a write-only property, that is — a command. It sets last service date to actual datetime, and also sets next service date to some time in the future.
             // Popular automation software have lots of problems with this kind of workflow, when there's a command that doesn't really have a state register.
-            // As of 2021-03-12, openHAB and HomeAssistant and HoDD can't really deal with it. Which is a bummer, as it a pretty common worklfow in real time! 
-            _performServiceCommand = _hostDevice.CreateHostBooleanProperty(PropertyType.Command, "service", "perform-service", "Perform service");
+            // As of 2021-03-12, openHAB and HomeAssistant and HoDD can't really deal with it. Which is a bummer, as it a pretty common workflow in real life! 
+            _performServiceCommand = _hostDevice.CreateHostChoiceProperty(PropertyType.Command, "service", "perform-service", "Perform service", new[] { "STOP", "START" });
             _performServiceCommand.PropertyChanged += (sender, e) => {
-                if (_performServiceCommand.Value == true) {
+                if (_performServiceCommand.Value == "START") {
                     _previousServiceDate.Value = _nextServiceDate.Value;
                     _nextServiceDate.Value = DateTime.Now.AddMinutes(1);
                 }
             };
 
+            // Knowing system uptime is always useful.
+            _systemUptime = _hostDevice.CreateHostNumberProperty(PropertyType.State, "service", "system-uptime", "Uptime", 0, "h", 3);
+
             #endregion
 
-            _broker.PublishReceived += _hostDevice.HandlePublishReceived;
-            _broker.Initialize(mqttBrokerIpAddress, _hostDevice.WillTopic, _hostDevice.WillPayload);
-
             // This builds topic trees and subscribes to everything.
-            _hostDevice.Initialize(_broker.PublishToTopic, _broker.SubscribeToTopic);
+            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => addToLog(severity, "Broker:" + message));
+            _hostDevice.Initialize(_broker, (severity, message) => addToLog(severity, "ClientDevice:" + message));
 
-            // finally, running the simulation loop. We're good to go!
+            // Finally, running the simulation loop. We're good to go!
             Task.Run(async () => await RunSimulationLoopContinuously(new CancellationToken()));
         }
 
-        private void HandlePublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e) {
-            _hostDevice.HandlePublishReceived(e.Topic, Encoding.UTF8.GetString(e.Message));
-        }
-
         private async Task RunSimulationLoopContinuously(CancellationToken cancellationToken) {
-            var _simulatedTransientTargetTemperature = 23.0;
+            var simulatedTransientTargetTemperature = 23.0;
+            var startTime = DateTime.Now;
 
             while (cancellationToken.IsCancellationRequested == false) {
-                var _simulatedAirTemperature = _simulatedTransientTargetTemperature + 0.3 * Math.Sin(DateTime.Now.Second);
+                var simulatedAirTemperature = simulatedTransientTargetTemperature + 0.3 * Math.Sin(DateTime.Now.Second);
 
-                float localTargetTemperature;
+                double localTargetTemperature;
                 if (_actualState.Value == "ON") {
                     localTargetTemperature = _targetAirTemperature.Value;
                 }
@@ -115,16 +111,18 @@ namespace TestApp {
                     localTargetTemperature = 25;
                 }
 
-                if (localTargetTemperature - _simulatedTransientTargetTemperature > 0.1) {
-                    _simulatedTransientTargetTemperature += 0.1 * _ventilationLevel.Value / 100;
+                if (localTargetTemperature - simulatedTransientTargetTemperature > 0.1) {
+                    simulatedTransientTargetTemperature += 0.1 * _ventilationLevel.Value / 100;
                 }
-                if (localTargetTemperature - _simulatedTransientTargetTemperature < -0.1) {
-                    _simulatedTransientTargetTemperature -= 0.1 * _ventilationLevel.Value / 100;
+                if (localTargetTemperature - simulatedTransientTargetTemperature < -0.1) {
+                    simulatedTransientTargetTemperature -= 0.1 * _ventilationLevel.Value / 100;
                 }
 
                 await Task.Delay(1000);
 
-                _actualAirTemperature.Value = (float)_simulatedAirTemperature;
+                _actualAirTemperature.Value = simulatedAirTemperature;
+
+                _systemUptime.Value = (DateTime.Now - startTime).TotalHours;
             }
         }
     }

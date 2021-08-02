@@ -16,109 +16,78 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Initializes the entire Client Device tree: actually creates internal property variables, subscribes to topics and so on. This method must be called, or otherwise entire Client Device tree will not work.
         /// </summary>
-        /// <param name="publishToTopicDelegate">This is a mandatory publishing delegate. Wihout it, Client Device will not work.</param>
-        /// <param name="subscribeToTopicDelegate">This is a mandatory subscription delegate. Wihout it, Client Device will not work.</param>
-        public new void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
-            base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
+        public void Initialize(IClientDeviceConnection broker, AddToLogDelegate loggingFunction = null) {
+            base.Initialize(broker, loggingFunction);
+
+            // Initializing properties. They will start using broker immediatelly.
+            foreach (ClientPropertyBase property in _properties) {
+                property.Initialize(this);
+            }
 
             var homieTopic = $"{_baseTopic}/{DeviceId}/$homie";
-            _topicHandlerMap.Add(homieTopic, new ArrayList());
-            ActionString handler = delegate (string value) {
+            ActionStringDelegate handlerForTopicHomie = delegate (string value) {
                 HomieVersion = value;
                 RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieVersion)));
             };
-            ((ArrayList)_topicHandlerMap[homieTopic]).Add(handler);
-            _subscribeToTopicDelegate(homieTopic);
+            InternalGeneralSubscribe(homieTopic, handlerForTopicHomie);
 
             var nameTopic = $"{_baseTopic}/{DeviceId}/$name";
-            _topicHandlerMap.Add(nameTopic, new ArrayList());
-            ActionString handler2 = delegate (string value) {
+            ActionStringDelegate handlerForTopicName = delegate (string value) {
                 Name = value;
                 RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
             };
-            ((ArrayList)_topicHandlerMap[nameTopic]).Add(handler2);
-            _subscribeToTopicDelegate(nameTopic);
+            InternalGeneralSubscribe(nameTopic, handlerForTopicName);
 
             var stateTopic = $"{_baseTopic}/{DeviceId}/$state";
-            _topicHandlerMap.Add(stateTopic, new ArrayList());
-            ActionString handler3 = delegate (string value) {
+            ActionStringDelegate handlerForTopicState = delegate (string value) {
                 if (Helpers.TryParseHomieState(value, out var parsedState)) {
                     State = parsedState;
                     RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(State)));
                 };
             };
-            ((ArrayList)_topicHandlerMap[stateTopic]).Add(handler3);
-            _subscribeToTopicDelegate(stateTopic);
+            InternalGeneralSubscribe(stateTopic, handlerForTopicState);
         }
 
         /// <summary>
-        /// Creates a client string property.
+        /// Creates a client text property.
         /// </summary>
-        public ClientStringProperty CreateClientStringProperty(ClientPropertyMetadata creationOptions) {
+        public ClientTextProperty CreateClientTextProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.String; }
-            else if (creationOptions.DataType != DataType.String) { throw new ArgumentException($"You're creating a {nameof(ClientStringProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+            if (creationOptions.DataType != DataType.String) { throw new ArgumentException($"You're creating a {nameof(ClientTextProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
 
+            CheckForValidityAndThrowIfSomethingIsWrong(creationOptions);
 
-            var createdProperty = new ClientStringProperty(creationOptions);
-
+            var createdProperty = new ClientTextProperty(creationOptions);
             _properties.Add(createdProperty);
 
             return createdProperty;
         }
 
         /// <summary>
-        /// Creates a client integer property.
+        /// Creates a client number property.
         /// </summary>
-        public ClientIntegerProperty CreateClientIntegerProperty(ClientPropertyMetadata creationOptions) {
-            if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Integer; }
-            else if (creationOptions.DataType != DataType.Integer) { throw new ArgumentException($"You're creating a {nameof(ClientIntegerProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
-
-
-            var createdProperty = new ClientIntegerProperty(creationOptions);
-
-            _properties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        /// <summary>
-        /// Creates a client float property.
-        /// </summary>
-        public ClientFloatProperty CreateClientFloatProperty(ClientPropertyMetadata creationOptions) {
+        public ClientNumberProperty CreateClientNumberProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Float; }
-            else if (creationOptions.DataType != DataType.Float) { throw new ArgumentException($"You're creating a {nameof(CreateClientFloatProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+            if (creationOptions.DataType != DataType.Float) { throw new ArgumentException($"You're creating a {nameof(CreateClientNumberProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
 
+            CheckForValidityAndThrowIfSomethingIsWrong(creationOptions);
 
-            var createdProperty = new ClientFloatProperty(creationOptions);
-
+            var createdProperty = new ClientNumberProperty(creationOptions);
             _properties.Add(createdProperty);
 
             return createdProperty;
         }
 
         /// <summary>
-        /// Creates a client boolean property.
+        /// Creates a client choice property.
         /// </summary>
-        public ClientBooleanProperty CreateClientBooleanProperty(ClientPropertyMetadata creationOptions) {
-            if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Boolean; }
-            else if (creationOptions.DataType != DataType.Boolean) { throw new ArgumentException($"You're creating a {nameof(ClientBooleanProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
-
-            var createdProperty = new ClientBooleanProperty(creationOptions);
-
-            _properties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        /// <summary>
-        /// Creates a client enum property.
-        /// </summary>
-        public ClientEnumProperty CreateClientEnumProperty(ClientPropertyMetadata creationOptions) {
+        public ClientChoiceProperty CreateClientChoiceProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Enum; }
-            else if (creationOptions.DataType != DataType.Enum) { throw new ArgumentException($"You're creating a {nameof(ClientEnumProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+            if (creationOptions.DataType != DataType.Enum) { throw new ArgumentException($"You're creating a {nameof(ClientChoiceProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
 
-            var createdProperty = new ClientEnumProperty(creationOptions);
+            CheckForValidityAndThrowIfSomethingIsWrong(creationOptions);
 
+            var createdProperty = new ClientChoiceProperty(creationOptions);
             _properties.Add(createdProperty);
 
             return createdProperty;
@@ -129,10 +98,26 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public ClientColorProperty CreateClientColorProperty(ClientPropertyMetadata creationOptions) {
             if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.Color; }
-            else if (creationOptions.DataType != DataType.Color) { throw new ArgumentException($"You're creating a {nameof(ClientColorProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+            if (creationOptions.DataType != DataType.Color) { throw new ArgumentException($"You're creating a {nameof(ClientColorProperty)}, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+
+            CheckForValidityAndThrowIfSomethingIsWrong(creationOptions);
 
             var createdProperty = new ClientColorProperty(creationOptions);
+            _properties.Add(createdProperty);
 
+            return createdProperty;
+        }
+
+        /// <summary>
+        /// Creates a client date and time.
+        /// </summary>
+        public ClientDateTimeProperty CreateClientDateTimeProperty(ClientPropertyMetadata creationOptions) {
+            if (creationOptions.DataType == DataType.Blank) { creationOptions.DataType = DataType.DateTime; }
+            if (creationOptions.DataType != DataType.DateTime) { throw new ArgumentException($"You're creating a {nameof(CreateClientNumberProperty)} property, but type specified is {creationOptions.DataType}. Either set it correctly, or leave a default value (that is is, don't set it at all)."); }
+
+            CheckForValidityAndThrowIfSomethingIsWrong(creationOptions);
+
+            var createdProperty = new ClientDateTimeProperty(creationOptions);
             _properties.Add(createdProperty);
 
             return createdProperty;
@@ -168,56 +153,62 @@ namespace DevBot9.Protocols.Homie {
                 node.Name = nodeMetaData.NameAttribute;
                 node.Type = nodeMetaData.TypeAttribute;
                 node.Properties = new ClientPropertyBase[nodeMetaData.Properties.Length];
+                node.NodeId = nodeMetaData.Id;
 
                 for (var p = 0; p < nodeMetaData.Properties.Length; p++) {
                     var propertyMetadata = nodeMetaData.Properties[p];
 
 
                     switch (propertyMetadata.DataType) {
-                        case DataType.Integer:
-                            var newIntegerProperty = CreateClientIntegerProperty(propertyMetadata);
-                            node.Properties[p] = newIntegerProperty;
+                        case DataType.String:
+                            var newStringProperty = CreateClientTextProperty(propertyMetadata);
+                            node.Properties[p] = newStringProperty;
                             break;
 
+                        case DataType.Integer:
                         case DataType.Float:
-                            var newFloatProperty = CreateClientFloatProperty(propertyMetadata);
-                            node.Properties[p] = newFloatProperty;
+                            var newNumberProperty = CreateClientNumberProperty(propertyMetadata);
+                            node.Properties[p] = newNumberProperty;
                             break;
 
                         case DataType.Boolean:
-                            var newBooleanProperty = CreateClientBooleanProperty(propertyMetadata);
-                            node.Properties[p] = newBooleanProperty;
-                            break;
-
                         case DataType.Enum:
-                            var newEnumProperty = CreateClientEnumProperty(propertyMetadata);
+                            var newEnumProperty = CreateClientChoiceProperty(propertyMetadata);
                             node.Properties[p] = newEnumProperty;
                             break;
-
 
                         case DataType.Color:
                             var newColorProperty = CreateClientColorProperty(propertyMetadata);
                             node.Properties[p] = newColorProperty;
                             break;
 
-
                         case DataType.DateTime:
-#warning cannot parse DateTime at this moment, because nF dosn't have parsing methods, and I kinda don't want to implement them myself... Yhus, converting this property into a string for now.
-                            propertyMetadata.DataType = DataType.String;
-                            var newDateTimeProperty = CreateClientStringProperty(propertyMetadata);
+                            var newDateTimeProperty = CreateClientDateTimeProperty(propertyMetadata);
                             node.Properties[p] = newDateTimeProperty;
                             break;
 
-                        case DataType.String:
-                            var newStringProperty = CreateClientStringProperty(propertyMetadata);
-                            node.Properties[p] = newStringProperty;
+                        case DataType.Duration:
+                            // Duration is not supported by design. It's too complicated to support and provides no real value.
                             break;
-
                     }
                 }
             }
         }
 
+        private void CheckForValidityAndThrowIfSomethingIsWrong(ClientPropertyMetadata creationOptions) {
+            var errorList = new ArrayList();
+            var warningList = new ArrayList();
+
+            var isMetadataOk = creationOptions.ValidateAndFix(ref errorList, ref warningList);
+
+            if (isMetadataOk == false) {
+                var errorMessage = $"Provided metadata is incorrect. Errors: ";
+                foreach (var problem in errorList) {
+                    errorMessage += problem + " ";
+                }
+                throw new ArgumentException(errorMessage);
+            }
+        }
         #endregion
     }
 }

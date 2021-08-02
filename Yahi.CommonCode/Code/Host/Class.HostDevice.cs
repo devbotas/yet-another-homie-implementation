@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Threading;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
@@ -10,33 +9,43 @@ namespace DevBot9.Protocols.Homie {
         #region Public interface
 
         /// <summary>
-        /// Last Will topic, to be broadcasted by broker if device disconnects abruptly. This will be set internally to {baseTopic}/{deviceid}/$state, as defined by Homie.
-        /// </summary>
-        public string WillTopic { get; private set; } = "";
-
-        /// <summary>
-        /// Last Will payload, to be broadcasted by broker if device disconnects abruptly. This will be set insternally to 'lost', as defined by Homie.
-        /// </summary>
-        public string WillPayload { get; private set; } = "lost";
-
-        /// <summary>
         /// Initializes the entire Host Device tree: actually creates internal property variables, publishes to topics and so on. This method must be called, or otherwise entire Host Device tree will not work.
         /// </summary>
         /// <param name="publishToTopicDelegate">This is a mandatory publishing delegate. Wihout it, Host Device will not work.</param>
         /// <param name="subscribeToTopicDelegate">This is a mandatory subscription delegate. Wihout it, Host Device will not work.</param>
-        public new void Initialize(PublishToTopicDelegate publishToTopicDelegate, SubscribeToTopicDelegate subscribeToTopicDelegate) {
-            // This will initialize all the properties.
-            base.Initialize(publishToTopicDelegate, subscribeToTopicDelegate);
+        public void Initialize(IHostDeviceConnection broker, AddToLogDelegate loggingFunction = null) {
+            broker.SetWill(_willTopic, _willPayload);
+            base.Initialize(broker, loggingFunction);
+
+            _broker.PropertyChanged += (sender, e) => {
+                if ((e.PropertyName == nameof(_broker.IsConnected)) && _broker.IsConnected) {
+                    // Need to republish all relevant topics, because broker may not have them retained (for example, when broker boots for the first time).
+                    var clonedPublishTable = (Hashtable)_publishedTopics.Clone();
+                    LogInfo($"{DeviceId}: Publishing all the the cached topics, of which there are: {clonedPublishTable.Count}.");
+                    foreach (string key in clonedPublishTable.Keys) {
+                        _broker.TryPublish(key, (string)clonedPublishTable[key], 1, true);
+                    }
+
+                    // Publishing state at the very end.
+                    LogInfo($"{DeviceId}: Restoring state to {State}.");
+                    InternalPropertyPublish("$state", State.ToHomiePayload());
+                }
+            };
 
             // One can pretty much do anything while in "init" state.
             SetState(HomieState.Init);
 
+            // Initializing properties. They will start using broker immediatelly.
+            foreach (HostPropertyBase property in _properties) {
+                property.Initialize(this);
+            }
+
             // Building node subtree.
             var nodesList = "";
             foreach (NodeInfo node in _nodes) {
-                InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{node.Id}/$name", node.Name);
-                InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{node.Id}/$type", node.Type);
-                InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{node.Id}/$properties", node.Properties);
+                InternalPropertyPublish($"{node.Id}/$name", node.Name);
+                InternalPropertyPublish($"{node.Id}/$type", node.Type);
+                InternalPropertyPublish($"{node.Id}/$properties", node.Properties);
 
                 nodesList += "," + node.Id;
             }
@@ -45,12 +54,9 @@ namespace DevBot9.Protocols.Homie {
             // The order in which these master properties are published may be important for the property discovery implementation.
             // I have a feeling that OpenHAB, HomeAssistant and other do actually behave differently if I rearrange properties below,
             // but the exact order is not specified in the convention...
-            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/$homie", HomieVersion);
-            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/$name", Name);
-            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/$nodes", nodesList);
-
-            // imitating some initialization work.
-            Thread.Sleep(1000);
+            InternalPropertyPublish("$homie", HomieVersion);
+            InternalPropertyPublish("$name", Name);
+            InternalPropertyPublish("$nodes", nodesList);
 
             // Off we go. At this point discovery services should rebuild their trees.
             SetState(HomieState.Ready);
@@ -61,7 +67,7 @@ namespace DevBot9.Protocols.Homie {
         /// </summary>
         public void SetState(HomieState stateToSet) {
             State = stateToSet;
-            InternalGeneralPublish($"{_baseTopic}/{DeviceId}/$state", State.ToHomiePayload());
+            InternalPropertyPublish("$state", State.ToHomiePayload());
         }
 
         /// <summary>
@@ -89,15 +95,15 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a host integer property.
+        /// Creates a host number property.
         /// </summary>
-        public HostIntegerProperty CreateHostIntegerProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, int initialValue = 0, string unit = "") {
+        public HostNumberProperty CreateHostNumberProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, double initialValue = 0.0, string unit = "", int decimalPlaces = 2) {
             if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
             if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
 
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostIntegerProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
+            var createdProperty = new HostNumberProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, decimalPlaces, unit);
 
             _properties.Add(createdProperty);
 
@@ -105,47 +111,15 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a host float property.
+        /// Creates a host text property.
         /// </summary>
-        public HostFloatProperty CreateHostFloatProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, float initialValue = 0.0f, string unit = "", int decimalPlaces = 2) {
+        public HostTextProperty CreateHostTextProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, string initialValue = "", string unit = "") {
             if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
             if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
 
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostFloatProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, decimalPlaces, unit);
-
-            _properties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        /// <summary>
-        /// Creates a host string property.
-        /// </summary>
-        public HostStringProperty CreateHostStringProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, string initialValue = "", string unit = "") {
-            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
-            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
-
-            UpdateNodePropertyMap(nodeId, propertyId);
-
-            var createdProperty = new HostStringProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
-
-            _properties.Add(createdProperty);
-
-            return createdProperty;
-        }
-
-        /// <summary>
-        /// Creates a host boolean property.
-        /// </summary>
-        public HostBooleanProperty CreateHostBooleanProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, bool initialValue = false) {
-            if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
-            if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
-
-            UpdateNodePropertyMap(nodeId, propertyId);
-
-            var createdProperty = new HostBooleanProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", "");
+            var createdProperty = new HostTextProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, initialValue, "", unit);
 
             _properties.Add(createdProperty);
 
@@ -169,15 +143,15 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a host enum property.
+        /// Creates a host choice property.
         /// </summary>
-        public HostEnumProperty CreateHostEnumProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, in string[] possibleValues, string initialValue = "") {
+        public HostChoiceProperty CreateHostChoiceProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, in string[] possibleValues, string initialValue = "") {
             if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
             if (DeviceFactory.ValidateTopicLevel(propertyId, out var validationMessage2) == false) { throw new ArgumentException(validationMessage2, nameof(nodeId)); }
 
             UpdateNodePropertyMap(nodeId, propertyId);
 
-            var createdProperty = new HostEnumProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, possibleValues, initialValue);
+            var createdProperty = new HostChoiceProperty(propertyType, $"{nodeId}/{propertyId}", friendlyName, possibleValues, initialValue);
 
             _properties.Add(createdProperty);
 
@@ -185,7 +159,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         /// <summary>
-        /// Creates a host date ant time property.
+        /// Creates a host date and time property.
         /// </summary>
         public HostDateTimeProperty CreateHostDateTimeProperty(PropertyType propertyType, string nodeId, string propertyId, string friendlyName, DateTime initialValue) {
             if (DeviceFactory.ValidateTopicLevel(nodeId, out var validationMessage) == false) { throw new ArgumentException(validationMessage, nameof(nodeId)); }
@@ -205,15 +179,33 @@ namespace DevBot9.Protocols.Homie {
         #region Private stuff
 
         private readonly ArrayList _nodes = new ArrayList();
-
+        private Hashtable _publishedTopics = new Hashtable();
+        private string _willTopic = "";
+        private string _willPayload = "";
         internal HostDevice(string baseTopic, string id, string friendlyName = "") {
             _baseTopic = baseTopic;
+            _willTopic = $"{baseTopic}/{id}/$state";
+            _willPayload = "lost";
             DeviceId = id;
             Name = friendlyName;
             State = HomieState.Init;
-            WillTopic = $"{baseTopic}/{id}/$state";
         }
 
+        internal override void InternalPropertyPublish(string propertyTopic, string value, bool isRetained = true) {
+            var fullTopicId = $"{_baseTopic}/{DeviceId}/{propertyTopic}";
+
+            if (isRetained) {
+                // All the other topics are cached, because those will be (re)published on broker connection event.
+                if (_publishedTopics.Contains(fullTopicId) == false) {
+                    _publishedTopics.Add(fullTopicId, value);
+                }
+                else {
+                    _publishedTopics[fullTopicId] = value;
+                }
+            }
+
+            InternalGeneralPublish(fullTopicId, value);
+        }
 
         private void UpdateNodePropertyMap(string nodeId, string propertyId) {
             // Trying to find if that's an existing node.

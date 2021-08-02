@@ -25,90 +25,46 @@ namespace YahiTests {
         }
 
         [Test]
-        public void CreateHostIntegerPropertyValidateNodeIdInput() {
-            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name"), Throws.ArgumentException);
-            }
-
-            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name"));
-            }
-        }
-
-        [Test]
-        public void CreateHostIntegerPropertyValidatePropertyIdInput() {
-            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "good-id", badTopicLevel, "Friendly name"), Throws.ArgumentException);
-            }
-
-            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostIntegerProperty(PropertyType.Parameter, "good-id", goodTopicLevel, "Friendly name"));
-            }
-        }
-
-        [Test]
         public void CreateHostFloatPropertyValidateNodeIdInput() {
             foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name"), Throws.ArgumentException);
+                Assert.That(() => _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name"), Throws.ArgumentException);
             }
 
             foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name"));
+                Assert.DoesNotThrow(() => _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name"));
             }
         }
 
         [Test]
         public void CreateHostFloatPropertyValidatePropertyIdInput() {
             foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "good-id", badTopicLevel, "Friendly name"), Throws.ArgumentException);
+                Assert.That(() => _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "good-id", badTopicLevel, "Friendly name"), Throws.ArgumentException);
             }
 
             foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, "good-id", goodTopicLevel, "Friendly name"));
+                Assert.DoesNotThrow(() => _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "good-id", goodTopicLevel, "Friendly name"));
             }
         }
 
         [Test]
         public void CreateHostStringPropertyValidateNodeIdInput() {
             foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostStringProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name"), Throws.ArgumentException);
+                Assert.That(() => _hostDevice.CreateHostTextProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name"), Throws.ArgumentException);
             }
 
             foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostStringProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name"));
+                Assert.DoesNotThrow(() => _hostDevice.CreateHostTextProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name"));
             }
         }
 
         [Test]
         public void CreateHostStringPropertyValidatePropertyIdInput() {
             foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostStringProperty(PropertyType.Parameter, "good-id", badTopicLevel, "Friendly name"), Throws.ArgumentException);
+                Assert.That(() => _hostDevice.CreateHostTextProperty(PropertyType.Parameter, "good-id", badTopicLevel, "Friendly name"), Throws.ArgumentException);
             }
 
             foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostStringProperty(PropertyType.Parameter, "good-id", goodTopicLevel, "Friendly name"));
-            }
-        }
-
-        [Test]
-        public void CreateHostBooleanPropertyValidateNodeIdInput() {
-            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name"), Throws.ArgumentException);
-            }
-
-            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name"));
-            }
-        }
-
-        [Test]
-        public void CreateHostBooleanPropertyValidatePropertyIdInput() {
-            foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, "good-id", badTopicLevel, "Friendly name"), Throws.ArgumentException);
-            }
-
-            foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostBooleanProperty(PropertyType.Parameter, "good-id", goodTopicLevel, "Friendly name"));
+                Assert.DoesNotThrow(() => _hostDevice.CreateHostTextProperty(PropertyType.Parameter, "good-id", goodTopicLevel, "Friendly name"));
             }
         }
 
@@ -119,7 +75,7 @@ namespace YahiTests {
             }
 
             foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostFloatProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name"));
+                Assert.DoesNotThrow(() => _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name"));
             }
         }
 
@@ -137,22 +93,22 @@ namespace YahiTests {
         [Test]
         public void CreateHostEnumPropertyValidateNodeIdInput() {
             foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostEnumProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name", new[] { "One", "Two" }), Throws.ArgumentException);
+                Assert.That(() => _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, badTopicLevel, "good-id", "Friendly name", new[] { "One", "Two" }), Throws.ArgumentException);
             }
 
             foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostEnumProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name", new[] { "One", "Two" }));
+                Assert.DoesNotThrow(() => _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, goodTopicLevel, "good-id", "Friendly name", new[] { "One", "Two" }));
             }
         }
 
         [Test]
         public void CreateHostEnumPropertyValidatePropertyIdInput() {
             foreach (var badTopicLevel in CommonStuff.BadTopicLevels) {
-                Assert.That(() => _hostDevice.CreateHostEnumProperty(PropertyType.Parameter, "good-id", badTopicLevel, "Friendly name", new[] { "One", "Two" }), Throws.ArgumentException);
+                Assert.That(() => _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, "good-id", badTopicLevel, "Friendly name", new[] { "One", "Two" }), Throws.ArgumentException);
             }
 
             foreach (var goodTopicLevel in CommonStuff.GoodTopicLevels) {
-                Assert.DoesNotThrow(() => _hostDevice.CreateHostEnumProperty(PropertyType.Parameter, "good-id", goodTopicLevel, "Friendly name", new[] { "One", "Two" }));
+                Assert.DoesNotThrow(() => _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, "good-id", goodTopicLevel, "Friendly name", new[] { "One", "Two" }));
             }
         }
 

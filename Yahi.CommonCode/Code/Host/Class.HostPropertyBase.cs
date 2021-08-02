@@ -1,15 +1,23 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// A base class for the Host properties. Should not be consumed directly.
     /// </summary>
-    public class HostPropertyBase : PropertyBase {
+    public class HostPropertyBase : INotifyPropertyChanged {
+        /// <summary>
+        /// Event is raised when the property is changed externally, that is, when an update is received from the MQTT broker.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
         /// <summary>
         /// Logical type of the property. This is NOT defined by Homie convention, but rather and additional constrain added by YAHI. However, it is fully Homie-compliant.
         /// </summary>
         public PropertyType Type { get; protected set; } = PropertyType.State;
 
+        protected string _propertyId;
+        protected HostDevice _parentDevice;
         protected string _rawValue = "";
         protected readonly string _nameAttribute;
         protected readonly DataType _dataTypeAttribute;
@@ -17,6 +25,8 @@ namespace DevBot9.Protocols.Homie {
         protected readonly bool _isSettableAttribute;
         protected readonly bool _isRetainedAttribute;
         protected readonly string _unitAttribute;
+        protected readonly Hashtable _tags = new Hashtable(); // <-- Can be anything that help developer to work with Homie properties. It is not defined by Homie convention at all.
+
 
         protected HostPropertyBase(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) {
             Type = propertyType;
@@ -45,7 +55,7 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal override void Initialize(Device parentDevice) {
+        internal void Initialize(HostDevice parentDevice) {
             _parentDevice = parentDevice;
 
             _parentDevice.InternalPropertyPublish($"{_propertyId}/$name", _nameAttribute);
@@ -86,6 +96,10 @@ namespace DevBot9.Protocols.Homie {
                     }
                 });
             }
+        }
+
+        internal void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) {
+            PropertyChanged(sender, e);
         }
 
         protected virtual bool ValidatePayload(string payloadToValidate) {

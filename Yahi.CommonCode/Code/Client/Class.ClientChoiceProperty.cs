@@ -4,7 +4,7 @@ namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// A property of type Enum, as defined by the Homie convention.
     /// </summary>
-    public class ClientEnumProperty : ClientPropertyBase {
+    public class ClientChoiceProperty : ClientPropertyBase {
         private string[] _possibleValues = new string[0];
 
         /// <summary>
@@ -21,12 +21,8 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal ClientEnumProperty(ClientPropertyMetadata creationProperties) : base(creationProperties) {
+        internal ClientChoiceProperty(ClientPropertyMetadata creationProperties) : base(creationProperties) {
             _possibleValues = creationProperties.Format.Split(',');
-        }
-
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
@@ -47,12 +43,11 @@ namespace DevBot9.Protocols.Homie {
                 case PropertyType.Command:
                     if (ValidatePayload(valueToSet)) {
                         _rawValue = valueToSet;
-                        _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
+                        _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                     }
                     else {
                         throw new ArgumentOutOfRangeException($"Parameter value \"{valueToSet}\" is not permitted.");
                     }
-
                     break;
 
                 case PropertyType.State:

@@ -25,14 +25,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         internal ClientColorProperty(ClientPropertyMetadata creationProperties) : base(creationProperties) {
-            if (Helpers.TryParseBool(_rawValue, out var _) == false) { _rawValue = "0,0,0"; }
 
-            // This will always pass, because incorrect Format string will throw an exception in constructors above.
-            var alwaysTrue = Helpers.TryParseHomieColorFormat(Format, out _colorFormat);
-        }
-
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
@@ -48,7 +41,7 @@ namespace DevBot9.Protocols.Homie {
                     if (_colorFormat == ColorFormat.Rgb) { _rawValue = valueToSet.ToRgbString(); }
                     else { _rawValue = valueToSet.ToHsvString(); }
 
-                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
+                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                     break;
 
                 case PropertyType.State:

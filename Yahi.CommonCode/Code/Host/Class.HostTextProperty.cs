@@ -4,7 +4,7 @@ namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// A property of type String, as defined by the Homie convention.
     /// </summary>
-    public class HostStringProperty : HostPropertyBase {
+    public class HostTextProperty : HostPropertyBase {
         /// <summary>
         /// Set value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
         /// </summary>
@@ -17,13 +17,10 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        internal HostStringProperty(PropertyType propertyType, string propertyId, string friendlyName, string initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, DataType.String, format, unit) {
+        internal HostTextProperty(PropertyType propertyType, string propertyId, string friendlyName, string initialValue, string format, string unit) : base(propertyType, propertyId, friendlyName, DataType.String, format, unit) {
             _rawValue = initialValue;
         }
 
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
-        }
         protected override bool ValidatePayload(string payloadToValidate) {
             return true;
         }

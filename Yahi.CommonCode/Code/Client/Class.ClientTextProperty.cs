@@ -4,7 +4,7 @@ namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// A property of type String, as defined by the Homie convention.
     /// </summary>
-    public class ClientStringProperty : ClientPropertyBase {
+    public class ClientTextProperty : ClientPropertyBase {
         /// <summary>
         /// Set value will be published to the MQTT broker. Getting the property will retrieve value from the cache.
         /// </summary>
@@ -17,11 +17,8 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        public ClientStringProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
-        }
+        public ClientTextProperty(ClientPropertyMetadata creationOptions) : base(creationOptions) {
 
-        internal override void Initialize(Device parentDevice) {
-            base.Initialize(parentDevice);
         }
 
         protected override bool ValidatePayload(string payloadToValidate) {
@@ -33,7 +30,7 @@ namespace DevBot9.Protocols.Homie {
                 case PropertyType.Parameter:
                 case PropertyType.Command:
                     _rawValue = valueToSet;
-                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue);
+                    _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                     break;
 
                 case PropertyType.State:

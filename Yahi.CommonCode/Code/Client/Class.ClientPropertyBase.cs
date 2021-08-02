@@ -1,11 +1,25 @@
-﻿using System;
+﻿using System.Collections;
 using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie {
     /// <summary>
     /// A base class for the Client properties. Should not be consumed directly.
     /// </summary>
-    public class ClientPropertyBase : PropertyBase {
+    public class ClientPropertyBase : INotifyPropertyChanged {
+        /// <summary>
+        /// Event is raised when the property is changed externally, that is, when an update is received from the MQTT broker.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        /// <summary>
+        /// ID of the property.
+        /// </summary>
+        public string PropertyId {
+            get {
+                return _propertyId;
+            }
+        }
+
         /// <summary>
         /// Logical type of the property. This is NOT defined by Homie convention, but rather and additional constrain added by YAHI. However, it is fully Homie-compliant.
         /// </summary>
@@ -55,91 +69,44 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
+        /// <summary>
+        /// String representation of the value, for read-only consumation. Maybe useful for dumping and debugging.
+        /// </summary>
+        public string RawValue {
+            get { return _rawValue; }
+        }
+
+        /// <summary>
+        /// Can be anything that help developer to work with Homie properties. It is not defined by Homie convention at all.
+        /// </summary>
+        public Hashtable Tags { get; protected set; } = new Hashtable();
+
         private string _name = "";
         private DataType _dataType = DataType.String;
         private string _format = "";
         private string _unit = "";
         protected string _rawValue = "";
+        protected string _propertyId;
+        protected ClientDevice _parentDevice;
 
         protected ClientPropertyBase(ClientPropertyMetadata creationOptions) {
             Name = creationOptions.Name;
             Type = creationOptions.PropertyType;
             _propertyId = creationOptions.NodeId + "/" + creationOptions.PropertyId;
             DataType = creationOptions.DataType;
+            Format = creationOptions.Format;
+            Unit = creationOptions.Unit;
+            _rawValue = creationOptions.InitialValue;
 
-            if (Type == PropertyType.Command) {
-                // Discarding initial value, it there was any. These are not applicable to commands.
-                _rawValue = "";
-            }
-
-            switch (DataType) {
-                case DataType.String:
-                    Format = "";
-                    Unit = "";
-                    break;
-
-                case DataType.Integer:
-                    Format = "";
-                    Unit = creationOptions.Unit;
-                    break;
-
-                case DataType.Float:
-                    Format = creationOptions.Format;
-                    Unit = creationOptions.Unit;
-                    break;
-
-                case DataType.Boolean:
-                    Format = "";
-                    Unit = "";
-                    break;
-
-                case DataType.Enum:
-                    var possibleValues = creationOptions.Format.Split(',');
-                    if (possibleValues.Length < 2) { throw new ArgumentException("Please provide at least two possible values for this property.", nameof(creationOptions.Format)); }
-
-                    if (Type != PropertyType.Command) {
-                        if (string.IsNullOrEmpty(creationOptions.InitialValue)) { _rawValue = possibleValues[0]; }
-                        else {
-                            var isMatchFound = false;
-                            foreach (var value in possibleValues) {
-                                if (value == creationOptions.InitialValue) { isMatchFound = true; }
-                            }
-
-                            if (isMatchFound == false) { throw new ArgumentException("Initial value is not one of the possible values", nameof(creationOptions.InitialValue)); }
-                        }
-                    }
-
-                    Format = creationOptions.Format;
-                    Unit = "";
-                    break;
-
-                case DataType.Color:
-                    if (Helpers.TryParseHomieColorFormat(creationOptions.Format, out var _)) {
-                        Format = creationOptions.Format;
-                    }
-                    else {
-                        throw new ArgumentException($"Unrecognized color format: {creationOptions.Format}", nameof(creationOptions.Format));
-                    }
-
-                    Unit = "";
-                    break;
-
-                case DataType.DateTime:
-                    Format = "";
-                    Unit = "";
-                    break;
-
-                case DataType.Duration:
-                    Format = "";
-                    Unit = "";
-                    break;
+            foreach (var key in creationOptions.Tags.Keys) {
+                Tags.Add(key, creationOptions.Tags[key]);
             }
         }
 
-        internal override void Initialize(Device parentDevice) {
+        internal void Initialize(ClientDevice parentDevice) {
             _parentDevice = parentDevice;
 
-            if (Type == PropertyType.State) {
+            if ((Type == PropertyType.State) && (Type == PropertyType.Parameter)) {
                 _parentDevice.InternalPropertySubscribe($"{_propertyId}", (payload) => {
                     if (ValidatePayload(payload) == true) {
                         _rawValue = payload;
@@ -148,17 +115,12 @@ namespace DevBot9.Protocols.Homie {
                     }
                 });
             }
-
-            if (Type == PropertyType.Parameter) {
-                _parentDevice.InternalPropertySubscribe($"{_propertyId}/set", (payload) => {
-                    if (ValidatePayload(payload) == true) {
-                        _rawValue = payload;
-
-                        RaisePropertyChanged(this, new PropertyChangedEventArgs("Value"));
-                    }
-                });
-            }
         }
+
+        internal void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) {
+            PropertyChanged(sender, e);
+        }
+
         protected virtual bool ValidatePayload(string payloadToValidate) {
             return false;
         }
