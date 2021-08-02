@@ -21,7 +21,7 @@
       <dependency id="nanoFramework.System.Text" version="1.1.1-preview.50" />
       <dependency id="nanoFramework.System.Text.RegularExpressions" version="1.0.0-preview.24" />
       <dependency id="nanoFramework.M2Mqtt" version="1.10.4-preview.11" />
-      <dependency id="DevBot9.Protocols.Homie" version="$version$"/>
+      <dependency id="DevBot9.NanoFramework.Homie" version="$version$"/>
     </dependencies>
   </metadata>
   <files>
