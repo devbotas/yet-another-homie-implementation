@@ -1,63 +1,33 @@
 # Changelog
 
-## [0.10.0-preview.57] - 2021-07-28
-### Fixed
-- Client properties should not react to /set commands.
-
-## [0.10.0-preview.54] - 2021-07-27
+## [0.10.0] - 2021-08-02
 ### Added
+- Adding IMqttBroker interface. Every real-world broker client now needs a wrapper implementing it. 
+- Device base class is now disposable.
+- Brought back support for client side integers and booleans. They are silently converted to float and enum counterparts.
+- Added support for client side DateTime properties.
 - Adding Tags Hashtable to client and host properties. It will keep off-Homie parameters like decimal places for float numbers.
 - Exposing NodeId field for the ClientNode.
 - Exposing ClientPropertyBaser.RawValue for read-only usage.
-### Changed
-- NumberProperty is now a true double precision one.
-
-
-## [0.10.0-preview.44] - 2021-07-22
-### Added
-- Brought back support for client side integers and booleans. They are silently converted to float and enum counterparts.
-- Added support for client side DateTime properties.
-### Fixed
-- Consolidating all the property metadata validation under a single umbrella. Also making validation much more strict and robust.
-
-
-## [0.10.0-preview.30] - 2021-07-12
-### Added
-- Device base class is now disposable.
-### Changed
-- Restructuring TestApp initialization routine and logging more stuff for error detection.
-### Fixed
-- Initial value was not set for client properties when checking possible enum values.
-- ClientDeviceMetadata will not not parse topics with empty payload.
-- Fixed Lightbulb producer is-on property initialization.
-- Exposing client property ID for read-only usage.
-
-
-## [0.10.0-preview.20] - 2021-07-11
-### Fixed
-- Fixing node topic paths.
-
-
-## [0.10.0-preview.18] - 2021-07-08
-### Changed
-- Reworked connection logic again. Client and Host sides now have different connection to broker types. May be easier to handle client-only applications which may now have a single connection for all client devices. Host devices are still one connection per device.
-### Fixed
-- "SET" messages are now sent as non-retained.
-
-
-## [0.10.0-preview.13] - 2021-07-02
-### Fixed
-- Publishing Device state on reconnect to clear "lost" state.
-
-
-## [0.10.0-preview.5] - 2021-06-29
-### Added
-- Adding IMqttBroker interface. Every real-world broker client now needs a wrapper implementing it. 
 
 ### Changed
 - Blending in broker functionality into Device class to simplify initialization.
 - Host/Client devices now require to be initialized with provided IMqttBroker instance.
+- Reworked connection logic again. Client and Host sides now have different connection to broker types. May be easier to handle client-only applications which may now have a single connection for all client devices. Host devices are still one connection per device.
 - Renaming Float|String|Enum|String properties to Number|Text|Choice|Text. This better reflects real life usage.
+- Restructuring TestApp initialization routine and logging more stuff for error detection.
+- NumberProperty is now a true double precision one.
+- Exposing client property ID for read-only usage.
+
+### Fixed
+- Client properties should not react to /set commands.
+- Publishing Device state on reconnect to clear "lost" state.
+- "SET" messages are now sent as non-retained.
+- Fixing node topic paths.
+- Initial value was not set for client properties when checking possible enum values.
+- ClientDeviceMetadata will not not parse topics with empty payload.
+- Fixed Lightbulb producer is-on property initialization.
+- Consolidating all the property metadata validation under a single umbrella. Also making validation much more strict and robust.
 
 ### Removed
 - Removing Boolean properties. Enum (now Choice) property is superior.
