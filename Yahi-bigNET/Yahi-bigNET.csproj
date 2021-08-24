@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;net5.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net461;net5.0;netstandard2.0;netstandard2.1</TargetFrameworks>
     <RootNamespace>DevBot9.Protocols.Homie</RootNamespace>
     <AssemblyName>DevBot9.Protocols.Homie</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -21,9 +21,9 @@
 
 ### Added
 
-- YAHI is now multi-target NuGet, adding support for .NET Standard 2.0 and .NET 5.
+      - YAHI is now multi-target NuGet, adding support for .NET Standard 2.0 and .NET 5.
 
-- All the classes and properties are now at least somewhat documented.
+      - All the classes and properties are now at least somewhat documented.
 
 
 

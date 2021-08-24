@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
     <RootNamespace>Yahi.Utilities_bigNET</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -23,7 +23,7 @@
   <Import Project="..\Yahi.Utilities.CommonCode\Yahi.Utilities.CommonCode.projitems" Label="Shared" />
 
   <ItemGroup>
-    <PackageReference Include="M2MqttDotnetCore" Version="1.1.0" />
+    <PackageReference Include="M2MqttDotnetCore" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
