@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
@@ -60,6 +60,10 @@ namespace DevBot9.Protocols.Homie.Utilities {
 
             if (_realClient.IsConnected) {
                 _realClient.Publish(topic, System.Text.Encoding.UTF8.GetBytes(payload), qosLevel, isRetained);
+#if NANOFRAMEWORK_1_0
+#warning This is a patch for the memore leak bug https://github.com/nanoframework/Home/issues/816 . If the issue gets resolved, need to remove it.
+                System.Threading.Thread.Sleep(50);
+#endif
             }
             else {
                 isOk = false;
