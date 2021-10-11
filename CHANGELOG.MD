@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.11.0] - 2021-10-11
+## [0.11.1] - 2021-10-11
 ### Added
 - Adding support for .NET Standard 2.0 and 2.1.
 - NuGets now have Source Link configured.
