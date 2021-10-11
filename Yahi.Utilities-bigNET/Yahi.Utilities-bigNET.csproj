@@ -12,12 +12,21 @@
     <PackageId>DevBot9.Protocols.Homie.Utilities</PackageId>
     <AssemblyVersion>0.11.0.0</AssemblyVersion>
     <FileVersion>0.11.0.0</FileVersion>
-    <Version>0.11.0-preview.4</Version>
+    <Version>0.11.0-preview.6</Version>
     <Description>Some optional utility classes to make your life with YAHI easier.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/devbotas/yet-another-homie-implementation</PackageProjectUrl>
     <RepositoryUrl>https://github.com/devbotas/yet-another-homie-implementation</RepositoryUrl>
     <PackageTags>homie; iot; c#</PackageTags>
+
+    <!--Configuring source Link-->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <!--This enables "deterministic builds"-->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <Import Project="..\Yahi.Utilities.CommonCode\Yahi.Utilities.CommonCode.projitems" Label="Shared" />
@@ -27,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
