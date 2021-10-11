@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.11.0] - 2021-10-11
+### Added
+- Adding support for .NET Standard 2.0 and 2.1.
+- NuGets now have Source Link configured.
+
+### Fixed
+- Fixing typo that made Client side States and Parameters to not update.
+- Adding a workaround for the nF MQTT library memory leak bug. It will process messages slower.
+
+
 ## [0.10.0] - 2021-08-02
 ### Added
 - Adding IMqttBroker interface. Every real-world broker client now needs a wrapper implementing it. 
