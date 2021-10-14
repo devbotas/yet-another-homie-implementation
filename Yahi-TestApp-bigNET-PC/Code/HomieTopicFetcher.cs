@@ -6,13 +6,12 @@ using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     public class HomieTopicFetcher {
-        private MqttClient _mqttClient;
+        private MqttClient _mqttClient = new MqttClient();
         private Dictionary<string, string> _responses = new();
         private ChannelConnectionOptions _channelConnectionOptions;
 
 
         public void Initialize(ChannelConnectionOptions channelOptions) {
-            _mqttClient = new MqttClient();
             _channelConnectionOptions = channelOptions;
             _mqttClient.Initialize();
 
@@ -22,6 +21,10 @@ namespace TestApp {
         public void FetchTopics(string filter, out string[] topics) {
             _responses.Clear();
             _mqttClient.Connect(_channelConnectionOptions);
+            while (_mqttClient.IsConnected == false) {
+                Thread.Sleep(100);
+            }
+
             _mqttClient.Subscribe(filter, QosLevel.AtLeastOnce);
 
             Thread.Sleep(2000);
@@ -42,6 +45,9 @@ namespace TestApp {
             var allTheTopics = new List<string>();
 
             _mqttClient.Connect(_channelConnectionOptions);
+            while (_mqttClient.IsConnected == false) {
+                Thread.Sleep(100);
+            }
 
             _responses.Clear();
             _mqttClient.Subscribe($"{baseTopic}/+/$homie", QosLevel.AtLeastOnce);

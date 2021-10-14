@@ -9,6 +9,7 @@
     <Import_RootNamespace>DevBot9.Protocols.Homie.Utilities</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.YahiTevuxHostConnection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PahoHostDeviceConnection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.YahiTevuxClientConnection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PahoClientDeviceConnection.cs" />
