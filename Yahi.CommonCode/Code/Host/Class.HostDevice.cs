@@ -17,19 +17,17 @@ namespace DevBot9.Protocols.Homie {
             broker.SetWill(_willTopic, _willPayload);
             base.Initialize(broker, loggingFunction);
 
-            _broker.PropertyChanged += (sender, e) => {
-                if ((e.PropertyName == nameof(_broker.IsConnected)) && _broker.IsConnected) {
-                    // Need to republish all relevant topics, because broker may not have them retained (for example, when broker boots for the first time).
-                    var clonedPublishTable = (Hashtable)_publishedTopics.Clone();
-                    LogInfo($"{DeviceId}: Publishing all the the cached topics, of which there are: {clonedPublishTable.Count}.");
-                    foreach (string key in clonedPublishTable.Keys) {
-                        _broker.TryPublish(key, (string)clonedPublishTable[key], 1, true);
-                    }
-
-                    // Publishing state at the very end.
-                    LogInfo($"{DeviceId}: Restoring state to {State}.");
-                    InternalPropertyPublish("$state", State.ToHomiePayload());
+            _broker.Connected += (sender, e) => {
+                // Need to republish all relevant topics, because broker may not have them retained (for example, when broker boots for the first time).
+                var clonedPublishTable = (Hashtable)_publishedTopics.Clone();
+                LogInfo($"{DeviceId}: Publishing all the the cached topics, of which there are: {clonedPublishTable.Count}.");
+                foreach (string key in clonedPublishTable.Keys) {
+                    _broker.Publish(key, (string)clonedPublishTable[key], 1, true);
                 }
+
+                // Publishing state at the very end.
+                LogInfo($"{DeviceId}: Restoring state to {State}.");
+                InternalPropertyPublish("$state", State.ToHomiePayload());
             };
 
             // One can pretty much do anything while in "init" state.
@@ -60,6 +58,8 @@ namespace DevBot9.Protocols.Homie {
 
             // Off we go. At this point discovery services should rebuild their trees.
             SetState(HomieState.Ready);
+
+            _broker.Connect();
         }
 
         /// <summary>

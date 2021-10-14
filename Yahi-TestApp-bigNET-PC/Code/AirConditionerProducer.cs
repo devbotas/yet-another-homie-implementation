@@ -3,10 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using DevBot9.Protocols.Homie;
 using DevBot9.Protocols.Homie.Utilities;
+using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     internal class AirConditionerProducer {
-        private PahoHostDeviceConnection _broker = new PahoHostDeviceConnection();
+        private YahiTevuxHostConnection _broker = new();
 
         private HostDevice _hostDevice;
         private HostNumberProperty _targetAirTemperature;
@@ -21,7 +22,7 @@ namespace TestApp {
 
         public AirConditionerProducer() { }
 
-        public void Initialize(string mqttBrokerIpAddress, AddToLogDelegate addToLog) {
+        public void Initialize(ChannelConnectionOptions channelOptions, AddToLogDelegate addToLog) {
             _hostDevice = DeviceFactory.CreateHostDevice("air-conditioner", "Air conditioning unit");
 
             #region General node
@@ -89,8 +90,8 @@ namespace TestApp {
             #endregion
 
             // This builds topic trees and subscribes to everything.
-            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => addToLog(severity, "Broker:" + message));
-            _hostDevice.Initialize(_broker, (severity, message) => addToLog(severity, "ClientDevice:" + message));
+            _broker.Initialize(channelOptions, (severity, message) => addToLog(severity, "Broker:" + message));
+            _hostDevice.Initialize(_broker, (severity, message) => addToLog(severity, "Device:" + message));
 
             // Finally, running the simulation loop. We're good to go!
             Task.Run(async () => await RunSimulationLoopContinuously(new CancellationToken()));

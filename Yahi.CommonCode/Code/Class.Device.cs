@@ -57,7 +57,7 @@ namespace DevBot9.Protocols.Homie {
             _broker = broker;
             _broker.PublishReceived += HandleBrokerPublishReceived;
 
-            _broker.PropertyChanged += HandleBrokerPropertyChanged;
+            _broker.Connected += HandleBrokerConnected;
 
             if (loggingFunction != null) { _log = loggingFunction; }
         }
@@ -66,7 +66,7 @@ namespace DevBot9.Protocols.Homie {
             if (_broker == null) { return; }
 
             _broker.PublishReceived -= HandleBrokerPublishReceived;
-            _broker.PropertyChanged -= HandleBrokerPropertyChanged;
+            _broker.Connected -= HandleBrokerConnected;
         }
 
         private void HandleBrokerPublishReceived(object sender, PublishReceivedEventArgs e) {
@@ -78,15 +78,14 @@ namespace DevBot9.Protocols.Homie {
             }
         }
 
-        private void HandleBrokerPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if ((e.PropertyName == nameof(_broker.IsConnected)) && _broker.IsConnected) {
-                // All subscribtions were dropped during disconnect event. Resubscribing.
-                var clonedSubsribtionTable = (ArrayList)_subscriptionList.Clone();
-                LogInfo($"(Re)subscribing to {clonedSubsribtionTable.Count} topic(s).");
-                foreach (string topic in clonedSubsribtionTable) {
-                    _broker.TrySubscribe(topic);
-                }
+        private void HandleBrokerConnected(object sender, EventArgs e) {
+            // All subscribtions were dropped during disconnect event. Resubscribing.
+            var clonedSubsribtionTable = (ArrayList)_subscriptionList.Clone();
+            LogInfo($"(Re)subscribing to {clonedSubsribtionTable.Count} topic(s).");
+            foreach (string topic in clonedSubsribtionTable) {
+                _broker.Subscribe(topic);
             }
+
         }
 
 
@@ -99,26 +98,7 @@ namespace DevBot9.Protocols.Homie {
         }
 
         internal void InternalGeneralPublish(string topicId, string value, bool isRetained = true) {
-            if (IsConnected) { _broker.TryPublish(topicId, value, 1, isRetained); }
-
-
-
-            //var retryCount = 0;
-            //var isPublishSuccessful = false;
-            //while ((retryCount < 3) && (isPublishSuccessful == false)) {
-            //    if (_broker.TryPublish(topicId, value, 1, true)) {
-            //        isPublishSuccessful = true;
-            //    }
-            //    else {
-            //        retryCount++;
-            //        LogError($"Could not publish topic {topicId} to broker, attempt {retryCount}.");
-            //    }
-            //}
-
-            //if (isPublishSuccessful == false) {
-            //    LogError($"Too many fails at publishing, going to disconnected state.");
-            //    IsConnected = false;
-            //}
+            if (IsConnected) { _broker.Publish(topicId, value, 1, isRetained); }
         }
 
         internal void InternalGeneralSubscribe(string topicId, ActionStringDelegate actionToTakeOnReceivedMessage) {
@@ -130,9 +110,9 @@ namespace DevBot9.Protocols.Homie {
             }
 
             ((ArrayList)_topicHandlerMap[fullTopic]).Add(actionToTakeOnReceivedMessage);
-
-            _broker.TrySubscribe(fullTopic);
             _subscriptionList.Add(fullTopic);
+
+            if (IsConnected) { _broker.Subscribe(fullTopic); }
         }
 
         internal void RaisePropertyChanged(object sender, PropertyChangedEventArgs e) {

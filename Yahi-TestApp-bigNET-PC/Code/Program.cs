@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 using DevBot9.Protocols.Homie;
+using Tevux.Protocols.Mqtt;
+using Tevux.Protocols.Mqtt.Utility;
 
 namespace TestApp {
     internal class Program {
@@ -10,7 +12,11 @@ namespace TestApp {
                 Console.WriteLine($"{severity}:{message}");
             }
 
-            var brokerIp = "172.16.0.2";
+            Trace.TraceListener = (format, data) => { Console.WriteLine(format, data); };
+
+            var channelOptions = new ChannelConnectionOptions();
+            channelOptions.SetHostname("172.16.0.2");
+
 
             DeviceFactory.Initialize("homie");
 
@@ -19,7 +25,7 @@ namespace TestApp {
             AddToLog("Info", "========= Creating AirConditionerConsumer ==========================");
             AddToLog("Info", "====================================================================");
             var airConditionerConsumer = new AirConditionerConsumer();
-            airConditionerConsumer.Initialize(brokerIp, (severity, message) => AddToLog(severity, "AirConditionerConsumer:" + message));
+            airConditionerConsumer.Initialize(channelOptions, (severity, message) => AddToLog(severity, "AirConditionerConsumer:" + message));
 
             Thread.Sleep(2000);
             AddToLog("Info", "");
@@ -27,7 +33,7 @@ namespace TestApp {
             AddToLog("Info", "========= Creating AirConditionerProducer ==========================");
             AddToLog("Info", "====================================================================");
             var airConditionerProducer = new AirConditionerProducer();
-            airConditionerProducer.Initialize(brokerIp, (severity, message) => AddToLog(severity, "AirConditionerProducer:" + message));
+            airConditionerProducer.Initialize(channelOptions, (severity, message) => AddToLog(severity, "AirConditionerProducer:" + message));
 
             Thread.Sleep(2000);
             AddToLog("Info", "");
@@ -35,7 +41,7 @@ namespace TestApp {
             AddToLog("Info", "========= Creating LightbulbConsumer ===============================");
             AddToLog("Info", "====================================================================");
             var lightbulbConsumer = new LightbulbConsumer();
-            lightbulbConsumer.Initialize(brokerIp, (severity, message) => AddToLog(severity, "LightbulbConsumer:" + message));
+            lightbulbConsumer.Initialize(channelOptions, (severity, message) => AddToLog(severity, "LightbulbConsumer:" + message));
 
             Thread.Sleep(2000);
             AddToLog("Info", "");
@@ -43,7 +49,7 @@ namespace TestApp {
             AddToLog("Info", "========= Creating LightbulbProducer ===============================");
             AddToLog("Info", "====================================================================");
             var lightbulbProducer = new LightbulbProducer();
-            lightbulbProducer.Initialize(brokerIp, (severity, message) => AddToLog(severity, "LightbulbProducer:" + message));
+            lightbulbProducer.Initialize(channelOptions, (severity, message) => AddToLog(severity, "LightbulbProducer:" + message));
 
             Thread.Sleep(2000);
             AddToLog("Info", "");
@@ -53,7 +59,7 @@ namespace TestApp {
             // Note that Eclipse Mosquitto broker can transmit ~100 retained messages by default. Set max_queue_messages to 0 in mosquito.conf to remove this limit,
             // or otherwise parser will have a lot of problems.
             var homieFecther = new HomieTopicFetcher();
-            homieFecther.Initialize(brokerIp);
+            homieFecther.Initialize(channelOptions);
             homieFecther.FetchTopics(DeviceFactory.BaseTopic + "/#", out var topicDump2);
             var homieTree = HomieTopicTreeParser.Parse(topicDump2, DeviceFactory.BaseTopic, out var errorList, out var warningList);
             if (errorList.Length + warningList.Length == 0) {
@@ -79,7 +85,7 @@ namespace TestApp {
             }
             else {
                 var dynamicConsumer = new DynamicConsumer();
-                dynamicConsumer.Initialize(brokerIp, homieTree[0], (severity, message) => AddToLog(severity, "DynamicConsumer:" + message));
+                dynamicConsumer.Initialize(channelOptions, homieTree[0], (severity, message) => AddToLog(severity, "DynamicConsumer:" + message));
             }
 
             AddToLog("Info", "");

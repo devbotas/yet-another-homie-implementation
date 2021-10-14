@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using DevBot9.Protocols.Homie;
 using DevBot9.Protocols.Homie.Utilities;
+using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     internal class LightbulbProducer {
-        private PahoHostDeviceConnection _broker = new PahoHostDeviceConnection();
+        private YahiTevuxHostConnection _broker = new();
 
         private HostDevice _hostDevice;
         private HostChoiceProperty _onOffSwitch;
@@ -13,7 +14,7 @@ namespace TestApp {
 
         public LightbulbProducer() { }
 
-        public void Initialize(string mqttBrokerIpAddress, AddToLogDelegate addToLog) {
+        public void Initialize(ChannelConnectionOptions channelOptions, AddToLogDelegate addToLog) {
             _hostDevice = DeviceFactory.CreateHostDevice("lightbulb", "Colorful lightbulb");
 
             #region General node
@@ -40,8 +41,8 @@ namespace TestApp {
 
             #endregion
 
-            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => addToLog(severity, "Broker:" + message));
-            _hostDevice.Initialize(_broker, (severity, message) => addToLog(severity, "HostDevice:" + message));
+            _broker.Initialize(channelOptions, (severity, message) => addToLog(severity, "Broker:" + message));
+            _hostDevice.Initialize(_broker, (severity, message) => addToLog(severity, "Device:" + message));
         }
     }
 }

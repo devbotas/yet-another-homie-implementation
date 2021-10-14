@@ -1,9 +1,10 @@
 ﻿using DevBot9.Protocols.Homie;
 using DevBot9.Protocols.Homie.Utilities;
+using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     internal class AirConditionerConsumer {
-        private PahoClientDeviceConnection _broker = new PahoClientDeviceConnection();
+        private YahiTevuxClientConnection _broker = new();
 
         private ClientDevice _clientDevice;
         private ClientNumberProperty _inletTemperature;
@@ -12,7 +13,7 @@ namespace TestApp {
 
         public AirConditionerConsumer() { }
 
-        public void Initialize(string mqttBrokerIpAddress, AddToLogDelegate addToLog) {
+        public void Initialize(ChannelConnectionOptions channelOptions, AddToLogDelegate addToLog) {
             // Creating a air conditioner device.
             _clientDevice = DeviceFactory.CreateClientDevice("air-conditioner");
 
@@ -35,8 +36,8 @@ namespace TestApp {
             };
 
             // Initializing all the Homie stuff.
-            _broker.Initialize(mqttBrokerIpAddress, (severity, message) => addToLog(severity, "Broker:" + message));
-            _clientDevice.Initialize(_broker, (severity, message) => addToLog(severity, "ClientDevice:" + message));
+            _broker.Initialize(channelOptions, (severity, message) => addToLog(severity, "Broker:" + message));
+            _clientDevice.Initialize(_broker, (severity, message) => addToLog(severity, "Device:" + message));
         }
     }
 }
