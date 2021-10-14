@@ -1,4 +1,5 @@
-﻿namespace DevBot9.Protocols.Homie.Utilities {
+﻿#if NANOFRAMEWORK_1_0
+namespace DevBot9.Protocols.Homie.Utilities {
     public class PahoHostDeviceConnection : PahoClientDeviceConnection, IHostDeviceConnection {
         public PahoHostDeviceConnection() {
             _isWillSet = false;
@@ -15,3 +16,4 @@
         }
     }
 }
+#endif

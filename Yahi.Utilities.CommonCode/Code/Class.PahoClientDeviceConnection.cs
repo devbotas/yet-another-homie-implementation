@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NANOFRAMEWORK_1_0
+
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
@@ -20,7 +22,8 @@ namespace DevBot9.Protocols.Homie.Utilities {
         public bool IsConnected { get; private set; }
 
         public event PublishReceivedDelegate PublishReceived = delegate { };
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event EventHandler Connected = delegate { };
+        public event EventHandler Disconnected = delegate { };
 
         public void Initialize(string ipAddress, AddToLogDelegate loggingFunction = null) {
             if (string.IsNullOrEmpty(ipAddress)) { throw new ArgumentException("Please provide a correct IP address/hostname.", ipAddress); }
@@ -33,7 +36,7 @@ namespace DevBot9.Protocols.Homie.Utilities {
 
             _realClient.ConnectionClosed += (sender, e) => {
                 IsConnected = false;
-                PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsConnected)));
+                Disconnected(this, EventArgs.Empty);
             };
 
             // Spinning up connection monitor.
@@ -53,36 +56,6 @@ namespace DevBot9.Protocols.Homie.Utilities {
 
         public void Disconnect() {
             _realClient.Disconnect();
-        }
-
-        public bool TryPublish(string topic, string payload, byte qosLevel, bool isRetained) {
-            var isOk = true;
-
-            if (_realClient.IsConnected) {
-                _realClient.Publish(topic, System.Text.Encoding.UTF8.GetBytes(payload), qosLevel, isRetained);
-#if NANOFRAMEWORK_1_0
-#warning This is a patch for the memore leak bug https://github.com/nanoframework/Home/issues/816 . If the issue gets resolved, need to remove it.
-                System.Threading.Thread.Sleep(50);
-#endif
-            }
-            else {
-                isOk = false;
-            }
-
-            return isOk;
-        }
-
-        public bool TrySubscribe(string topic) {
-            var isOk = true;
-
-            if (_realClient.IsConnected) {
-                _realClient.Subscribe(new[] { topic }, new byte[] { 1 });
-            }
-            else {
-                isOk = false;
-            }
-
-            return isOk;
         }
 
         public PahoClientDeviceConnection() { }
@@ -122,7 +95,7 @@ namespace DevBot9.Protocols.Homie.Utilities {
                         Thread.Sleep(100);
 
                         IsConnected = true;
-                        PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsConnected)));
+                        Connected(this, EventArgs.Empty);
                     }
                     catch (Exception ex) {
                         Debug.WriteLine($"Problem in {nameof(MonitorMqttConnectionContinuously)}: {ex.Message}");
@@ -141,5 +114,20 @@ namespace DevBot9.Protocols.Homie.Utilities {
         protected void LogError(string message) {
             _log("Error", message);
         }
+
+        public void Connect() {
+
+        }
+
+        public void Publish(string topic, string payload, byte qosLevel, bool isRetained) {
+            _realClient.Publish(topic, System.Text.Encoding.UTF8.GetBytes(payload), qosLevel, isRetained);
+#warning This is a patch for the memore leak bug https://github.com/nanoframework/Home/issues/816 . If the issue gets resolved, need to remove it.
+            System.Threading.Thread.Sleep(50);
+        }
+
+        public void Subscribe(string topic) {
+            _realClient.Subscribe(new[] { topic }, new byte[] { 1 });
+        }
     }
 }
+#endif

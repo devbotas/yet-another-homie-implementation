@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PahoHostDeviceConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.YahiTevuxClientConnection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Class.PahoClientDeviceConnection.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Class.ResilientHomieBroker.cs" />
   </ItemGroup>
 </Project>
