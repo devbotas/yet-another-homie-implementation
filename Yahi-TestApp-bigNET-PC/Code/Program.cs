@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using DevBot9.Protocols.Homie;
 using Tevux.Protocols.Mqtt;
-using Tevux.Protocols.Mqtt.Utility;
 
 namespace TestApp {
     internal class Program {
@@ -58,7 +57,7 @@ namespace TestApp {
             // or otherwise parser will have a lot of problems.
             var homieFecther = new HomieTopicFetcher();
             homieFecther.Initialize(channelOptions);
-            homieFecther.FetchTopics(DeviceFactory.BaseTopic + "/#", out var topicDump2);
+            homieFecther.FetchDevices(DeviceFactory.BaseTopic, out var topicDump2);
             var homieTree = HomieTopicTreeParser.Parse(topicDump2, DeviceFactory.BaseTopic, out var errorList, out var warningList);
             if (errorList.Length + warningList.Length == 0) {
                 AddToLog("Info", "TreeParser:tree looks ok.");

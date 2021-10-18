@@ -9,6 +9,7 @@ namespace TestApp {
         private MqttClient _mqttClient = new MqttClient();
         private Dictionary<string, string> _responses = new();
         private ChannelConnectionOptions _channelConnectionOptions;
+        private DateTime _timeOfLastUniqueTopic = DateTime.Now;
 
 
         public void Initialize(ChannelConnectionOptions channelOptions) {
@@ -50,8 +51,8 @@ namespace TestApp {
             }
 
             _responses.Clear();
-            _mqttClient.Subscribe($"{baseTopic}/+/$homie", QosLevel.AtLeastOnce);
-            Thread.Sleep(1000);
+            _mqttClient.SubscribeAndWait($"{baseTopic}/+/$homie", QosLevel.AtLeastOnce);
+            Thread.Sleep(500);
             _mqttClient.Unsubscribe($"{baseTopic}/+/$homie");
 
             Console.WriteLine($"Found {_responses.Count} homie devices.");
@@ -65,15 +66,17 @@ namespace TestApp {
 
             foreach (var device in devices) {
                 _responses.Clear();
-                _mqttClient.Subscribe($"{baseTopic}/{device}/#", QosLevel.AtLeastOnce);
-                Thread.Sleep(100);
-                _mqttClient.Unsubscribe($"{baseTopic}/{device}/#");
+
+                _mqttClient.SubscribeAndWait($"{baseTopic}/{device}/#", QosLevel.AtLeastOnce);
+                while ((DateTime.Now - _timeOfLastUniqueTopic).TotalMilliseconds < 500) {
+                    Thread.Sleep(100);
+                }
+                _mqttClient.UnsubscribeAndWait($"{baseTopic}/{device}/#");
 
                 Console.WriteLine($"{_responses.Count} topics for {device}.");
                 foreach (var topic in _responses) {
                     allTheTopics.Add(topic.Key + ":" + topic.Value);
                 }
-
             }
 
             _mqttClient.Disconnect();
@@ -86,8 +89,13 @@ namespace TestApp {
         private void HandlePublishReceived(object sender, PublishReceivedEventArgs e) {
             var payload = Encoding.UTF8.GetString(e.Message);
 
-            if (_responses.ContainsKey(e.Topic) == false) { _responses.Add(e.Topic, payload); }
-            else { _responses[e.Topic] = payload; }
+            if (_responses.ContainsKey(e.Topic) == false) {
+                _responses.Add(e.Topic, payload);
+                _timeOfLastUniqueTopic = DateTime.Now;
+            }
+            else {
+                _responses[e.Topic] = payload;
+            }
         }
     }
 }
