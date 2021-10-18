@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using DevBot9.Protocols.Homie;
 using Tevux.Protocols.Mqtt;
@@ -11,8 +11,6 @@ namespace TestApp {
             void AddToLog(string severity, string message) {
                 Console.WriteLine($"{severity}:{message}");
             }
-
-            Trace.TraceListener = (format, data) => { Console.WriteLine(format, data); };
 
             var channelOptions = new ChannelConnectionOptions();
             channelOptions.SetHostname("172.16.0.2");
