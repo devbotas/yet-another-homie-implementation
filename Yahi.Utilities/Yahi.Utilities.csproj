@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFrameworks>net5.0</TargetFrameworks>
-    <RootNamespace>Yahi.Utilities_bigNET</RootNamespace>
+    <RootNamespace>DevBot9.Protocols.Homie.Utilities</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Authors>devbotas</Authors>
@@ -23,13 +23,12 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <DebugType>embedded</DebugType>
+    <AssemblyName>DevBot9.Protocols.Homie.Utilities</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <!--This enables "deterministic builds"-->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
-
-  <Import Project="..\Yahi.Utilities.CommonCode\Yahi.Utilities.CommonCode.projitems" Label="Shared" />
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
@@ -42,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Yahi-bigNET\Yahi-bigNET.csproj" />
+    <ProjectReference Include="..\Yahi\Yahi.csproj" />
   </ItemGroup>
 
 </Project>

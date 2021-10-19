@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;net5.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;</TargetFrameworks>
     <RootNamespace>DevBot9.Protocols.Homie</RootNamespace>
     <AssemblyName>DevBot9.Protocols.Homie</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -39,5 +39,4 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-  <Import Project="..\Yahi.CommonCode\Yahi.CommonCode.projitems" Label="Shared" />
 </Project>
