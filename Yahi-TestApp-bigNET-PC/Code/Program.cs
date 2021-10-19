@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using DevBot9.Protocols.Homie;
+using DevBot9.Protocols.Homie.Utilities;
 using NLog;
 using Tevux.Protocols.Mqtt;
 
@@ -23,12 +24,17 @@ namespace TestApp {
 
             DeviceFactory.Initialize("homie");
 
+            // Consumers can share a single connection to the broker.
+            var _clientConnection = new YahiTevuxClientConnection();
+            _clientConnection.Initialize();
+            _clientConnection.ConnectAndWait(channelOptions);
+
             _log.Info("");
             _log.Info("====================================================================");
             _log.Info("========= Creating AirConditionerConsumer ==========================");
             _log.Info("====================================================================");
             var airConditionerConsumer = new AirConditionerConsumer();
-            airConditionerConsumer.Initialize(channelOptions);
+            airConditionerConsumer.Initialize(_clientConnection);
 
             Thread.Sleep(2000);
             _log.Info("");
@@ -44,7 +50,7 @@ namespace TestApp {
             _log.Info("========= Creating LightbulbConsumer ===============================");
             _log.Info("====================================================================");
             var lightbulbConsumer = new LightbulbConsumer();
-            lightbulbConsumer.Initialize(channelOptions);
+            lightbulbConsumer.Initialize(_clientConnection);
 
             Thread.Sleep(2000);
             _log.Info("");
@@ -88,7 +94,7 @@ namespace TestApp {
             }
             else {
                 var dynamicConsumer = new DynamicConsumer();
-                dynamicConsumer.Initialize(channelOptions, homieTree[0]);
+                dynamicConsumer.Initialize(_clientConnection, homieTree[0]);
             }
 
             _log.Info("");

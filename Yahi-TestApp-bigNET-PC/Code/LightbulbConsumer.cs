@@ -1,19 +1,16 @@
 ﻿using System;
 using DevBot9.Protocols.Homie;
-using DevBot9.Protocols.Homie.Utilities;
-using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     internal class LightbulbConsumer {
         private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
-        private YahiTevuxClientConnection _broker = new();
 
         private ClientDevice _clientDevice;
         private ClientColorProperty _color;
 
         public LightbulbConsumer() { }
 
-        public void Initialize(ChannelConnectionOptions channelOptions) {
+        public void Initialize(IClientDeviceConnection _brokerConnection) {
             // Creating a air conditioner device.
             _clientDevice = DeviceFactory.CreateClientDevice("lightbulb");
 
@@ -27,8 +24,7 @@ namespace TestApp {
             };
 
             // Initializing all the Homie stuff.
-            _broker.Initialize(channelOptions);
-            _clientDevice.Initialize(_broker);
+            _clientDevice.Initialize(_brokerConnection);
         }
     }
 }

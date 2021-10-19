@@ -1,18 +1,15 @@
 ﻿using System.Diagnostics;
 using DevBot9.Protocols.Homie;
-using DevBot9.Protocols.Homie.Utilities;
-using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     internal class DynamicConsumer {
         private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
-        private YahiTevuxClientConnection _broker = new();
 
         private ClientDevice _clientDevice;
 
         public DynamicConsumer() { }
 
-        public void Initialize(ChannelConnectionOptions channelOptions, ClientDeviceMetadata deviceMetadata) {
+        public void Initialize(IClientDeviceConnection brokerConnection, ClientDeviceMetadata deviceMetadata) {
             _clientDevice = DeviceFactory.CreateClientDevice(deviceMetadata);
 
             for (var i = 0; i < _clientDevice.Nodes.Length; i++) {
@@ -26,8 +23,7 @@ namespace TestApp {
             }
 
             // Initializing all the Homie stuff.
-            _broker.Initialize(channelOptions);
-            _clientDevice.Initialize(_broker);
+            _clientDevice.Initialize(brokerConnection);
         }
     }
 }
