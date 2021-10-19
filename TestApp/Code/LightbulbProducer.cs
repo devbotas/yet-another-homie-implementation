@@ -6,7 +6,7 @@ using Tevux.Protocols.Mqtt;
 namespace TestApp {
     internal class LightbulbProducer {
         private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
-        private YahiTevuxHostConnection _broker = new();
+        private YahiTevuxHostConnection _broker = new YahiTevuxHostConnection();
 
         private HostDevice _hostDevice;
         private HostChoiceProperty _onOffSwitch;

@@ -8,7 +8,7 @@ using Tevux.Protocols.Mqtt;
 namespace TestApp {
     internal class AirConditionerProducer {
         private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
-        private YahiTevuxHostConnection _broker = new();
+        private YahiTevuxHostConnection _broker = new YahiTevuxHostConnection();
 
         private HostDevice _hostDevice;
         private HostNumberProperty _targetAirTemperature;

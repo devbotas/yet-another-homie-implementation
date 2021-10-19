@@ -5,8 +5,8 @@ using Tevux.Protocols.Mqtt;
 
 namespace DevBot9.Protocols.Homie.Utilities {
     public class YahiTevuxClientConnection : MqttClient, IClientDeviceConnection {
-        private ChannelConnectionOptions _channelConnectionOptions = new();
-        protected MqttConnectionOptions _mqttConnectionOptions = new();
+        private ChannelConnectionOptions _channelConnectionOptions = new ChannelConnectionOptions();
+        protected MqttConnectionOptions _mqttConnectionOptions = new MqttConnectionOptions();
 
         public new event PublishReceivedDelegate PublishReceived = delegate { };
         public new EventHandler Connected;

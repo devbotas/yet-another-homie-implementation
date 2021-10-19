@@ -8,7 +8,7 @@ namespace TestApp {
     public class HomieTopicFetcher {
         private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
         private MqttClient _mqttClient = new MqttClient();
-        private Dictionary<string, string> _responses = new();
+        private Dictionary<string, string> _responses = new Dictionary<string, string>();
         private ChannelConnectionOptions _channelConnectionOptions;
         private DateTime _timeOfLastUniqueTopic = DateTime.Now;
 
