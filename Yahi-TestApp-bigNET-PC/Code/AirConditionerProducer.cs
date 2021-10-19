@@ -7,6 +7,7 @@ using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     internal class AirConditionerProducer {
+        private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
         private YahiTevuxHostConnection _broker = new();
 
         private HostDevice _hostDevice;
@@ -22,7 +23,7 @@ namespace TestApp {
 
         public AirConditionerProducer() { }
 
-        public void Initialize(ChannelConnectionOptions channelOptions, AddToLogDelegate addToLog) {
+        public void Initialize(ChannelConnectionOptions channelOptions) {
             _hostDevice = DeviceFactory.CreateHostDevice("air-conditioner", "Air conditioning unit");
 
             #region General node
@@ -90,8 +91,8 @@ namespace TestApp {
             #endregion
 
             // This builds topic trees and subscribes to everything.
-            _broker.Initialize(channelOptions, (severity, message) => addToLog(severity, "Broker:" + message));
-            _hostDevice.Initialize(_broker, (severity, message) => addToLog(severity, "Device:" + message));
+            _broker.Initialize(channelOptions);
+            _hostDevice.Initialize(_broker);
 
             // Finally, running the simulation loop. We're good to go!
             Task.Run(async () => await RunSimulationLoopContinuously(new CancellationToken()));

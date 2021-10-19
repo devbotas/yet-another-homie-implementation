@@ -16,8 +16,8 @@ namespace DevBot9.Protocols.Homie {
         /// <summary>
         /// Initializes the entire Client Device tree: actually creates internal property variables, subscribes to topics and so on. This method must be called, or otherwise entire Client Device tree will not work.
         /// </summary>
-        public void Initialize(IClientDeviceConnection broker, AddToLogDelegate loggingFunction = null) {
-            base.Initialize(broker, loggingFunction);
+        public void Initialize(IClientDeviceConnection broker) {
+            base.Initialize(broker, NLog.LogManager.GetCurrentClassLogger());
 
             // Initializing properties. They will start using broker immediatelly.
             foreach (ClientPropertyBase property in _properties) {

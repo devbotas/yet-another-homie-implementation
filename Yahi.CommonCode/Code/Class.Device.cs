@@ -42,7 +42,7 @@ namespace DevBot9.Protocols.Homie {
 
         #region Internal Homie guts 
 
-        protected AddToLogDelegate _log = delegate { };
+        protected NLog.ILogger _log;
         protected string _baseTopic = "no-base-topic";
         protected ArrayList _properties = new ArrayList();
         protected Hashtable _topicHandlerMap = new Hashtable();
@@ -53,13 +53,12 @@ namespace DevBot9.Protocols.Homie {
             // Just making public constructor unavailable to user, as this class should not be consumed directly.
         }
 
-        protected void Initialize(IBasicDeviceConnection broker, AddToLogDelegate loggingFunction = null) {
+        protected void Initialize(IBasicDeviceConnection broker, NLog.ILogger log) {
+            _log = log;
+
             _broker = broker;
             _broker.PublishReceived += HandleBrokerPublishReceived;
-
             _broker.Connected += HandleBrokerConnected;
-
-            if (loggingFunction != null) { _log = loggingFunction; }
         }
 
         public void Dispose() {
@@ -81,7 +80,7 @@ namespace DevBot9.Protocols.Homie {
         private void HandleBrokerConnected(object sender, EventArgs e) {
             // All subscribtions were dropped during disconnect event. Resubscribing.
             var clonedSubsribtionTable = (ArrayList)_subscriptionList.Clone();
-            LogInfo($"(Re)subscribing to {clonedSubsribtionTable.Count} topic(s).");
+            _log.Info($"(Re)subscribing to {clonedSubsribtionTable.Count} topic(s).");
             foreach (string topic in clonedSubsribtionTable) {
                 _broker.Subscribe(topic);
             }
@@ -119,13 +118,6 @@ namespace DevBot9.Protocols.Homie {
             PropertyChanged(sender, e);
         }
 
-        internal void LogInfo(string message) {
-            _log("Info", message);
-        }
-
-        internal void LogError(string message) {
-            _log("Error", message);
-        }
         #endregion
     }
 }

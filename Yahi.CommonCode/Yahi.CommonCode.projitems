@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Code\Abstractions\Delegate.EmptyDelegate.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Code\Abstractions\Delegate.AddToLogDelegate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Abstractions\Delegate.PublishReceivedDelegate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Abstractions\Class.PublishReceivedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Code\Abstractions\Interface.IClientDeviceConnection.cs" />

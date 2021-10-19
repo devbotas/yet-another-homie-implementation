@@ -6,6 +6,7 @@ using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     public class HomieTopicFetcher {
+        private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
         private MqttClient _mqttClient = new MqttClient();
         private Dictionary<string, string> _responses = new();
         private ChannelConnectionOptions _channelConnectionOptions;

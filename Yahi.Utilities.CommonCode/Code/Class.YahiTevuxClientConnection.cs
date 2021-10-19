@@ -12,7 +12,7 @@ namespace DevBot9.Protocols.Homie.Utilities {
         public new EventHandler Connected;
         public new EventHandler Disconnected;
 
-        public void Initialize(ChannelConnectionOptions channelConnectionOptions, AddToLogDelegate loggingFunction = null) {
+        public void Initialize(ChannelConnectionOptions channelConnectionOptions) {
             Initialize();
 
             _channelConnectionOptions = channelConnectionOptions;

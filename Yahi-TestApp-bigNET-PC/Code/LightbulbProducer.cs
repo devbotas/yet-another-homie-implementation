@@ -5,6 +5,7 @@ using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     internal class LightbulbProducer {
+        private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
         private YahiTevuxHostConnection _broker = new();
 
         private HostDevice _hostDevice;
@@ -14,7 +15,7 @@ namespace TestApp {
 
         public LightbulbProducer() { }
 
-        public void Initialize(ChannelConnectionOptions channelOptions, AddToLogDelegate addToLog) {
+        public void Initialize(ChannelConnectionOptions channelOptions) {
             _hostDevice = DeviceFactory.CreateHostDevice("lightbulb", "Colorful lightbulb");
 
             #region General node
@@ -41,8 +42,8 @@ namespace TestApp {
 
             #endregion
 
-            _broker.Initialize(channelOptions, (severity, message) => addToLog(severity, "Broker:" + message));
-            _hostDevice.Initialize(_broker, (severity, message) => addToLog(severity, "Device:" + message));
+            _broker.Initialize(channelOptions);
+            _hostDevice.Initialize(_broker);
         }
     }
 }

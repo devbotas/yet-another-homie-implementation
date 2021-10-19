@@ -5,6 +5,7 @@ using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     internal class LightbulbConsumer {
+        private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
         private YahiTevuxClientConnection _broker = new();
 
         private ClientDevice _clientDevice;
@@ -12,7 +13,7 @@ namespace TestApp {
 
         public LightbulbConsumer() { }
 
-        public void Initialize(ChannelConnectionOptions channelOptions, AddToLogDelegate addToLog) {
+        public void Initialize(ChannelConnectionOptions channelOptions) {
             // Creating a air conditioner device.
             _clientDevice = DeviceFactory.CreateClientDevice("lightbulb");
 
@@ -26,8 +27,8 @@ namespace TestApp {
             };
 
             // Initializing all the Homie stuff.
-            _broker.Initialize(channelOptions, (severity, message) => addToLog(severity, "Broker:" + message));
-            _clientDevice.Initialize(_broker, (severity, message) => addToLog(severity, "Device:" + message));
+            _broker.Initialize(channelOptions);
+            _clientDevice.Initialize(_broker);
         }
     }
 }
