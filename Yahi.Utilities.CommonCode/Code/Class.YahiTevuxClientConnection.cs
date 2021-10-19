@@ -23,7 +23,7 @@ namespace DevBot9.Protocols.Homie.Utilities {
         }
 
         void IBasicDeviceConnection.Connect() {
-            Connect(_channelConnectionOptions, _mqttConnectionOptions);
+            ConnectAndWait(_channelConnectionOptions, _mqttConnectionOptions);
         }
 
         public void Publish(string topic, string payload, byte qosLevel, bool isRetained) {

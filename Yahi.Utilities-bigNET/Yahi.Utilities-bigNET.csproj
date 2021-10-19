@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="Tevux.M2Mqtt" Version="0.17.1" />
+    <PackageReference Include="Tevux.M2Mqtt" Version="0.19.0-preview.1" />
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

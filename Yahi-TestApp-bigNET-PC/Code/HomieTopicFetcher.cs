@@ -21,7 +21,7 @@ namespace TestApp {
 
         public void FetchTopics(string filter, out string[] topics) {
             _responses.Clear();
-            _mqttClient.Connect(_channelConnectionOptions);
+            _mqttClient.ConnectAndWait(_channelConnectionOptions);
             while (_mqttClient.IsConnected == false) {
                 Thread.Sleep(100);
             }
@@ -30,7 +30,7 @@ namespace TestApp {
 
             Thread.Sleep(2000);
             _mqttClient.Unsubscribe(filter);
-            _mqttClient.Disconnect();
+            _mqttClient.DisconnectAndWait();
 
             topics = new string[_responses.Count];
             var i = 0;
@@ -45,7 +45,7 @@ namespace TestApp {
         public void FetchDevices(string baseTopic, out string[] topics) {
             var allTheTopics = new List<string>();
 
-            _mqttClient.Connect(_channelConnectionOptions);
+            _mqttClient.ConnectAndWait(_channelConnectionOptions);
             while (_mqttClient.IsConnected == false) {
                 Thread.Sleep(100);
             }
@@ -79,7 +79,7 @@ namespace TestApp {
                 }
             }
 
-            _mqttClient.Disconnect();
+            _mqttClient.DisconnectAndWait();
 
             topics = allTheTopics.ToArray();
 
