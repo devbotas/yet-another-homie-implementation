@@ -11,7 +11,7 @@ Apparently, you need an MQTT broker first. [Mosquitto](https://mosquitto.org/) i
 
 Then, check out the ```TestApp```. It has multiple *simulated* devices, like ```AirConditioner```, which not only have some Homie properties implemented, but they also simulate real-world counterparts, so you could, for example, set the target temperature and see how it actually slowly changes. You can add these devices to ```OpenHAB```, ```HomeAssistant``` or other home automation platforms and start clicking button right away.
 
-Of course, if developing new devices, you need some better debugging tools. To watch raw MQTT traffic, check out [MQTT explorer](https://mqtt-explorer.com/). To quickly  check the controls you created, try [HoDD](https://mqtt-explorer.com/) (although it only works if downloaded and run from the PC directly).
+Of course, if developing new devices, you need some better debugging tools. To watch raw MQTT traffic, check out [MQTT explorer](https://mqtt-explorer.com/). To quickly  check the controls you created, try [HoDD](https://mqtt-explorer.com/) (although it only works if downloaded and run from the PC directly). If you have Docker installed, use [BHD](https://github.com/tevux-tech/bhd)
 
 # Important YAHI design concepts
 YAHI is fully-Homie compliant, however, it is a *slightly more strict subset*. 
