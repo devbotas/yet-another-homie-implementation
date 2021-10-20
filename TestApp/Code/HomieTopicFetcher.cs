@@ -6,9 +6,9 @@ using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     public class HomieTopicFetcher {
-        private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
-        private MqttClient _mqttClient = new MqttClient();
-        private Dictionary<string, string> _responses = new Dictionary<string, string>();
+        private readonly NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly MqttClient _mqttClient = new MqttClient();
+        private readonly Dictionary<string, string> _responses = new Dictionary<string, string>();
         private ChannelConnectionOptions _channelConnectionOptions;
         private DateTime _timeOfLastUniqueTopic = DateTime.Now;
 
@@ -56,14 +56,14 @@ namespace TestApp {
             Thread.Sleep(500);
             _mqttClient.Unsubscribe($"{baseTopic}/+/$homie");
 
-            Console.WriteLine($"Found {_responses.Count} homie devices.");
+            var deviceString = $"Found { _responses.Count} Homie devices: ";
             var devices = new List<string>();
             foreach (var deviceTopic in _responses) {
                 var deviceName = deviceTopic.Key.Split('/')[1];
                 devices.Add(deviceName);
-                Console.Write(deviceName + " ");
+                deviceString += deviceName + " ";
             }
-            Console.WriteLine();
+            _log.Info(deviceString);
 
             foreach (var device in devices) {
                 _responses.Clear();
@@ -74,7 +74,7 @@ namespace TestApp {
                 }
                 _mqttClient.UnsubscribeAndWait($"{baseTopic}/{device}/#");
 
-                Console.WriteLine($"{_responses.Count} topics for {device}.");
+                _log.Info($"{_responses.Count} topics for {device}.");
                 foreach (var topic in _responses) {
                     allTheTopics.Add(topic.Key + ":" + topic.Value);
                 }

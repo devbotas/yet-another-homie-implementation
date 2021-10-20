@@ -1,12 +1,11 @@
-﻿using System.Diagnostics;
-using DevBot9.Protocols.Homie;
+﻿using DevBot9.Protocols.Homie;
 using DevBot9.Protocols.Homie.Utilities;
 using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     internal class LightbulbProducer {
-        private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
-        private YahiTevuxHostConnection _broker = new YahiTevuxHostConnection();
+        private readonly NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly YahiTevuxHostConnection _broker = new YahiTevuxHostConnection();
 
         private HostDevice _hostDevice;
         private HostChoiceProperty _onOffSwitch;
@@ -25,7 +24,7 @@ namespace TestApp {
             // I think properties are pretty much self-explanatory in this producer.
             _color = _hostDevice.CreateHostColorProperty(PropertyType.Parameter, "general", "color", "Color", ColorFormat.Rgb);
             _color.PropertyChanged += (sender, e) => {
-                Debug.Print($"Color changed to {_color.Value.ToRgbString()}");
+                _log.Info($"Color changed to {_color.Value.ToRgbString()}");
             };
             _onOffSwitch = _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, "general", "is-on", "Is on", new[] { "OFF", "ON" }, "OFF");
             _onOffSwitch.PropertyChanged += (sender, e) => {

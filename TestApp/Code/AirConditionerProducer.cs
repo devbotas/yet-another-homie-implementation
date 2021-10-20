@@ -7,8 +7,8 @@ using Tevux.Protocols.Mqtt;
 
 namespace TestApp {
     internal class AirConditionerProducer {
-        private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
-        private YahiTevuxHostConnection _broker = new YahiTevuxHostConnection();
+        private readonly NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly YahiTevuxHostConnection _broker = new YahiTevuxHostConnection();
 
         private HostDevice _hostDevice;
         private HostNumberProperty _targetAirTemperature;
@@ -52,6 +52,7 @@ namespace TestApp {
                         _actualState.Value = "ON";
                     });
                 }
+                _log.Info($"Actual state changed to: {_actualState.Value}");
             };
 
 
