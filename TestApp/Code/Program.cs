@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using DevBot9.Protocols.Homie;
 using DevBot9.Protocols.Homie.Utilities;
@@ -26,8 +26,8 @@ namespace TestApp {
 
             // Consumers can share a single connection to the broker.
             var _clientConnection = new YahiTevuxClientConnection();
-            _clientConnection.Initialize();
-            _clientConnection.ConnectAndWait(channelOptions);
+            _clientConnection.Initialize(channelOptions);
+            _clientConnection.Connect();
 
             _log.Info("");
             _log.Info("====================================================================");
