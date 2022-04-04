@@ -18,7 +18,7 @@ public class YahiTevuxClientConnection : MqttClient, IClientDeviceConnection {
         _channelConnectionOptions = channelConnectionOptions;
 
         base.PublishReceived += (sender, e) => {
-            PublishReceived(this, new DevBot9.Protocols.Homie.PublishReceivedEventArgs(e.Topic, Encoding.UTF8.GetString(e.Message)));
+            PublishReceived(this, new PublishReceivedEventArgs(e.Topic, Encoding.UTF8.GetString(e.Message)));
         };
     }
 

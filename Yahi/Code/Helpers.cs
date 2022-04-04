@@ -17,47 +17,35 @@ public static class Helpers {
     }
 
     public static bool TryParseDouble(string stringToParse, out double result) {
-        var returnValue = false;
-
-        returnValue = double.TryParse(stringToParse, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
+        var returnValue = double.TryParse(stringToParse, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
 
         return returnValue;
     }
 
     public static bool TryParseInt(string stringToParse, out int result) {
-        var parseSucceeded = false;
-
-        parseSucceeded = int.TryParse(stringToParse, out result);
+        var parseSucceeded = int.TryParse(stringToParse, out result);
 
         return parseSucceeded;
     }
     public static bool ParseBool(string stringToParse) {
-        var returnValue = false;
-
-        returnValue = bool.Parse(stringToParse);
+        var returnValue = bool.Parse(stringToParse);
 
         return returnValue;
     }
     public static bool TryParseBool(string stringToParse, out bool result) {
-        var parseSucceeded = false;
-
-        parseSucceeded = bool.TryParse(stringToParse, out result);
+        var parseSucceeded = bool.TryParse(stringToParse, out result);
 
         return parseSucceeded;
     }
 
     public static DateTime ParseDateTime(string stringToParse) {
-        var returnValue = DateTime.UtcNow;
-
-        returnValue = DateTime.Parse(stringToParse);
+        var returnValue = DateTime.Parse(stringToParse);
 
         return returnValue;
     }
 
     public static bool TryParseDateTime(string stringToParse, out DateTime result) {
-        var parseSucceeded = false;
-
-        parseSucceeded = DateTime.TryParse(stringToParse, out result);
+        var parseSucceeded = DateTime.TryParse(stringToParse, out result);
 
         return parseSucceeded;
     }
