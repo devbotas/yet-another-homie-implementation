@@ -1,29 +1,29 @@
 ﻿using System.Diagnostics;
 using DevBot9.Protocols.Homie;
 
-namespace TestApp {
-    internal class DynamicConsumer {
-        private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
+namespace TestApp;
 
-        private ClientDevice _clientDevice;
+internal class DynamicConsumer {
+    private readonly NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
 
-        public DynamicConsumer() { }
+    private ClientDevice _clientDevice;
 
-        public void Initialize(IClientDeviceConnection brokerConnection, ClientDeviceMetadata deviceMetadata) {
-            _clientDevice = DeviceFactory.CreateClientDevice(deviceMetadata);
+    public DynamicConsumer() { }
 
-            for (var i = 0; i < _clientDevice.Nodes.Length; i++) {
-                Debug.Print($"Iterating over nodes. Currently: \"{_clientDevice.Nodes[i].Name}\" with {_clientDevice.Nodes[i].Properties.Length} properties.");
+    public void Initialize(IClientDeviceConnection brokerConnection, ClientDeviceMetadata deviceMetadata) {
+        _clientDevice = DeviceFactory.CreateClientDevice(deviceMetadata);
 
-                foreach (var property in _clientDevice.Nodes[i].Properties) {
-                    property.PropertyChanged += (sender, e) => {
-                        Debug.WriteLine($"Value of property \"{property.Name}\" changed to \"{property.RawValue}\".");
-                    };
-                }
+        for (var i = 0; i < _clientDevice.Nodes.Length; i++) {
+            Debug.Print($"Iterating over nodes. Currently: \"{_clientDevice.Nodes[i].Name}\" with {_clientDevice.Nodes[i].Properties.Length} properties.");
+
+            foreach (var property in _clientDevice.Nodes[i].Properties) {
+                property.PropertyChanged += (sender, e) => {
+                    Debug.WriteLine($"Value of property \"{property.Name}\" changed to \"{property.RawValue}\".");
+                };
             }
-
-            // Initializing all the Homie stuff.
-            _clientDevice.Initialize(brokerConnection);
         }
+
+        // Initializing all the Homie stuff.
+        _clientDevice.Initialize(brokerConnection);
     }
 }

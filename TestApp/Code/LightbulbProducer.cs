@@ -2,47 +2,47 @@
 using DevBot9.Protocols.Homie.Utilities;
 using Tevux.Protocols.Mqtt;
 
-namespace TestApp {
-    internal class LightbulbProducer {
-        private readonly NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
-        private readonly YahiTevuxHostConnection _broker = new YahiTevuxHostConnection();
+namespace TestApp;
 
-        private HostDevice _hostDevice;
-        private HostChoiceProperty _onOffSwitch;
-        private HostColorProperty _color;
-        private HostNumberProperty _intensity;
+internal class LightbulbProducer {
+    private readonly NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
+    private readonly YahiTevuxHostConnection _broker = new();
 
-        public LightbulbProducer() { }
+    private HostDevice _hostDevice;
+    private HostChoiceProperty _onOffSwitch;
+    private HostColorProperty _color;
+    private HostNumberProperty _intensity;
 
-        public void Initialize(ChannelConnectionOptions channelOptions) {
-            _hostDevice = DeviceFactory.CreateHostDevice("lightbulb", "Colorful lightbulb");
+    public LightbulbProducer() { }
 
-            #region General node
+    public void Initialize(ChannelConnectionOptions channelOptions) {
+        _hostDevice = DeviceFactory.CreateHostDevice("lightbulb", "Colorful lightbulb");
 
-            _hostDevice.UpdateNodeInfo("general", "General information and properties", "no-type");
+        #region General node
 
-            // I think properties are pretty much self-explanatory in this producer.
-            _color = _hostDevice.CreateHostColorProperty(PropertyType.Parameter, "general", "color", "Color", ColorFormat.Rgb);
-            _color.PropertyChanged += (sender, e) => {
-                _log.Info($"Color changed to {_color.Value.ToRgbString()}");
-            };
-            _onOffSwitch = _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, "general", "is-on", "Is on", new[] { "OFF", "ON" }, "OFF");
-            _onOffSwitch.PropertyChanged += (sender, e) => {
-                // Simulating some lamp behaviour.
-                if (_onOffSwitch.Value == "ON") {
-                    _intensity.Value = 50;
-                }
-                else {
-                    _intensity.Value = 0;
-                }
-            };
+        _hostDevice.UpdateNodeInfo("general", "General information and properties", "no-type");
 
-            _intensity = _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "general", "intensity", "Intensity", 0, "%");
+        // I think properties are pretty much self-explanatory in this producer.
+        _color = _hostDevice.CreateHostColorProperty(PropertyType.Parameter, "general", "color", "Color", ColorFormat.Rgb);
+        _color.PropertyChanged += (sender, e) => {
+            _log.Info($"Color changed to {_color.Value.ToRgbString()}");
+        };
+        _onOffSwitch = _hostDevice.CreateHostChoiceProperty(PropertyType.Parameter, "general", "is-on", "Is on", new[] { "OFF", "ON" }, "OFF");
+        _onOffSwitch.PropertyChanged += (sender, e) => {
+            // Simulating some lamp behaviour.
+            if (_onOffSwitch.Value == "ON") {
+                _intensity.Value = 50;
+            }
+            else {
+                _intensity.Value = 0;
+            }
+        };
 
-            #endregion
+        _intensity = _hostDevice.CreateHostNumberProperty(PropertyType.Parameter, "general", "intensity", "Intensity", 0, "%");
 
-            _broker.Initialize(channelOptions);
-            _hostDevice.Initialize(_broker);
-        }
+        #endregion
+
+        _broker.Initialize(channelOptions);
+        _hostDevice.Initialize(_broker);
     }
 }

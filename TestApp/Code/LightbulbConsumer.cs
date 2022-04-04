@@ -1,30 +1,30 @@
 ﻿using System;
 using DevBot9.Protocols.Homie;
 
-namespace TestApp {
-    internal class LightbulbConsumer {
-        private NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
+namespace TestApp;
 
-        private ClientDevice _clientDevice;
-        private ClientColorProperty _color;
+internal class LightbulbConsumer {
+    private readonly NLog.ILogger _log = NLog.LogManager.GetCurrentClassLogger();
 
-        public LightbulbConsumer() { }
+    private ClientDevice _clientDevice;
+    private ClientColorProperty _color;
 
-        public void Initialize(IClientDeviceConnection _brokerConnection) {
-            // Creating a air conditioner device.
-            _clientDevice = DeviceFactory.CreateClientDevice("lightbulb");
+    public LightbulbConsumer() { }
 
-            // Creating properties.          
-            _color = _clientDevice.CreateClientColorProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Parameter, NodeId = "general", PropertyId = "color", Format = "rgb", InitialValue = "0,0,0" });
-            _color.PropertyChanged += (sender, e) => {
-                if (_color.Value.RedValue > 0) {
-                    Console.WriteLine("Me no like red!");
-                    _color.Value = HomieColor.FromRgbString("0,128,128");
-                }
-            };
+    public void Initialize(IClientDeviceConnection _brokerConnection) {
+        // Creating a air conditioner device.
+        _clientDevice = DeviceFactory.CreateClientDevice("lightbulb");
 
-            // Initializing all the Homie stuff.
-            _clientDevice.Initialize(_brokerConnection);
-        }
+        // Creating properties.          
+        _color = _clientDevice.CreateClientColorProperty(new ClientPropertyMetadata { PropertyType = PropertyType.Parameter, NodeId = "general", PropertyId = "color", Format = "rgb", InitialValue = "0,0,0" });
+        _color.PropertyChanged += (sender, e) => {
+            if (_color.Value.RedValue > 0) {
+                Console.WriteLine("Me no like red!");
+                _color.Value = HomieColor.FromRgbString("0,128,128");
+            }
+        };
+
+        // Initializing all the Homie stuff.
+        _clientDevice.Initialize(_brokerConnection);
     }
 }
