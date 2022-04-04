@@ -1,5 +1,4 @@
-﻿#if !NANOFRAMEWORK_1_0
-using System;
+﻿using System;
 using System.Text;
 using Tevux.Protocols.Mqtt;
 
@@ -35,4 +34,3 @@ public class YahiTevuxClientConnection : MqttClient, IClientDeviceConnection {
         Subscribe(topic, QosLevel.AtLeastOnce);
     }
 }
-#endif

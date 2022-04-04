@@ -1,7 +1,4 @@
-﻿#if !NANOFRAMEWORK_1_0
-using System.Globalization;
-#endif
-
+﻿using System.Globalization;
 using System;
 using System.Text.RegularExpressions;
 
@@ -14,97 +11,54 @@ public static class Helpers {
     public static double ParseDouble(string stringToParse) {
         double returnValue;
 
-#if !NANOFRAMEWORK_1_0
         returnValue = double.Parse(stringToParse, CultureInfo.InvariantCulture);
-#else
-        returnValue = double.Parse(stringToParse);
-#endif
+
         return returnValue;
     }
 
     public static bool TryParseDouble(string stringToParse, out double result) {
         var returnValue = false;
 
-#if !NANOFRAMEWORK_1_0
         returnValue = double.TryParse(stringToParse, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
-#else
-        returnValue = double.TryParse(stringToParse, out result);
-#endif
+
         return returnValue;
     }
 
     public static bool TryParseInt(string stringToParse, out int result) {
         var parseSucceeded = false;
 
-#if !NANOFRAMEWORK_1_0
         parseSucceeded = int.TryParse(stringToParse, out result);
-#else
-        try {
-            result = int.Parse(stringToParse);
-            parseSucceeded = true;
-        }
-        catch (System.Exception) {
-            result = int.MinValue;
-        }
-#endif
+
         return parseSucceeded;
     }
     public static bool ParseBool(string stringToParse) {
         var returnValue = false;
 
-#if !NANOFRAMEWORK_1_0
         returnValue = bool.Parse(stringToParse);
-#else
-        if (stringToParse.ToLower() == bool.TrueString.ToLower()) { returnValue = true; }
-        if (stringToParse.ToLower() == bool.FalseString.ToLower()) { returnValue = false; }
-#endif
+
         return returnValue;
     }
     public static bool TryParseBool(string stringToParse, out bool result) {
         var parseSucceeded = false;
 
-#if !NANOFRAMEWORK_1_0
         parseSucceeded = bool.TryParse(stringToParse, out result);
-#else
-        if (stringToParse.ToLower() == bool.TrueString.ToLower()) {
-            result = true;
-            parseSucceeded = true;
-        }
-        else if (stringToParse.ToLower() == bool.FalseString.ToLower()) {
-            result = false;
-            parseSucceeded = true;
-        }
-        else {
-            result = false;
-            parseSucceeded = false;
-        }
-#endif
+
         return parseSucceeded;
     }
 
     public static DateTime ParseDateTime(string stringToParse) {
         var returnValue = DateTime.UtcNow;
 
-#if !NANOFRAMEWORK_1_0
         returnValue = DateTime.Parse(stringToParse);
-#else
-#warning Need to reimplement DateTime parsing
 
-#endif
         return returnValue;
     }
 
     public static bool TryParseDateTime(string stringToParse, out DateTime result) {
         var parseSucceeded = false;
 
-#if !NANOFRAMEWORK_1_0
         parseSucceeded = DateTime.TryParse(stringToParse, out result);
-#else
-#warning Need to reimplement DateTime parsing
-        parseSucceeded = true;
-        result = DateTime.UtcNow;
 
-#endif
         return parseSucceeded;
     }
 
@@ -224,12 +178,9 @@ public static class Helpers {
     public static string DoubleToString(double numberToConvert, string format = "") {
         string returnValue;
 
-#if !NANOFRAMEWORK_1_0
         if (format != "") { returnValue = numberToConvert.ToString(format, CultureInfo.InvariantCulture); }
         else { returnValue = numberToConvert.ToString(CultureInfo.InvariantCulture); }
-#else
-        returnValue = numberToConvert.ToString(format);
-#endif
+
         return returnValue;
     }
 

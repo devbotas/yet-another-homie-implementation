@@ -1,5 +1,4 @@
-﻿#if !NANOFRAMEWORK_1_0
-using System;
+﻿using System;
 using System.Text;
 using Tevux.Protocols.Mqtt;
 
@@ -10,4 +9,3 @@ public class YahiTevuxHostConnection : YahiTevuxClientConnection, IHostDeviceCon
         _mqttConnectionOptions.SetWill(willTopic, Encoding.UTF8.GetBytes(willPayload), QosLevel.AtLeastOnce, true);
     }
 }
-#endif
