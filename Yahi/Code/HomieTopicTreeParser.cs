@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace DevBot9.Protocols.Homie;
@@ -9,8 +10,8 @@ public class HomieTopicTreeParser {
     /// </summary>
     /// <param name="input">Each line should follow this format: {topic}:{value}. For example, homie/lightbulb/$homie:4.0.0</param>       
     public static ClientDeviceMetadata[] Parse(string[] input, string baseTopic, out string[] errorList, out string[] warningList) {
-        var tempErrorList = new ArrayList();
-        var tempWarningList = new ArrayList();
+        var tempErrorList = new List<string>();
+        var tempWarningList = new List<string>();
 
         // First, need to figure out ho many devices are in the input dump. Looking for $homie attributes.
         var foundDeviceIds = new ArrayList();
@@ -23,15 +24,15 @@ public class HomieTopicTreeParser {
         }
 
         // Grouping topics by device, so we don't have to reiterate over full list over and over again.
-        var sortedTopics = new Hashtable();
+        var sortedTopics = new Dictionary<string, List<string>>();
         foreach (var inputString in input) {
             for (var d = 0; d < foundDeviceIds.Count; d++) {
                 var deviceId = (string)foundDeviceIds[d];
                 // Adding a new device to hashtable, if it is not there yet.
-                if (sortedTopics.Contains(deviceId) == false) { sortedTopics.Add(deviceId, new ArrayList()); }
+                if (sortedTopics.ContainsKey(deviceId) == false) { sortedTopics.Add(deviceId, new List<string>()); }
 
                 // Adding a relevant topic for that device.
-                if (inputString.StartsWith($@"{baseTopic}/{deviceId}/")) { ((ArrayList)(sortedTopics[deviceId])).Add(inputString); }
+                if (inputString.StartsWith($@"{baseTopic}/{deviceId}/")) { sortedTopics[deviceId].Add(inputString); }
             }
         }
 
@@ -39,7 +40,7 @@ public class HomieTopicTreeParser {
         var goodDevices = new ArrayList();
         for (var d = 0; d < foundDeviceIds.Count; d++) {
             var candidateId = (string)foundDeviceIds[d];
-            var candidateTopics = (ArrayList)sortedTopics[candidateId];
+            var candidateTopics = sortedTopics[candidateId];
 
             if (ClientDeviceMetadata.TryParse(candidateTopics, baseTopic, candidateId, out var candidateDevice, ref tempErrorList, ref tempWarningList)) { goodDevices.Add(candidateDevice); }
         }

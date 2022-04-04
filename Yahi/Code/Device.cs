@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie;
@@ -46,7 +47,7 @@ public class Device : INotifyPropertyChanged, IDisposable {
     protected NLog.ILogger _log;
     protected string _baseTopic = "no-base-topic";
     protected ArrayList _properties = new();
-    protected Hashtable _topicHandlerMap = new();
+    protected Dictionary<string, List<Action<string>>> _topicHandlerMap = new();
     protected IBasicDeviceConnection _broker;
     private readonly ArrayList _subscriptionList = new();
 
@@ -70,9 +71,9 @@ public class Device : INotifyPropertyChanged, IDisposable {
     }
 
     private void HandleBrokerPublishReceived(object sender, PublishReceivedEventArgs e) {
-        if (_topicHandlerMap.Contains(e.Topic)) {
-            var zeList = (ArrayList)_topicHandlerMap[e.Topic];
-            foreach (ActionStringDelegate handler in zeList) {
+        if (_topicHandlerMap.ContainsKey(e.Topic)) {
+            var zeList = _topicHandlerMap[e.Topic];
+            foreach (var handler in zeList) {
                 handler(e.Payload);
             }
         }
@@ -88,12 +89,11 @@ public class Device : INotifyPropertyChanged, IDisposable {
 
     }
 
-
     internal virtual void InternalPropertyPublish(string propertyTopic, string value, bool isRetained = true) {
         InternalGeneralPublish($"{_baseTopic}/{DeviceId}/{propertyTopic}", value, isRetained);
     }
 
-    internal void InternalPropertySubscribe(string propertyTopic, ActionStringDelegate actionToTakeOnReceivedMessage) {
+    internal void InternalPropertySubscribe(string propertyTopic, Action<string> actionToTakeOnReceivedMessage) {
         InternalGeneralSubscribe($"{_baseTopic}/{DeviceId}/{propertyTopic}", actionToTakeOnReceivedMessage);
     }
 
@@ -101,15 +101,15 @@ public class Device : INotifyPropertyChanged, IDisposable {
         if (IsConnected) { _broker.Publish(topicId, value, 1, isRetained); }
     }
 
-    internal void InternalGeneralSubscribe(string topicId, ActionStringDelegate actionToTakeOnReceivedMessage) {
+    internal void InternalGeneralSubscribe(string topicId, Action<string> actionToTakeOnReceivedMessage) {
         var fullTopic = topicId;
 
         // Keeping a subscribtion topic list, because it is needed when (re)connecting to broker.
-        if (_topicHandlerMap.Contains(fullTopic) == false) {
-            _topicHandlerMap.Add(fullTopic, new ArrayList());
+        if (_topicHandlerMap.ContainsKey(fullTopic) == false) {
+            _topicHandlerMap.Add(fullTopic, new List<Action<string>>());
         }
 
-        ((ArrayList)_topicHandlerMap[fullTopic]).Add(actionToTakeOnReceivedMessage);
+        _topicHandlerMap[fullTopic].Add(actionToTakeOnReceivedMessage);
         _subscriptionList.Add(fullTopic);
 
         if (IsConnected) { _broker.Subscribe(fullTopic); }

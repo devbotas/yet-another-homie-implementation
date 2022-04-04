@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace DevBot9.Protocols.Homie;
@@ -22,10 +23,10 @@ public class ClientDeviceMetadata {
     /// <summary>
     /// Tries parsing a whole tree of a single device.
     /// </summary>
-    public static bool TryParse(ArrayList topicList, string baseTopic, string deviceId, out ClientDeviceMetadata parsedClientDeviceMetadata, ref ArrayList errorList, ref ArrayList warningList) {
+    public static bool TryParse(List<string> topicList, string baseTopic, string deviceId, out ClientDeviceMetadata parsedClientDeviceMetadata, ref List<string> errorList, ref List<string> warningList) {
         var isParsedWell = false;
         var candidateDevice = new ClientDeviceMetadata() { Id = deviceId };
-        var parsedTopicList = new ArrayList();
+        var parsedTopicList = new List<string>();
 
         // It will be reassigned on successful parsing.
         parsedClientDeviceMetadata = null;
@@ -55,7 +56,7 @@ public class ClientDeviceMetadata {
         return isParsedWell;
     }
 
-    private static bool TryParseAttributes(ref ArrayList unparsedTopicList, ref ArrayList parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref ArrayList errorList, ref ArrayList warningList) {
+    private static bool TryParseAttributes(ref List<string> unparsedTopicList, ref List<string> parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref List<string> errorList, ref List<string> warningList) {
         var isParseSuccessful = false;
 
         // Filtering out device attributes. We'll get nodes from them.
@@ -65,7 +66,7 @@ public class ClientDeviceMetadata {
         var isNodesReceived = false;
         var isStateReceived = false;
 
-        foreach (string inputString in unparsedTopicList) {
+        foreach (var inputString in unparsedTopicList) {
             var regexMatch = deviceAttributesRegex.Match(inputString);
             if (regexMatch.Success) {
                 var key = regexMatch.Groups[3].Value;
@@ -111,7 +112,7 @@ public class ClientDeviceMetadata {
 
         return isParseSuccessful;
     }
-    private static bool TryParseNodes(ref ArrayList unparsedTopicList, ref ArrayList parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref ArrayList errorList, ref ArrayList warningList) {
+    private static bool TryParseNodes(ref List<string> unparsedTopicList, ref List<string> parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref List<string> errorList, ref List<string> warningList) {
         var isParseSuccessful = true;
 
         var candidateNodeIds = ((string)candidateDevice.AllAttributes["$nodes"]).Split(',');
@@ -122,7 +123,7 @@ public class ClientDeviceMetadata {
 
             // Filtering out attributes for this node. We'll get properties from them.
             var nodeAttributesRegex = new Regex($@"^({baseTopic})\/({candidateDevice.Id})\/({candidateNode.Id})\/(\$[a-z0-9][a-z0-9-]+):(.+)$");
-            foreach (string inputString in unparsedTopicList) {
+            foreach (var inputString in unparsedTopicList) {
                 var regexMatch = nodeAttributesRegex.Match(inputString);
                 if (regexMatch.Success) {
                     var key = regexMatch.Groups[4].Value;
@@ -165,7 +166,7 @@ public class ClientDeviceMetadata {
 
         return isParseSuccessful;
     }
-    private static bool TryParseProperties(ref ArrayList unparsedTopicList, ref ArrayList parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref ArrayList errorList, ref ArrayList warningList) {
+    private static bool TryParseProperties(ref List<string> unparsedTopicList, ref List<string> parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref List<string> errorList, ref List<string> warningList) {
         var isParseSuccessful = false;
 
         for (var n = 0; n < candidateDevice.Nodes.Length; n++) {
@@ -187,7 +188,7 @@ public class ClientDeviceMetadata {
                 var isSettableReceived = false;
                 var isRetainedReceived = false;
 
-                foreach (string inputString in unparsedTopicList) {
+                foreach (var inputString in unparsedTopicList) {
                     var attributeMatch = attributeRegex.Match(inputString);
                     if (attributeMatch.Success) {
                         var key = attributeMatch.Groups[5].Value;
@@ -305,7 +306,7 @@ public class ClientDeviceMetadata {
 
         return isParseSuccessful;
     }
-    private static void TrimRottenBranches(ref ClientDeviceMetadata candidateDevice, ref ArrayList problemList, ref ArrayList warningList) {
+    private static void TrimRottenBranches(ref ClientDeviceMetadata candidateDevice, ref List<string> problemList, ref List<string> warningList) {
         var goodNodes = new ArrayList();
         var newNodesValue = "";
         var updateNeeded = false;

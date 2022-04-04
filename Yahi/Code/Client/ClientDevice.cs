@@ -26,26 +26,26 @@ public class ClientDevice : Device {
         }
 
         var homieTopic = $"{_baseTopic}/{DeviceId}/$homie";
-        ActionStringDelegate handlerForTopicHomie = delegate (string value) {
+        void handlerForTopicHomie(string value) {
             HomieVersion = value;
             RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(HomieVersion)));
-        };
+        }
         InternalGeneralSubscribe(homieTopic, handlerForTopicHomie);
 
         var nameTopic = $"{_baseTopic}/{DeviceId}/$name";
-        ActionStringDelegate handlerForTopicName = delegate (string value) {
+        void handlerForTopicName(string value) {
             Name = value;
             RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(Name)));
-        };
+        }
         InternalGeneralSubscribe(nameTopic, handlerForTopicName);
 
         var stateTopic = $"{_baseTopic}/{DeviceId}/$state";
-        ActionStringDelegate handlerForTopicState = delegate (string value) {
+        void handlerForTopicState(string value) {
             if (Helpers.TryParseHomieState(value, out var parsedState)) {
                 State = parsedState;
                 RaisePropertyChanged(this, new PropertyChangedEventArgs(nameof(State)));
             };
-        };
+        }
         InternalGeneralSubscribe(stateTopic, handlerForTopicState);
     }
 
