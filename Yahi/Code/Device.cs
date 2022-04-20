@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -46,10 +45,10 @@ public class Device : INotifyPropertyChanged, IDisposable {
 
     protected NLog.ILogger _log;
     protected string _baseTopic = "no-base-topic";
-    protected ArrayList _properties = new();
+    protected List<object> _properties = new();
     protected Dictionary<string, List<Action<string>>> _topicHandlerMap = new();
     protected IBasicDeviceConnection _broker;
-    private readonly ArrayList _subscriptionList = new();
+    private readonly List<string> _subscriptionList = new();
 
     protected Device() {
         // Just making public constructor unavailable to user, as this class should not be consumed directly.
@@ -81,9 +80,9 @@ public class Device : INotifyPropertyChanged, IDisposable {
 
     private void HandleBrokerConnected(object sender, EventArgs e) {
         // All subscribtions were dropped during disconnect event. Resubscribing.
-        var clonedSubsribtionTable = (ArrayList)_subscriptionList.Clone();
+        var clonedSubsribtionTable = new List<string>(_subscriptionList);
         _log.Info($"(Re)subscribing to {clonedSubsribtionTable.Count} topic(s).");
-        foreach (string topic in clonedSubsribtionTable) {
+        foreach (var topic in clonedSubsribtionTable) {
             _broker.Subscribe(topic);
         }
 

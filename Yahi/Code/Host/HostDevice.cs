@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace DevBot9.Protocols.Homie;
 
@@ -20,10 +20,10 @@ public class HostDevice : Device {
 
         _broker.Connected += (sender, e) => {
             // Need to republish all relevant topics, because broker may not have them retained (for example, when broker boots for the first time).
-            var clonedPublishTable = (Hashtable)_publishedTopics.Clone();
+            var clonedPublishTable = new Dictionary<string, string>(_publishedTopics);
             _log.Info($"{DeviceId}: Publishing all the the cached topics, of which there are: {clonedPublishTable.Count}.");
-            foreach (string key in clonedPublishTable.Keys) {
-                _broker.Publish(key, (string)clonedPublishTable[key], 1, true);
+            foreach (var key in clonedPublishTable.Keys) {
+                _broker.Publish(key, clonedPublishTable[key], 1, true);
             }
 
             // Publishing state at the very end.
@@ -41,7 +41,7 @@ public class HostDevice : Device {
 
         // Building node subtree.
         var nodesList = "";
-        foreach (NodeInfo node in _nodes) {
+        foreach (var node in _nodes) {
             InternalPropertyPublish($"{node.Id}/$name", node.Name);
             InternalPropertyPublish($"{node.Id}/$type", node.Type);
             InternalPropertyPublish($"{node.Id}/$properties", node.Properties);
@@ -80,7 +80,7 @@ public class HostDevice : Device {
         // Trying to find if that's an existing node.
         NodeInfo nodeToUpdate = null;
         for (var i = 0; i < _nodes.Count; i++) {
-            var currentNode = (NodeInfo)_nodes[i];
+            var currentNode = _nodes[i];
             if (currentNode.Id == nodeId) { nodeToUpdate = currentNode; }
         }
 
@@ -179,8 +179,8 @@ public class HostDevice : Device {
 
     #region Private stuff
 
-    private readonly ArrayList _nodes = new();
-    private readonly Hashtable _publishedTopics = new();
+    private readonly List<NodeInfo> _nodes = new();
+    private readonly Dictionary<string, string> _publishedTopics = new();
     private readonly string _willTopic = "";
     private readonly string _willPayload = "";
     internal HostDevice(string baseTopic, string id, string friendlyName = "") {
@@ -197,7 +197,7 @@ public class HostDevice : Device {
 
         if (isRetained) {
             // All the other topics are cached, because those will be (re)published on broker connection event.
-            if (_publishedTopics.Contains(fullTopicId) == false) {
+            if (_publishedTopics.ContainsKey(fullTopicId) == false) {
                 _publishedTopics.Add(fullTopicId, value);
             }
             else {
@@ -212,7 +212,7 @@ public class HostDevice : Device {
         // Trying to find if that's an existing node.
         NodeInfo nodeToUpdate = null;
         for (var i = 0; i < _nodes.Count; i++) {
-            var currentNode = (NodeInfo)_nodes[i];
+            var currentNode = _nodes[i];
             if (currentNode.Id == nodeId) { nodeToUpdate = currentNode; }
         }
 

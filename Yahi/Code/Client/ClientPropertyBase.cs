@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie;
@@ -80,7 +81,7 @@ public class ClientPropertyBase : INotifyPropertyChanged {
     /// <summary>
     /// Can be anything that help developer to work with Homie properties. It is not defined by Homie convention at all.
     /// </summary>
-    public Hashtable Tags { get; protected set; } = new Hashtable();
+    public Dictionary<string, string> Tags { get; protected set; } = new();
 
     private string _name = "";
     private DataType _dataType = DataType.String;

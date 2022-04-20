@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -14,7 +13,7 @@ public class ClientDeviceMetadata {
     public string NameAttribute { get; internal set; } = "";
     public string StateAttribute { get; internal set; } = "";
     public ClientNodeMetadata[] Nodes { get; internal set; }
-    public Hashtable AllAttributes { get; internal set; } = new Hashtable();
+    public Dictionary<string, string> AllAttributes { get; internal set; } = new();
 
     internal ClientDeviceMetadata() {
         // Making the constructor inaccessible for public use.
@@ -57,8 +56,6 @@ public class ClientDeviceMetadata {
     }
 
     private static bool TryParseAttributes(ref List<string> unparsedTopicList, ref List<string> parsedTopicList, string baseTopic, ref ClientDeviceMetadata candidateDevice, ref List<string> errorList, ref List<string> warningList) {
-        var isParseSuccessful = false;
-
         // Filtering out device attributes. We'll get nodes from them.
         var deviceAttributesRegex = new Regex($@"^({baseTopic})\/({candidateDevice.Id})\/(\$[a-z0-9][a-z0-9-]+):(.+)$");
         var isHomieReceived = false;
@@ -99,6 +96,7 @@ public class ClientDeviceMetadata {
 
         var minimumDeviceSetReceived = isHomieReceived & isDeviceNameReceived & isNodesReceived & isStateReceived;
 
+        bool isParseSuccessful;
         if (minimumDeviceSetReceived) {
             isParseSuccessful = true;
         }
@@ -116,7 +114,7 @@ public class ClientDeviceMetadata {
         var isParseSuccessful = true;
 
         var candidateNodeIds = ((string)candidateDevice.AllAttributes["$nodes"]).Split(',');
-        var goodNodes = new ArrayList();
+        var goodNodes = new List<ClientNodeMetadata>();
 
         for (var n = 0; n < candidateNodeIds.Length; n++) {
             var candidateNode = new ClientNodeMetadata() { Id = candidateNodeIds[n] };
@@ -146,7 +144,7 @@ public class ClientDeviceMetadata {
             }
 
             // Figuring out properties we have for this node.
-            if (candidateNode.AllAttributes.Contains("$properties")) {
+            if (candidateNode.AllAttributes.ContainsKey("$properties")) {
                 goodNodes.Add(candidateNode);
             }
             else {
@@ -161,7 +159,7 @@ public class ClientDeviceMetadata {
         // Converting local temporary lists to final arrays and returning.
         candidateDevice.Nodes = new ClientNodeMetadata[goodNodes.Count];
         for (var i = 0; i < goodNodes.Count; i++) {
-            candidateDevice.Nodes[i] = (ClientNodeMetadata)goodNodes[i];
+            candidateDevice.Nodes[i] = goodNodes[i];
         }
 
         return isParseSuccessful;
@@ -171,7 +169,7 @@ public class ClientDeviceMetadata {
 
         for (var n = 0; n < candidateDevice.Nodes.Length; n++) {
             var candidatePropertyIds = ((string)candidateDevice.Nodes[n].AllAttributes["$properties"]).Split(',');
-            var goodProperties = new ArrayList();
+            var goodProperties = new List<ClientPropertyMetadata>();
 
             for (var p = 0; p < candidatePropertyIds.Length; p++) {
                 var candidateProperty = new ClientPropertyMetadata() { NodeId = candidateDevice.Nodes[n].Id, PropertyId = candidatePropertyIds[p] };
@@ -270,8 +268,8 @@ public class ClientDeviceMetadata {
 
                 // Validating by property data type, because rules are very different for each of those.
                 if (isOk) {
-                    var tempErrorList = new ArrayList();
-                    var tempWarningList = new ArrayList();
+                    var tempErrorList = new List<string>();
+                    var tempWarningList = new List<string>();
 
                     // ValidateAndFix method does not know anythin about device it is parsing, thus doing some wrapping around error and warning lists (because I want device info in those).
                     isOk = candidateProperty.ValidateAndFix(ref tempErrorList, ref tempWarningList);
@@ -293,7 +291,7 @@ public class ClientDeviceMetadata {
             // Converting local temporary property lists to final arrays.
             candidateDevice.Nodes[n].Properties = new ClientPropertyMetadata[goodProperties.Count];
             for (var i = 0; i < goodProperties.Count; i++) {
-                candidateDevice.Nodes[n].Properties[i] = (ClientPropertyMetadata)goodProperties[i];
+                candidateDevice.Nodes[n].Properties[i] = goodProperties[i];
             }
         }
 
@@ -307,7 +305,7 @@ public class ClientDeviceMetadata {
         return isParseSuccessful;
     }
     private static void TrimRottenBranches(ref ClientDeviceMetadata candidateDevice, ref List<string> problemList, ref List<string> warningList) {
-        var goodNodes = new ArrayList();
+        var goodNodes = new List<ClientNodeMetadata>();
         var newNodesValue = "";
         var updateNeeded = false;
 
@@ -336,9 +334,9 @@ public class ClientDeviceMetadata {
         if (goodNodes.Count > 0) {
             var shouldBeThatManyNodes = ((string)candidateDevice.AllAttributes["$nodes"]).Split(',').Length;
             if (goodNodes.Count != shouldBeThatManyNodes) {
-                newNodesValue = ((ClientNodeMetadata)goodNodes[0]).Id;
+                newNodesValue = goodNodes[0].Id;
                 for (var i = 1; i < goodNodes.Count; i++) {
-                    newNodesValue += "," + ((ClientNodeMetadata)goodNodes[i]).Id;
+                    newNodesValue += "," + goodNodes[i].Id;
                 }
                 updateNeeded = true;
             }
@@ -352,7 +350,7 @@ public class ClientDeviceMetadata {
             candidateDevice.AllAttributes["$nodes"] = newNodesValue;
             candidateDevice.Nodes = new ClientNodeMetadata[goodNodes.Count];
             for (var i = 0; i < goodNodes.Count; i++) {
-                candidateDevice.Nodes[i] = (ClientNodeMetadata)goodNodes[i];
+                candidateDevice.Nodes[i] = goodNodes[i];
             }
 
             warningList.Add($"Device {candidateDevice.Id} has been trimmed. Values of the fields will not be identical to what's on the broker topics!");

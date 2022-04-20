@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 
 namespace DevBot9.Protocols.Homie;
 
@@ -9,7 +9,7 @@ public class ClientPropertyMetadata {
     public string Name { get; set; } = "no-name";
     public DataType DataType { get; set; } = DataType.Blank;
     public string Format { get; set; } = "";
-    public Hashtable Tags { get; } = new Hashtable();
+    public Dictionary<string, string> Tags { get; } = new();
     public string Unit { get; set; } = "";
     public string InitialValue { get; set; } = "";
 
@@ -17,7 +17,7 @@ public class ClientPropertyMetadata {
         return PropertyId + ":" + InitialValue;
     }
 
-    public bool ValidateAndFix(ref ArrayList errorList, ref ArrayList warningList) {
+    public bool ValidateAndFix(ref List<string> errorList, ref List<string> warningList) {
         var isOk = true;
 
         if ((PropertyType == PropertyType.Command) && (InitialValue != "")) {

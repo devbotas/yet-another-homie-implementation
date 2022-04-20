@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using DevBot9.Protocols.Homie;
 using NUnit.Framework;
 
@@ -26,8 +26,8 @@ class ParserTests {
         _property.PropertyType = PropertyType.Command;
         _property.DataType = DataType.String;
         _property.InitialValue = "wrong-value";
-        var errorList = new ArrayList();
-        var warningList = new ArrayList();
+        var errorList = new List<string>();
+        var warningList = new List<string>();
         var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
         Assert.IsTrue(validationResult);
         Assert.IsEmpty(_property.InitialValue);
@@ -39,16 +39,16 @@ class ParserTests {
     public void CheckBadColorFormat() {
         _property.DataType = DataType.Color;
         _property.InitialValue = "0,0,0";
-        var errorList = new ArrayList();
-        var warningList = new ArrayList();
+        var errorList = new List<string>();
+        var warningList = new List<string>();
         var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
         Assert.IsFalse(validationResult);
         Assert.NotZero(errorList.Count);
 
 
         _property.Format = "bbd";
-        errorList = new ArrayList();
-        warningList = new ArrayList();
+        errorList = new List<string>();
+        warningList = new List<string>();
         validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
         Assert.IsFalse(validationResult);
         Assert.NotZero(errorList.Count);
@@ -59,8 +59,8 @@ class ParserTests {
         _property.DataType = DataType.Color;
         _property.Format = "rgb";
         _property.InitialValue = "256,-1,255";
-        var errorList = new ArrayList();
-        var warningList = new ArrayList();
+        var errorList = new List<string>();
+        var warningList = new List<string>();
         var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
         Assert.IsFalse(validationResult);
         Assert.NotZero(errorList.Count);
@@ -69,8 +69,8 @@ class ParserTests {
         _property.DataType = DataType.Color;
         _property.Format = "hsv";
         _property.InitialValue = "361,1,99";
-        errorList = new ArrayList();
-        warningList = new ArrayList();
+        errorList = new List<string>();
+        warningList = new List<string>();
         validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
         Assert.IsFalse(validationResult);
         Assert.NotZero(errorList.Count);
@@ -83,8 +83,8 @@ class ParserTests {
         foreach (var value in CommonStuff.BadFloatValues) {
             _property.InitialValue = value;
 
-            var errorList = new ArrayList();
-            var warningList = new ArrayList();
+            var errorList = new List<string>();
+            var warningList = new List<string>();
             var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
             Assert.IsFalse(validationResult, $"Ooops, for initial value of {value} this test should fail!");
             Assert.NotZero(errorList.Count);
@@ -98,8 +98,8 @@ class ParserTests {
         foreach (var value in CommonStuff.BadFloatValues) {
             _property.InitialValue = value;
 
-            var errorList = new ArrayList();
-            var warningList = new ArrayList();
+            var errorList = new List<string>();
+            var warningList = new List<string>();
             var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
             Assert.IsFalse(validationResult, $"Ooops, for initial value of {value} this test should fail!");
             Assert.NotZero(errorList.Count);
@@ -108,8 +108,8 @@ class ParserTests {
         foreach (var value in CommonStuff.GoodFloatValues) {
             _property.InitialValue = value;
 
-            var errorList = new ArrayList();
-            var warningList = new ArrayList();
+            var errorList = new List<string>();
+            var warningList = new List<string>();
             var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
             Assert.IsFalse(validationResult, $"Ooops, for initial value of {value} this test should fail!");
             Assert.NotZero(errorList.Count);
@@ -120,8 +120,8 @@ class ParserTests {
     public void ConvertIntegerToFloat() {
         _property.DataType = DataType.Integer;
         _property.InitialValue = "1";
-        var errorList = new ArrayList();
-        var warningList = new ArrayList();
+        var errorList = new List<string>();
+        var warningList = new List<string>();
         var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
         Assert.IsTrue(validationResult);
         Assert.AreEqual(_property.DataType, DataType.Float);
@@ -132,8 +132,8 @@ class ParserTests {
         _property.DataType = DataType.Enum;
         _property.Format = "bad-format";
         _property.InitialValue = "bad-format";
-        var errorList = new ArrayList();
-        var warningList = new ArrayList();
+        var errorList = new List<string>();
+        var warningList = new List<string>();
         var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
         Assert.IsFalse(validationResult);
         Assert.NotZero(errorList.Count);
@@ -144,8 +144,8 @@ class ParserTests {
         _property.DataType = DataType.Enum;
         _property.Format = "one,two";
         _property.InitialValue = "three";
-        var errorList = new ArrayList();
-        var warningList = new ArrayList();
+        var errorList = new List<string>();
+        var warningList = new List<string>();
         var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
         Assert.IsFalse(validationResult);
         Assert.NotZero(errorList.Count);
@@ -155,8 +155,8 @@ class ParserTests {
     public void ConvertBooleanToEnum() {
         _property.DataType = DataType.Boolean;
         _property.InitialValue = "true";
-        var errorList = new ArrayList();
-        var warningList = new ArrayList();
+        var errorList = new List<string>();
+        var warningList = new List<string>();
         var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
         Assert.IsTrue(validationResult);
         Assert.AreEqual(_property.DataType, DataType.Enum);
@@ -170,8 +170,8 @@ class ParserTests {
         foreach (var value in CommonStuff.BadDateTimeValues) {
             _property.InitialValue = value;
 
-            var errorList = new ArrayList();
-            var warningList = new ArrayList();
+            var errorList = new List<string>();
+            var warningList = new List<string>();
             var validationResult = _property.ValidateAndFix(ref errorList, ref warningList);
             Assert.IsFalse(validationResult, $"Ooops, for initial value of {value} this test should fail!");
             Assert.NotZero(errorList.Count);

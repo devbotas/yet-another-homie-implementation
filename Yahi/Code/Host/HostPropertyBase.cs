@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie;
@@ -26,7 +26,7 @@ public class HostPropertyBase : INotifyPropertyChanged {
     protected readonly bool _isSettableAttribute;
     protected readonly bool _isRetainedAttribute;
     protected readonly string _unitAttribute;
-    protected readonly Hashtable _tags = new(); // <-- Can be anything that help developer to work with Homie properties. It is not defined by Homie convention at all.
+    protected readonly Dictionary<string, string> _tags = new(); // <-- Can be anything that help developer to work with Homie properties. It is not defined by Homie convention at all.
 
 
     protected HostPropertyBase(PropertyType propertyType, string propertyId, string friendlyName, DataType dataType, string format, string unit) {

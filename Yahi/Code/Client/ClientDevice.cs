@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace DevBot9.Protocols.Homie;
@@ -197,8 +197,8 @@ public class ClientDevice : Device {
     }
 
     private void CheckForValidityAndThrowIfSomethingIsWrong(ClientPropertyMetadata creationOptions) {
-        var errorList = new ArrayList();
-        var warningList = new ArrayList();
+        var errorList = new List<string>();
+        var warningList = new List<string>();
 
         var isMetadataOk = creationOptions.ValidateAndFix(ref errorList, ref warningList);
 

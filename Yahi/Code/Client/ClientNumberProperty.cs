@@ -39,7 +39,7 @@ public class ClientNumberProperty : ClientPropertyBase {
             case PropertyType.Parameter:
             case PropertyType.Command:
                 var formatString = "";
-                if (Tags.Contains("Precision")) { formatString = "F" + (string)Tags["Precision"]; }
+                if (Tags.ContainsKey("Precision")) { formatString = "F" + Tags["Precision"]; }
 
                 _rawValue = Helpers.DoubleToString(valueToSet, formatString);
 

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 
 namespace DevBot9.Protocols.Homie;
 
@@ -10,7 +10,7 @@ public class ClientNodeMetadata {
     public string NameAttribute { get; internal set; } = "";
     public string TypeAttribute { get; internal set; } = "";
     public ClientPropertyMetadata[] Properties { get; internal set; }
-    public Hashtable AllAttributes { get; internal set; } = new Hashtable();
+    public Dictionary<string, string> AllAttributes { get; internal set; } = new();
     public override string ToString() {
         return Id;
     }
