@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace DevBot9.Protocols.Homie;
+﻿namespace DevBot9.Protocols.Homie;
 
 /// <summary>
 /// Properties of a Node. Yeah, very useful comment, I know.

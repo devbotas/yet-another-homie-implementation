@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-
-namespace DevBot9.Protocols.Homie;
+﻿namespace DevBot9.Protocols.Homie;
 
 /// <summary>
 /// This is a base class for the Host and Client Device class implementation. One should never use it directly (not really even possible since the constructor is not public).

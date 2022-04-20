@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
-namespace DevBot9.Protocols.Homie;
+﻿namespace DevBot9.Protocols.Homie;
 
 /// <summary>
 /// This class is useful when parsing MQTT topics trying to figure out if those topics are actually correct. If they are, then this class is later used to create a <see cref="ClientDevice"/>.

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
-
-namespace DevBot9.Protocols.Homie;
+﻿namespace DevBot9.Protocols.Homie;
 
 /// <summary>
 /// This static class is used to create Client and Host Devices using a factory patttern.

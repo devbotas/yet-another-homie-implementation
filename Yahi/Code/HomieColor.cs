@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DevBot9.Protocols.Homie;
+﻿namespace DevBot9.Protocols.Homie;
 
 /// <summary>
 /// This class provides Homie Color property implementation. It can transparently convert between HSV and RGB types of data.

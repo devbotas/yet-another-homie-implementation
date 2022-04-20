@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DevBot9.Protocols.Homie;
+﻿namespace DevBot9.Protocols.Homie;
 
 /// <summary>
 /// A property of type String, as defined by the Homie convention.

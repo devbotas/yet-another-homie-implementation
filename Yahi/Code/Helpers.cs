@@ -1,6 +1,4 @@
 ﻿using System.Globalization;
-using System;
-using System.Text.RegularExpressions;
 
 namespace DevBot9.Protocols.Homie;
 

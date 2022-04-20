@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace DevBot9.Protocols.Homie;
+﻿namespace DevBot9.Protocols.Homie;
 
 public class ClientPropertyMetadata {
     public string NodeId { get; set; } = "no-id";

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
-namespace DevBot9.Protocols.Homie;
+﻿namespace DevBot9.Protocols.Homie;
 
 public class HomieTopicTreeParser {
     /// <summary>
