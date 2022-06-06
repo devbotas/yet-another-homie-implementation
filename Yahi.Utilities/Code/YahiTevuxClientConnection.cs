@@ -33,4 +33,12 @@ public class YahiTevuxClientConnection : MqttClient, IClientDeviceConnection {
     public void Subscribe(string topic) {
         Subscribe(topic, QosLevel.AtLeastOnce);
     }
+    public void Subscribe(string topic, bool isConfirmationRequired = false) {
+        if (isConfirmationRequired) {
+            SubscribeAndWait(topic, QosLevel.AtLeastOnce);
+        }
+        else {
+            Subscribe(topic, QosLevel.AtLeastOnce);
+        }
+    }
 }
