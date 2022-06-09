@@ -5,6 +5,7 @@ using Tevux.Protocols.Mqtt;
 namespace DevBot9.Protocols.Homie.Utilities;
 
 public class YahiTevuxClientConnection : MqttClient, IClientDeviceConnection {
+    private bool _isInitialized = false;
     private ChannelConnectionOptions _channelConnectionOptions = new();
     protected MqttConnectionOptions _mqttConnectionOptions = new();
 
@@ -13,13 +14,17 @@ public class YahiTevuxClientConnection : MqttClient, IClientDeviceConnection {
     public new EventHandler Disconnected;
 
     public void Initialize(ChannelConnectionOptions channelConnectionOptions) {
-        Initialize();
-
         _channelConnectionOptions = channelConnectionOptions;
+
+        if (_isInitialized) { return; }
+
+        Initialize();
 
         base.PublishReceived += (sender, e) => {
             PublishReceived(this, new PublishReceivedEventArgs(e.Topic, Encoding.UTF8.GetString(e.Message)));
         };
+
+        _isInitialized = true;
     }
 
     public void Connect() {

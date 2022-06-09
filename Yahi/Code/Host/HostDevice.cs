@@ -12,21 +12,13 @@ public class HostDevice : Device {
     /// <param name="publishToTopicDelegate">This is a mandatory publishing delegate. Wihout it, Host Device will not work.</param>
     /// <param name="subscribeToTopicDelegate">This is a mandatory subscription delegate. Wihout it, Host Device will not work.</param>
     public void Initialize(IHostDeviceConnection broker) {
+        if (_isDisposed) { return; }
+        if (_isInitialized) { return; }
+
         broker.SetWill(_willTopic, _willPayload);
-        base.Initialize(broker, NLog.LogManager.GetCurrentClassLogger());
+        Initialize(broker, NLog.LogManager.GetCurrentClassLogger());
 
-        _broker.Connected += (sender, e) => {
-            // Need to republish all relevant topics, because broker may not have them retained (for example, when broker boots for the first time).
-            var clonedPublishTable = new Dictionary<string, string>(_publishedTopics);
-            _log.Info($"{DeviceId}: Publishing all the the cached topics, of which there are: {clonedPublishTable.Count}.");
-            foreach (var key in clonedPublishTable.Keys) {
-                _broker.Publish(key, clonedPublishTable[key], 1, true);
-            }
-
-            // Publishing state at the very end.
-            _log.Info($"{DeviceId}: Restoring state to {State}.");
-            InternalPropertyPublish("$state", State.ToHomiePayload());
-        };
+        _broker.Connected += HandleBrokerConnectedEvent;
 
         // One can pretty much do anything while in "init" state.
         SetState(HomieState.Init);
@@ -58,6 +50,8 @@ public class HostDevice : Device {
         SetState(HomieState.Ready);
 
         _broker.Connect();
+
+        _isInitialized = true;
     }
 
     /// <summary>
@@ -176,6 +170,8 @@ public class HostDevice : Device {
 
     #region Private stuff
 
+    private bool _isInitialized = false;
+    private bool _isDisposed = false;
     private readonly List<NodeInfo> _nodes = new();
     private readonly Dictionary<string, string> _publishedTopics = new();
     private readonly string _willTopic = "";
@@ -190,6 +186,8 @@ public class HostDevice : Device {
     }
 
     internal override void InternalPropertyPublish(string propertyTopic, string value, bool isRetained = true) {
+        if (_isDisposed) { return; }
+
         var fullTopicId = $"{_baseTopic}/{DeviceId}/{propertyTopic}";
 
         if (isRetained) {
@@ -203,6 +201,36 @@ public class HostDevice : Device {
         }
 
         InternalGeneralPublish(fullTopicId, value);
+    }
+
+    protected override void Dispose(bool isCalledManually) {
+        if (_isDisposed == false) {
+            if (isCalledManually) {
+                // Dispose managed resources here.
+                _broker.Connected -= HandleBrokerConnectedEvent;
+            }
+
+            // Free unmanaged resources here and set large fields to null.
+
+            _isDisposed = true;
+        }
+
+        base.Dispose(isCalledManually);
+    }
+
+    private void HandleBrokerConnectedEvent(object sender, EventArgs e) {
+        if (_isDisposed) { return; }
+
+        // Need to republish all relevant topics, because broker may not have them retained (for example, when broker boots for the first time).
+        var clonedPublishTable = new Dictionary<string, string>(_publishedTopics);
+        _log.Info($"{DeviceId}: Publishing all the the cached topics, of which there are: {clonedPublishTable.Count}.");
+        foreach (var key in clonedPublishTable.Keys) {
+            _broker.Publish(key, clonedPublishTable[key], 1, true);
+        }
+
+        // Publishing state at the very end.
+        _log.Info($"{DeviceId}: Restoring state to {State}.");
+        InternalPropertyPublish("$state", State.ToHomiePayload());
     }
 
     private void UpdateNodePropertyMap(string nodeId, string propertyId) {

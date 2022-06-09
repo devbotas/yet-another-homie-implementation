@@ -45,27 +45,49 @@ public class Device : INotifyPropertyChanged, IDisposable {
     protected Dictionary<string, List<Action<string>>> _topicHandlerMap = new();
     protected IBasicDeviceConnection _broker;
     private readonly List<string> _subscriptionList = new();
+    private bool _isInitialized = false;
+    private bool _isDisposed = false;
 
     protected Device() {
         // Just making public constructor unavailable to user, as this class should not be consumed directly.
     }
 
-    protected void Initialize(IBasicDeviceConnection broker, NLog.ILogger log) {
+    protected void Initialize(in IBasicDeviceConnection broker, in NLog.ILogger log) {
+        if (_isDisposed) { return; }
+        if (_isInitialized) { return; }
+
         _log = log;
 
         _broker = broker;
         _broker.PublishReceived += HandleBrokerPublishReceived;
         _broker.Connected += HandleBrokerConnected;
+
+        _isInitialized = true;
     }
 
     public void Dispose() {
-        if (_broker == null) { return; }
+        // A good article explaining how to implement Dispose. https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-        _broker.PublishReceived -= HandleBrokerPublishReceived;
-        _broker.Connected -= HandleBrokerConnected;
+    protected virtual void Dispose(bool isCalledManually) {
+        if (_isDisposed == false) {
+            if (isCalledManually) {
+                // Dispose managed resources here.
+                _broker.PublishReceived -= HandleBrokerPublishReceived;
+                _broker.Connected -= HandleBrokerConnected;
+            }
+
+            // Free unmanaged resources here and set large fields to null.
+
+            _isDisposed = true;
+        }
     }
 
     private void HandleBrokerPublishReceived(object sender, PublishReceivedEventArgs e) {
+        if (_isDisposed) { return; }
+
         if (_topicHandlerMap.ContainsKey(e.Topic)) {
             var zeList = _topicHandlerMap[e.Topic];
             foreach (var handler in zeList) {
@@ -75,13 +97,14 @@ public class Device : INotifyPropertyChanged, IDisposable {
     }
 
     private void HandleBrokerConnected(object sender, EventArgs e) {
+        if (_isDisposed) { return; }
+
         // All subscribtions were dropped during disconnect event. Resubscribing.
         var clonedSubsribtionTable = new List<string>(_subscriptionList);
         _log.Info($"(Re)subscribing to {clonedSubsribtionTable.Count} topic(s).");
         foreach (var topic in clonedSubsribtionTable) {
             _broker.Subscribe(topic);
         }
-
     }
 
     internal virtual void InternalPropertyPublish(string propertyTopic, string value, bool isRetained = true) {
@@ -93,10 +116,15 @@ public class Device : INotifyPropertyChanged, IDisposable {
     }
 
     internal void InternalGeneralPublish(string topicId, string value, bool isRetained = true) {
-        if (IsConnected) { _broker.Publish(topicId, value, 1, isRetained); }
+        if (_isDisposed) { return; }
+        if (IsConnected == false) { return; }
+
+        _broker.Publish(topicId, value, 1, isRetained);
     }
 
     internal void InternalGeneralSubscribe(string topicId, Action<string> actionToTakeOnReceivedMessage) {
+        if (_isDisposed) { return; }
+
         var fullTopic = topicId;
 
         // Keeping a subscribtion topic list, because it is needed when (re)connecting to broker.

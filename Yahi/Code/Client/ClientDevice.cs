@@ -14,7 +14,10 @@ public class ClientDevice : Device {
     /// Initializes the entire Client Device tree: actually creates internal property variables, subscribes to topics and so on. This method must be called, or otherwise entire Client Device tree will not work.
     /// </summary>
     public void Initialize(IClientDeviceConnection broker) {
-        base.Initialize(broker, NLog.LogManager.GetCurrentClassLogger());
+        if (_isDisposed) { return; }
+        if (_isInitialized) { return; }
+
+        Initialize(broker, NLog.LogManager.GetCurrentClassLogger());
 
         // Initializing properties. They will start using broker immediatelly.
         foreach (ClientPropertyBase property in _properties) {
@@ -43,6 +46,8 @@ public class ClientDevice : Device {
             };
         }
         InternalGeneralSubscribe(stateTopic, handlerForTopicState);
+
+        _isInitialized = true;
     }
 
     /// <summary>
@@ -122,6 +127,8 @@ public class ClientDevice : Device {
     #endregion
 
     #region Private stuff
+    private bool _isInitialized = false;
+    private bool _isDisposed = false;
 
     internal ClientDevice(string baseTopic, string id) {
         _baseTopic = baseTopic;
@@ -190,6 +197,20 @@ public class ClientDevice : Device {
                 }
             }
         }
+    }
+
+    protected override void Dispose(bool isCalledManually) {
+        if (_isDisposed == false) {
+            if (isCalledManually) {
+                // Dispose managed resources here.
+            }
+
+            // Free unmanaged resources here and set large fields to null.
+
+            _isDisposed = true;
+        }
+
+        base.Dispose(isCalledManually);
     }
 
     private void CheckForValidityAndThrowIfSomethingIsWrong(ClientPropertyMetadata creationOptions) {
