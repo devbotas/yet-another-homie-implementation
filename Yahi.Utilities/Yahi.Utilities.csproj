@@ -37,7 +37,6 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\TevuxTechnologies\paho.mqtt.m2mqtt\M2Mqtt\M2Mqtt.csproj" />
 		<ProjectReference Include="..\Yahi\Yahi.csproj" />
 	</ItemGroup>
 </Project>
