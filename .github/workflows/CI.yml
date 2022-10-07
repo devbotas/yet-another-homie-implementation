@@ -15,15 +15,16 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.5
 
-
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
 
     - name: Build Yahi
-      run: dotnet build Yahi.sln --configuration Release
+      run: dotnet build Yahi\Yahi.csproj --configuration Release
+
+    - name: Build Yahi Utilities 
+      run: dotnet build Yahi.Utilities\Yahi.Utilities.csproj --configuration Release
       
     - name: Publish to Nuget.org
       run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
