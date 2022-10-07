@@ -17,7 +17,7 @@ public class ClientDeviceMetadata {
 
     /// <summary>
     /// Tries parsing a whole tree of a single device.
-    /// </summary>
+    /// </summary> 
     public static bool TryParse(List<string> topicList, string baseTopic, string deviceId, out ClientDeviceMetadata parsedClientDeviceMetadata, ref List<string> errorList, ref List<string> warningList) {
         var isParsedWell = false;
         var candidateDevice = new ClientDeviceMetadata() { Id = deviceId };
@@ -35,16 +35,13 @@ public class ClientDeviceMetadata {
                     TrimRottenBranches(ref candidateDevice, ref errorList, ref warningList);
                     isParsedWell = true;
                     parsedClientDeviceMetadata = candidateDevice;
-                }
-                else {
+                } else {
                     errorList.Add($"Device '{candidateDevice.Id}' was detected, but it does not have a single valid property. This device subtree will be skipped.");
                 }
-            }
-            else {
+            } else {
                 errorList.Add($"Device '{candidateDevice.Id}' was detected, but it does not have a single valid node. This device subtree will be skipped.");
             }
-        }
-        else {
+        } else {
             errorList.Add($"Device '{candidateDevice.Id}' was detected, but it is missing important attributes. This device subtree will be skipped.");
         }
 
@@ -95,8 +92,7 @@ public class ClientDeviceMetadata {
         bool isParseSuccessful;
         if (minimumDeviceSetReceived) {
             isParseSuccessful = true;
-        }
-        else {
+        } else {
             isParseSuccessful = false;
             if (isHomieReceived == false) { errorList.Add($"Device '{candidateDevice.Id}': mandatory attribute $homie was not found, parsing cannot continue."); }
             if (isDeviceNameReceived == false) { errorList.Add($"Device '{candidateDevice.Id}': mandatory attribute $name was not found, parsing cannot continue."); }
@@ -142,8 +138,7 @@ public class ClientDeviceMetadata {
             // Figuring out properties we have for this node.
             if (candidateNode.AllAttributes.ContainsKey("$properties")) {
                 goodNodes.Add(candidateNode);
-            }
-            else {
+            } else {
                 // Something is wrong, an essential topic is missing.
                 errorList.Add($"{candidateDevice.Id}/{candidateNode.Id} is defined, but $properties attribute is missing. This node subtree will be skipped entirely.");
             }
@@ -255,8 +250,7 @@ public class ClientDeviceMetadata {
                         isOk = false;
                     }
 
-                }
-                else {
+                } else {
                     // Some of the mandatory topic were not received. Can't let this property through.
                     errorList.Add($"{candidateDevice.Id}/{candidateProperty.NodeId}/{candidateProperty.PropertyId} is defined, but mandatory attributes are missing. Skipping this property entirely.");
                     isOk = false;
@@ -320,8 +314,7 @@ public class ClientDeviceMetadata {
                     node.AllAttributes["$properties"] = newAttributeValue;
                     updateNeeded = true;
                 }
-            }
-            else {
+            } else {
                 updateNeeded = true;
             }
         }
@@ -336,8 +329,7 @@ public class ClientDeviceMetadata {
                 }
                 updateNeeded = true;
             }
-        }
-        else {
+        } else {
             throw new InvalidOperationException("There should be at least a single good property at this point. Something is internally wrong with parser.");
         }
 

@@ -60,8 +60,7 @@ public static class DeviceFactory {
         if (string.IsNullOrEmpty(topicLevelToValidate)) {
             validationPassed = false;
             validationMessage = "Topic level cannot be null or an empty string";
-        }
-        else if (_topicLevelRegex.IsMatch(topicLevelToValidate) == false) {
+        } else if (_topicLevelRegex.IsMatch(topicLevelToValidate) == false) {
             validationPassed = false;
             validationMessage = "Topic level can only be lowercase letters, numbers and hyphens";
         }

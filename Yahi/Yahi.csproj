@@ -1,47 +1,47 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<RootNamespace>DevBot9.Protocols.Homie</RootNamespace>
-		<AssemblyName>DevBot9.Protocols.Homie</AssemblyName>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<AssemblyVersion>0.12.0.0</AssemblyVersion>
-		<FileVersion>0.12.0.0</FileVersion>
-		<PackageId>DevBot9.Protocols.Homie</PackageId>
-		<Version>0.12.0-preview.19</Version>
-		<Authors>devbotas</Authors>
-		<Product>DevBot9.Protocols.Homie</Product>
-		<Description>Another Homie Convention (homieiot.github.io) C# implementation.</Description>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageProjectUrl>https://github.com/devbotas/yet-another-homie-implementation</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/devbotas/yet-another-homie-implementation</RepositoryUrl>
-		<PackageTags>homie; iot; c#</PackageTags>
-		<PackageReleaseNotes></PackageReleaseNotes>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>DevBot9.Protocols.Homie</RootNamespace>
+    <AssemblyName>DevBot9.Protocols.Homie</AssemblyName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <AssemblyVersion>0.12.0.0</AssemblyVersion>
+    <FileVersion>0.12.0.0</FileVersion>
+    <PackageId>DevBot9.Protocols.Homie</PackageId>
+    <Version>0.12.0-preview.19</Version>
+    <Authors>devbotas</Authors>
+    <Product>DevBot9.Protocols.Homie</Product>
+    <Description>Another Homie Convention (homieiot.github.io) C# implementation.</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/devbotas/yet-another-homie-implementation</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/devbotas/yet-another-homie-implementation</RepositoryUrl>
+    <PackageTags>homie; iot; c#</PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
 
-		<!--Configuring source Link-->
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-		<DebugType>embedded</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-		<!--This enables "deterministic builds"-->
-		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-		<PackageReference Include="NLog" Version="4.7.11" />
-		<PackageReference Include="Tevux.M2Mqtt" Version="0.19.0-preview.7" />
-		<PackageReference Include="Tevux.Tools.RepositorySettings" Version="1.1.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<None Remove="lib\Newtonsoft.Json.pdb" />
-		<None Remove="lib\Newtonsoft.Json.xml" />
-		<None Remove="lib\Newtonsoft.Json.dll" />
-		<None Include="..\LICENSE">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
-	</ItemGroup>
+    <!--Configuring source Link-->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <!--This enables "deterministic builds"-->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="NLog" Version="4.7.11" />
+    <PackageReference Include="Tevux.M2Mqtt" Version="0.19.0-preview.7" />
+    <PackageReference Include="Tevux.Tools.RepositorySettings" Version="1.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <None Remove="lib\Newtonsoft.Json.pdb" />
+    <None Remove="lib\Newtonsoft.Json.xml" />
+    <None Remove="lib\Newtonsoft.Json.dll" />
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 </Project>

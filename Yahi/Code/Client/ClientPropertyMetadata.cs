@@ -116,8 +116,7 @@ public class ClientPropertyMetadata {
                     if (Helpers.TryParseHomieColorFormat(Format, out var colorFormat) == false) {
                         errorList.Add($"{NodeId}/{PropertyId}/$format attribute is {Format}, which is not valid for color data type. Skipping this property entirely.");
                         isOk = false;
-                    }
-                    else if (isNotCommand) {
+                    } else if (isNotCommand) {
                         if (HomieColor.ValidatePayload(InitialValue, colorFormat) == false) {
                             errorList.Add($"{NodeId}/{PropertyId} is set to {InitialValue}, which is not valid for color format {colorFormat}. Skipping this property entirely.");
                             isOk = false;

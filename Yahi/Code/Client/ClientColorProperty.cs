@@ -13,8 +13,7 @@ public class ClientColorProperty : ClientPropertyBase {
         get {
             HomieColor returnValue;
 
-            if (_colorFormat == ColorFormat.Rgb) { returnValue = HomieColor.FromRgbString(_rawValue); }
-            else { returnValue = HomieColor.FromHsvString(_rawValue); }
+            if (_colorFormat == ColorFormat.Rgb) { returnValue = HomieColor.FromRgbString(_rawValue); } else { returnValue = HomieColor.FromHsvString(_rawValue); }
 
             return returnValue;
         }
@@ -37,8 +36,11 @@ public class ClientColorProperty : ClientPropertyBase {
         switch (Type) {
             case PropertyType.Parameter:
             case PropertyType.Command:
-                if (_colorFormat == ColorFormat.Rgb) { _rawValue = valueToSet.ToRgbString(); }
-                else { _rawValue = valueToSet.ToHsvString(); }
+                if (_colorFormat == ColorFormat.Rgb) {
+                    _rawValue = valueToSet.ToRgbString();
+                } else {
+                    _rawValue = valueToSet.ToHsvString();
+                }
 
                 _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
                 break;

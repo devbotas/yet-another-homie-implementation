@@ -43,8 +43,7 @@ public class ClientChoiceProperty : ClientPropertyBase {
                 if (ValidatePayload(valueToSet)) {
                     _rawValue = valueToSet;
                     _parentDevice.InternalPropertyPublish($"{_propertyId}/set", _rawValue, false);
-                }
-                else {
+                } else {
                     throw new ArgumentOutOfRangeException($"Parameter value \"{valueToSet}\" is not permitted.");
                 }
                 break;

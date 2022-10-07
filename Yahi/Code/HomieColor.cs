@@ -33,8 +33,7 @@ public class HomieColor {
             returnColor.RedValue = int.Parse(colorParts[0]);
             returnColor.GreenValue = int.Parse(colorParts[1]);
             returnColor.BlueValue = int.Parse(colorParts[2]);
-        }
-        else {
+        } else {
             returnColor = new HomieColor();
         }
 
@@ -68,28 +67,23 @@ public class HomieColor {
                 redPrime = chroma;
                 greenPrime = x;
                 bluePrime = 0;
-            }
-            else if (hPrime <= 2) {
+            } else if (hPrime <= 2) {
                 redPrime = x;
                 greenPrime = chroma;
                 bluePrime = 0;
-            }
-            else if (hPrime <= 3) {
+            } else if (hPrime <= 3) {
                 redPrime = 0;
                 greenPrime = chroma;
                 bluePrime = x;
-            }
-            else if (hPrime <= 4) {
+            } else if (hPrime <= 4) {
                 redPrime = 0;
                 greenPrime = x;
                 bluePrime = chroma;
-            }
-            else if (hPrime <= 5) {
+            } else if (hPrime <= 5) {
                 redPrime = x;
                 greenPrime = 0;
                 bluePrime = chroma;
-            }
-            else if (hPrime <= 6) {
+            } else if (hPrime <= 6) {
                 redPrime = chroma;
                 greenPrime = 0;
                 bluePrime = x;
@@ -100,8 +94,7 @@ public class HomieColor {
             returnColor.RedValue = (redPrime + m) * 255;
             returnColor.GreenValue = (greenPrime + m) * 255;
             returnColor.BlueValue = (bluePrime + m) * 255;
-        }
-        else {
+        } else {
             returnColor = new HomieColor();
         }
 
@@ -149,8 +142,7 @@ public class HomieColor {
             hue = 60 * (4 + (RedValue - GreenValue) / chroma);
         }
 
-        if (v == 0) { saturation = 0; }
-        else { saturation = chroma / v; }
+        if (v == 0) { saturation = 0; } else { saturation = chroma / v; }
 
         return $"{hue},{saturation},{value}";
     }

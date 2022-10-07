@@ -27,8 +27,7 @@ public class HostChoiceProperty : HostPropertyBase {
             }
 
             if (isMatchFound == false) { throw new ArgumentException("Initial value is not one of the possible values", nameof(initialValue)); }
-        }
-        else {
+        } else {
             initialValue = possibleValues[0];
         }
 

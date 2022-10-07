@@ -1,4 +1,4 @@
-namespace DevBot9.Protocols.Homie;
+﻿namespace DevBot9.Protocols.Homie;
 
 public static class Helpers {
 
@@ -162,8 +162,11 @@ public static class Helpers {
     public static string DoubleToString(double numberToConvert, string format = "") {
         string returnValue;
 
-        if (format != "") { returnValue = numberToConvert.ToString(format, CultureInfo.InvariantCulture); }
-        else { returnValue = numberToConvert.ToString(CultureInfo.InvariantCulture); }
+        if (format != "") {
+            returnValue = numberToConvert.ToString(format, CultureInfo.InvariantCulture);
+        } else {
+            returnValue = numberToConvert.ToString(CultureInfo.InvariantCulture);
+        }
 
         return returnValue;
     }

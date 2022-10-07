@@ -79,8 +79,7 @@ public class HostDevice : Device {
         if (nodeToUpdate == null) {
             nodeToUpdate = new NodeInfo() { Id = nodeId, Name = friendlyName, Type = type };
             _nodes.Add(nodeToUpdate);
-        }
-        else {
+        } else {
             nodeToUpdate.Name = friendlyName;
             nodeToUpdate.Type = type;
         }
@@ -194,8 +193,7 @@ public class HostDevice : Device {
             // All the other topics are cached, because those will be (re)published on broker connection event.
             if (_publishedTopics.ContainsKey(fullTopicId) == false) {
                 _publishedTopics.Add(fullTopicId, value);
-            }
-            else {
+            } else {
                 _publishedTopics[fullTopicId] = value;
             }
         }
@@ -259,8 +257,7 @@ public class HostDevice : Device {
         internal void AddProperty(string propertyId) {
             if (Properties == "") {
                 Properties = propertyId;
-            }
-            else {
+            } else {
                 Properties += "," + propertyId;
             }
         }

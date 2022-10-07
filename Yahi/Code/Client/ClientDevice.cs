@@ -142,8 +142,7 @@ public class ClientDevice : Device {
 
         if (Helpers.TryParseHomieState(deviceMetadata.StateAttribute, out var parsedState)) {
             State = parsedState;
-        }
-        else {
+        } else {
             State = HomieState.Lost;
         }
 
