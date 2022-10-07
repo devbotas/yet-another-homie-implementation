@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text;
-using Tevux.Protocols.Mqtt;
-
-namespace DevBot9.Protocols.Homie.Utilities;
+﻿namespace DevBot9.Protocols.Homie.Utilities;
 
 public class YahiTevuxClientConnection : MqttClient, IClientDeviceConnection {
     private bool _isInitialized = false;

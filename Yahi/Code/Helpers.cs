@@ -1,5 +1,3 @@
-﻿using System.Globalization;
-
 namespace DevBot9.Protocols.Homie;
 
 public static class Helpers {
