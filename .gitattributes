@@ -42,4 +42,14 @@
 *.txt eol=crlf
 
 # Deployment
+*.suf eol=crlf
+*.tu2 eol=crlf
 *.nuspec eol=crlf
+
+# Docker
+.dockerignore eol=crlf
+Dockerfile eol=crlf
+Dockerfile-* eol=crlf
+   
+# LC stuff
+*.regdefs eol=crlf

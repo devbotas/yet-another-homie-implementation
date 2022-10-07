@@ -260,5 +260,21 @@ paket-files/
 __pycache__/
 *.pyc
 
+# VisualGDB temporary files
+VisualGDB
+VisualGDBCache
+CodeDB
+
+# Silabs compiler temporary files
+*.LST
+*.OBJ
+*.M51
+*.omf
+*.out
+*.#1
+*.#2
+*.#3
+
+# Nuke Build
 Build/output/*
 .nuke/*
