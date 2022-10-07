@@ -11,7 +11,7 @@
     <PackageId>DevBot9.Protocols.Homie.Utilities</PackageId>
     <AssemblyVersion>0.12.0.0</AssemblyVersion>
     <FileVersion>0.12.0.0</FileVersion>
-    <Version>0.12.0-preview.19</Version>
+    <Version>0.12.0-preview.20</Version>
     <Description>Some optional utility classes to make your life with YAHI easier.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/devbotas/yet-another-homie-implementation</PackageProjectUrl>
@@ -29,7 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DevBot9.Mvvm" Version="21.1.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="NLog" Version="4.7.11" />
     <PackageReference Include="Tevux.M2Mqtt" Version="0.19.0-preview.7" />
     <None Include="..\LICENSE">
