@@ -32,8 +32,7 @@ internal class LightbulbProducer {
             // Simulating some lamp behaviour.
             if (_onOffSwitch.Value == "ON") {
                 _intensity.Value = 50;
-            }
-            else {
+            } else {
                 _intensity.Value = 0;
             }
         };

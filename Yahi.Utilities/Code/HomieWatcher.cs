@@ -1,11 +1,11 @@
 ﻿namespace DevBot9.Protocols.Homie.Utilities;
 
-public record class DeviceUpdatedMessage(string DeviceId, HomieState NewState);
+public record class DeviceUpdatedEventArgs(string DeviceId, HomieState NewState);
 
 public class HomieWatcher {
     private readonly ChannelConnectionOptions _channelConnectionOptions = new();
     private readonly ConcurrentDictionary<string, ClientDevice> _devices = new();
-    private readonly DevBot9.Protocols.Homie.Utilities.YahiTevuxClientConnection _yahiClient = new();
+    private readonly YahiTevuxClientConnection _yahiClient = new();
     private readonly Dictionary<string, string> _responses = new();
     private bool _isConnecting;
     private DateTime _timeOfLastUniqueTopic = DateTime.Now;
@@ -13,29 +13,10 @@ public class HomieWatcher {
         _yahiClient.PublishReceived += HandleClientConnectionPublishReceived;
     }
 
+    public event EventHandler<DeviceUpdatedEventArgs> DeviceUpdated = delegate { };
+
     public static HomieWatcher Instance { get; } = new HomieWatcher();
     public bool IsConnected => _yahiClient.IsConnected;
-    public Messenger Messenger { get; } = new();
-
-    public bool TryGetClientProperty(string deviceId, string nodeId, string propertyId, out ClientPropertyBase property, out HomieState state) {
-        var propertyFound = false;
-        property = null!;
-        state = HomieState.Lost;
-
-        if (TryGetClientDevice(deviceId, out var clientDevice)) {
-            var myNode = clientDevice.Nodes.FirstOrDefault(n => n.NodeId == nodeId);
-            if (myNode != null) {
-                var myProperty = myNode.Properties.FirstOrDefault(p => p.PropertyId == nodeId + "/" + propertyId);
-                if (myProperty != null) {
-                    property = myProperty;
-                    state = clientDevice.State;
-                    propertyFound = true;
-                }
-            }
-        }
-
-        return propertyFound;
-    }
     public void Connect(string ipAddress) {
         _isConnecting = true;
 
@@ -66,7 +47,7 @@ public class HomieWatcher {
         _yahiClient.DisconnectAndWait();
 
         foreach (var device in _devices) {
-            Messenger.Send(new DeviceUpdatedMessage(device.Key, device.Value.State));
+            DeviceUpdated(this, new DeviceUpdatedEventArgs(device.Key, device.Value.State));
         }
     }
 
@@ -76,12 +57,31 @@ public class HomieWatcher {
         if (_devices.ContainsKey(deviceId)) {
             clientDevice = _devices[deviceId];
             deviceFound = true;
-        }
-        else {
+        } else {
             clientDevice = null!;
         }
 
         return deviceFound;
+    }
+
+    public bool TryGetClientProperty(string deviceId, string nodeId, string propertyId, out ClientPropertyBase property, out HomieState state) {
+        var propertyFound = false;
+        property = null!;
+        state = HomieState.Lost;
+
+        if (TryGetClientDevice(deviceId, out var clientDevice)) {
+            var myNode = clientDevice.Nodes.FirstOrDefault(n => n.NodeId == nodeId);
+            if (myNode != null) {
+                var myProperty = myNode.Properties.FirstOrDefault(p => p.PropertyId == nodeId + "/" + propertyId);
+                if (myProperty != null) {
+                    property = myProperty;
+                    state = clientDevice.State;
+                    propertyFound = true;
+                }
+            }
+        }
+
+        return propertyFound;
     }
     private void HandleClientConnectionPublishReceived(object sender, DevBot9.Protocols.Homie.PublishReceivedEventArgs e) {
         var payload = e.Payload;
@@ -108,14 +108,14 @@ public class HomieWatcher {
         if ((_isConnecting == false) && (e.Topic[^6..] == "$state")) {
             var newDeviceId = e.Topic.Split('/')[1];
             Helpers.TryParseHomieState(e.Payload, out var newState);
-            Messenger.Send(new DeviceUpdatedMessage(newDeviceId, newState));
+            DeviceUpdated(this, new DeviceUpdatedEventArgs(newDeviceId, newState));
         }
     }
 
     private void HandleDevicePropertyChangedEvent(object? sender, PropertyChangedEventArgs e) {
         if (sender is ClientDevice device) {
             if (e.PropertyName == nameof(device.State)) {
-                Messenger.Send(new DeviceUpdatedMessage(device.DeviceId, device.State));
+                DeviceUpdated(this, new DeviceUpdatedEventArgs(device.DeviceId, device.State));
             }
         }
     }
@@ -149,7 +149,7 @@ public class HomieWatcher {
             _devices.Remove(deviceId, out var removedDevice);
             removedDevice!.PropertyChanged -= HandleDevicePropertyChangedEvent;
             removedDevice.Dispose();
-            Messenger.Send(new DeviceUpdatedMessage(removedDevice.DeviceId, removedDevice.State));
+            DeviceUpdated(this, new DeviceUpdatedEventArgs(removedDevice.DeviceId, removedDevice.State));
         }
 
         if (deviceShallBeAdded || deviceShallBeReplaced) {
@@ -157,7 +157,7 @@ public class HomieWatcher {
             _devices[deviceId] = newDevice;
             newDevice.Initialize(_yahiClient);
             newDevice.PropertyChanged += HandleDevicePropertyChangedEvent;
-            Messenger.Send(new DeviceUpdatedMessage(newDevice.DeviceId, newDevice.State));
+            DeviceUpdated(this, new DeviceUpdatedEventArgs(newDevice.DeviceId, newDevice.State));
         }
     }
 }

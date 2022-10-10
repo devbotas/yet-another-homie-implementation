@@ -13,7 +13,7 @@ public partial class PropertySwitcher : INotifyPropertyChanged, IDisposable {
     public PropertySwitcher(Action updateValueAction) {
         _updateValueAction = updateValueAction;
 
-        HomieWatcher.Instance.Messenger.Register<DeviceUpdatedMessage>(this, HandleDeviceUpdatedMessage);
+        HomieWatcher.Instance.DeviceUpdated += HandleDeviceUpdatedMessage;
     }
 
     public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -53,8 +53,7 @@ public partial class PropertySwitcher : INotifyPropertyChanged, IDisposable {
             errorMessage = "";
             State = state;
             IsPropertyFound = true;
-        }
-        else {
+        } else {
             errorMessage = "Cannot find Homie entity with such parameters.";
             IsPropertyFound = false;
         }
@@ -89,21 +88,17 @@ public partial class PropertySwitcher : INotifyPropertyChanged, IDisposable {
         _updateValueAction();
     }
 
-    private void HandleDeviceUpdatedMessage(DeviceUpdatedMessage deviceUpdatedMessage) {
-        // Dispatcher.Invoke(() => {
-        if (deviceUpdatedMessage.DeviceId == _deviceId) {
-            if (HomieWatcher.Instance.IsConnected) {
-                if (deviceUpdatedMessage.NewState == HomieState.Ready) {
-                    UpdateHomiePropertyMetadata(_deviceId, _nodeId, _propertyId, out var _);
-                }
-                else {
-                    State = deviceUpdatedMessage.NewState;
-                }
+    private void HandleDeviceUpdatedMessage(object sender, DeviceUpdatedEventArgs deviceUpdatedEventArgs) {
+        if (deviceUpdatedEventArgs.DeviceId != _deviceId) { return; }
+
+        if (HomieWatcher.Instance.IsConnected) {
+            if (deviceUpdatedEventArgs.NewState == HomieState.Ready) {
+                UpdateHomiePropertyMetadata(_deviceId, _nodeId, _propertyId, out var _);
+            } else {
+                State = deviceUpdatedEventArgs.NewState;
             }
-            else {
-                IsPropertyFound = false;
-            }
-        };
-        // });
+        } else {
+            IsPropertyFound = false;
+        }
     }
 }

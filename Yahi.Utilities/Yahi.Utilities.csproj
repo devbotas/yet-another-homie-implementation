@@ -28,7 +28,6 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DevBot9.Mvvm" Version="21.1.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="NLog" Version="4.7.11" />
     <PackageReference Include="Tevux.M2Mqtt" Version="0.19.0-preview.7" />

@@ -57,7 +57,7 @@ public class HomieTopicFetcher {
         Thread.Sleep(500);
         _mqttClient.Unsubscribe($"{baseTopic}/+/$homie");
 
-        var deviceString = $"Found { _responses.Count} Homie devices: ";
+        var deviceString = $"Found {_responses.Count} Homie devices: ";
         var devices = new List<string>();
         foreach (var deviceTopic in _responses) {
             var deviceName = deviceTopic.Key.Split('/')[1];
@@ -94,8 +94,7 @@ public class HomieTopicFetcher {
         if (_responses.ContainsKey(e.Topic) == false) {
             _responses.Add(e.Topic, payload);
             _timeOfLastUniqueTopic = DateTime.Now;
-        }
-        else {
+        } else {
             _responses[e.Topic] = payload;
         }
     }
